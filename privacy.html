@@ -417,7 +417,7 @@ footer{background:var(--black);padding:clamp(3rem,6vw,4.5rem) var(--gut) 2.5rem}
   <div class="wrap">
     <p class="meta">Data protection</p>
     <h1>Privacy notice</h1>
-    <p><strong>Who we are.</strong> RBM Global Ltd (company number 14068407, registered office 1 Pretoria Villas, 44 Main Road, Colden Common, Winchester, Hampshire SO21 1RR) is a defence and security consultancy. We are the controller of the personal data described in this notice, and we are registered with the Information Commission under registration reference <strong>ZC247249</strong>. Contact: <a href="mailto:rob@rbmglobal.co.uk">rob@rbmglobal.co.uk</a>. Where we process personal data on a client’s behalf in delivering services, the client is the controller and our Data Processing Addendum applies.</p>
+    <p><strong>Who we are.</strong> RBM Global Ltd (company number 14068407, registered office 1 Pretoria Villas, 44 Main Road, Colden Common, Winchester, Hampshire SO21 1RR) is a defence and security consultancy. We are the controller of the personal data described in this notice, and we are registered with the Information Commission under registration reference <strong>ZC247249</strong>. Contact: <a href="mailto:info@rbmglobal.co.uk">info@rbmglobal.co.uk</a>. Where we process personal data on a client’s behalf in delivering services, the client is the controller and our Data Processing Addendum applies.</p>
 
     <h2>What we collect and why</h2>
     <table>
@@ -441,7 +441,7 @@ footer{background:var(--black);padding:clamp(3rem,6vw,4.5rem) var(--gut) 2.5rem}
     <p>Some providers process data outside the UK. We transfer personal data only to countries or organisations covered by regulations under Article 45A UK GDPR (including the UK Extension to the EU–US Data Privacy Framework), or under the International Data Transfer Agreement or the UK Addendum to the EU Standard Contractual Clauses (Article 46), after assessing that the data protection test is met. You can ask us for a copy of the safeguards. During overseas deployments, data is held only on encrypted devices we control.</p>
 
     <h2>Your rights</h2>
-    <p>You can ask us for a copy of your personal data, to correct or delete it, to restrict or object to processing, and to receive it in a portable format, and you can withdraw consent where consent is the basis. Write to <a href="mailto:rob@rbmglobal.co.uk">rob@rbmglobal.co.uk</a>.</p>
+    <p>You can ask us for a copy of your personal data, to correct or delete it, to restrict or object to processing, and to receive it in a portable format, and you can withdraw consent where consent is the basis. Write to <a href="mailto:info@rbmglobal.co.uk">info@rbmglobal.co.uk</a>.</p>
 
     <h2 id="subprocessors">Sub-processor and AI provider register</h2>
     <p>Providers that may process personal data on our behalf. We give clients at least 30 days’ notice before adding a provider. Any AI tool we use must pass our approval checks and be on this register; consumer or free-tier AI accounts are never used for client or personal data.</p>
@@ -458,13 +458,13 @@ footer{background:var(--black);padding:clamp(3rem,6vw,4.5rem) var(--gut) 2.5rem}
     <p class="note">Register last reviewed 14 September 2026.</p>
 
     <h2 id="complaints">Complaints about your personal data</h2>
-    <p>If you are unhappy with how we have handled your personal data, tell us. Use the form below, email <a href="mailto:rob@rbmglobal.co.uk?subject=Data%20protection%20complaint">rob@rbmglobal.co.uk</a> with “Data protection complaint” in the subject line, or write to RBM Global Ltd, 1 Pretoria Villas, 44 Main Road, Colden Common, Winchester SO21 1RR. We will acknowledge your complaint within five working days (and always within 30 days), look into it, and tell you the outcome and what we have done, normally within 30 days. You can also complain to the Information Commission at <a href="https://ico.org.uk" rel="noopener">ico.org.uk</a> or on 0303 123 1113; the Commission may ask you to raise it with us first.</p>
+    <p>If you are unhappy with how we have handled your personal data, tell us. Use the form below, email <a href="mailto:info@rbmglobal.co.uk?subject=Data%20protection%20complaint">info@rbmglobal.co.uk</a> with “Data protection complaint” in the subject line, or write to RBM Global Ltd, 1 Pretoria Villas, 44 Main Road, Colden Common, Winchester SO21 1RR. We will acknowledge your complaint within five working days (and always within 30 days), look into it, and tell you the outcome and what we have done, normally within 30 days. You can also complain to the Information Commission at <a href="https://ico.org.uk" rel="noopener">ico.org.uk</a> or on 0303 123 1113; the Commission may ask you to raise it with us first.</p>
     <form id="complaint" onsubmit="return sendComplaint(event)">
       <label>Your name <input name="name" required autocomplete="name"></label>
       <label>Email address <input name="email" type="email" required autocomplete="email"></label>
       <label>What your complaint is about <textarea name="about" required></textarea></label>
       <label>What outcome you would like <textarea name="outcome"></textarea></label>
-      <p class="note">We will use these details only to handle your complaint and will keep the record for two years. Pressing Send opens a pre-addressed email in your mail app; if it does not open, copy the text into an email to rob@rbmglobal.co.uk.</p>
+      <p class="note">We will use these details only to handle your complaint and will keep the record for two years. Pressing Send opens a pre-addressed email in your mail app; if it does not open, copy the text into an email to info@rbmglobal.co.uk.</p>
       <button type="submit">Send complaint</button>
     </form>
 
@@ -519,7 +519,7 @@ function sendComplaint(e){
   e.preventDefault();
   var f=e.target;
   var body='Name: '+f.name.value+'\nEmail: '+f.email.value+'\n\nComplaint:\n'+f.about.value+'\n\nOutcome sought:\n'+f.outcome.value;
-  window.location.href='mailto:rob@rbmglobal.co.uk?subject='+encodeURIComponent('Data protection complaint')+'&body='+encodeURIComponent(body);
+  window.location.href='mailto:info@rbmglobal.co.uk?subject='+encodeURIComponent('Data protection complaint')+'&body='+encodeURIComponent(body);
   return false;
 }
 </script>
