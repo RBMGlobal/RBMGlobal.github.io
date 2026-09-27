@@ -16,7 +16,7 @@
     #map { position:absolute; inset:0; }
     .hud { position:absolute; z-index:500; top:16px; left:16px; right:16px; display:flex; gap:12px; align-items:flex-start; pointer-events:none; }
     .hud > * { pointer-events:auto; }
-    .brand { background:rgba(244,241,234,.94); border:1px solid var(--line); padding:12px 14px; max-width:420px; }
+    .brand { background:rgba(244,241,234,.94); border:1px solid var(--line); padding:12px 14px; max-width:420px; max-height:calc(100vh - 32px); overflow:auto; }
     .kicker { letter-spacing:.14em; text-transform:uppercase; font-size:10px; color:var(--muted); }
     h1 { font-size:18px; margin:4px 0 6px; font-weight:650; }
     .meta { font-size:12px; color:var(--muted); }
@@ -25,6 +25,18 @@
     button.layer.on { background:var(--ink); color:var(--paper); }
     .legend { margin-top:8px; display:flex; gap:10px; font-size:11px; color:var(--muted); }
     .sw { width:10px; height:10px; display:inline-block; margin-right:3px; vertical-align:middle; }
+    details.method { margin-top:12px; border-top:1px solid var(--line); padding-top:8px; }
+    details.method summary { cursor:pointer; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); list-style:none; }
+    details.method summary::-webkit-details-marker { display:none; }
+    details.method summary:after { content:" ▾"; float:right; color:var(--muted); }
+    details.method[open] summary:after { content:" ▴"; }
+    .method-body { margin-top:8px; font-size:12px; color:#333; }
+    .method-body h4 { margin:10px 0 4px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .method-body p, .method-body li { margin:0 0 6px; }
+    .method-body ul { margin:0; padding-left:16px; }
+    .src { margin:0 0 6px; }
+    .src b { display:block; }
+    .src span { color:var(--muted); }
     .panel { margin-left:auto; width:min(380px,100%); max-height:calc(100vh - 32px); overflow:auto; background:rgba(22,23,26,.96); color:var(--paper); padding:16px 18px; display:none; }
     .panel.on { display:block; }
     .panel h2 { margin:0 0 4px; font-size:20px; }
@@ -58,6 +70,10 @@
         <span><i class="sw" style="background:var(--mixed)"></i>Mixed</span>
         <span><i class="sw" style="background:var(--warm)"></i>Warm</span>
       </div>
+      <details class="method">
+        <summary>Methodology & sources</summary>
+        <div class="method-body" id="method-body"></div>
+      </details>
     </div>
     <aside class="panel" id="panel">
       <button class="close" id="close" type="button">×</button>
@@ -99,6 +115,32 @@
     }
     function zoneOf(s) { return DATA.zones.find(z => z.id === s.zone); }
     function tone(s) { return s[LAYER === "president" ? "president" : "nsa"]; }
+    function fillMethod() {
+      const src = (DATA.sources || []).map(s =>
+        "<div class='src'><b>" + s.name + "</b><span>" + s.date + (s.use ? " — " + s.use : "") + "</span></div>"
+      ).join("");
+      document.getElementById("method-body").innerHTML =
+        "<h4>What the colours mean</h4>" +
+        "<ul>" +
+        "<li><b>Warm</b> — net-positive or clearly better than the zone/national baseline.</li>" +
+        "<li><b>Mixed</b> — approve and disapprove close, or split signals.</li>" +
+        "<li><b>Cool</b> — net-negative, but not the coldest band.</li>" +
+        "<li><b>Cold</b> — strongly negative, or insecurity is the dominant local test.</li>" +
+        "</ul>" +
+        "<h4>How a state is scored</h4>" +
+        "<p>" + (DATA.method || "") + "</p>" +
+        "<ul>" +
+        "<li><b>President</b> starts from the six-zone poll (approve / disapprove). A state is then shifted if citizen-satisfaction or local politics clearly diverge from the zone.</li>" +
+        "<li><b>NSA / ONSA</b> has no state popularity poll. Score is insecurity perception + incident / kidnap load for that state or zone. Ribadu is not separately polled.</li>" +
+        "<li>State tiles are directional. They are not percentages and not a census.</li>" +
+        "</ul>" +
+        "<h4>National anchors</h4>" +
+        "<p>Approve " + DATA.national.president_approve + "% · disapprove " + DATA.national.president_disapprove +
+        "% · trust " + DATA.national.president_trust + "% · feel unsafe " + DATA.national.feel_unsafe_pct + "%.</p>" +
+        "<p>" + (DATA.caveat || "") + "</p>" +
+        "<h4>Sources</h4>" + src +
+        "<p>" + (DATA.classification || "") + ". Daily refresh rewrites data.json only.</p>";
+    }
     function why(s) {
       const z = zoneOf(s);
       let pres = "<h3>President — " + LABEL[s.president] + "</h3><p>" + s.note + "</p>";
@@ -180,6 +222,7 @@
       document.getElementById("meta").textContent =
         data.subjects.president + " · NSA " + data.subjects.nsa +
         " · updated " + data.updated;
+      fillMethod();
       bindLayer(geo);
     }).catch(err => {
       document.getElementById("meta").textContent = "Failed to load map or data.json";
