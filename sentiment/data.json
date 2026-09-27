@@ -1,6 +1,6 @@
 {
   "updated": "2026-09-27",
-  "updated_iso": "2026-09-27T13:00:00+01:00",
+  "updated_iso": "2026-09-27T14:00:00+01:00",
   "classification": "INTERNAL BRIEF — directional, not a census",
   "subjects": {
     "president": "Bola Ahmed Tinubu",
@@ -75,6 +75,7 @@
   ],
   "method": "Zones use published polls. States are directional overlays (zone poll + violence + satisfaction). Do not treat a state tile as a percentage. NSA/ONSA has no state popularity poll — scored from insecurity perception and incident load.",
   "changelog": [
+    { "date": "2026-09-27", "text": "No material change; sources rechecked." },
     { "date": "2026-09-27", "text": "Initial brief. Zonal presidential numbers from May 2026 StatiSense; SBM September net-favourability update applied nationally, not reallocated by state." }
   ]
 }
