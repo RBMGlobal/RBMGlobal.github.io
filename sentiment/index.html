@@ -25,7 +25,12 @@
     button.layer.on { background:var(--ink); color:var(--paper); }
     .legend { margin-top:8px; display:flex; gap:10px; font-size:11px; color:var(--muted); }
     .sw { width:10px; height:10px; display:inline-block; margin-right:3px; vertical-align:middle; }
-    details.method { margin-top:12px; border-top:1px solid var(--line); padding-top:8px; }
+    .layers { margin-top:12px; border-top:1px solid var(--line); padding-top:8px; }
+    .layers h3 { margin:0 0 8px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .row { display:grid; grid-template-columns:18px 1fr 88px; gap:8px; align-items:center; margin:0 0 8px; font-size:13px; }
+    .row input[type=range] { width:100%; }
+    .row .val { font-size:11px; color:var(--muted); text-align:right; }
+    details.method { margin-top:8px; border-top:1px solid var(--line); padding-top:8px; }
     details.method summary { cursor:pointer; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); list-style:none; }
     details.method summary::-webkit-details-marker { display:none; }
     details.method summary:after { content:" ▾"; float:right; color:var(--muted); }
@@ -66,7 +71,6 @@
       <div class="tools">
         <button class="layer on" data-layer="president">President</button>
         <button class="layer" data-layer="nsa">NSA / ONSA</button>
-        <button class="layer on" id="gdelt-btn" type="button">GDELT heat</button>
       </div>
       <div class="legend">
         <span><i class="sw" style="background:var(--cold)"></i>Cold</span>
@@ -74,7 +78,28 @@
         <span><i class="sw" style="background:var(--mixed)"></i>Mixed</span>
         <span><i class="sw" style="background:var(--warm)"></i>Warm</span>
       </div>
-      <div class="meta" id="gdelt-meta" style="margin-top:6px"></div>
+      <div class="layers">
+        <h3>Layers</h3>
+        <div class="row">
+          <input type="checkbox" id="chk-base" checked />
+          <label for="chk-base">Basemap</label>
+          <span class="val" id="val-base">70%</span>
+        </div>
+        <input type="range" id="op-base" min="0" max="100" value="70" />
+        <div class="row">
+          <input type="checkbox" id="chk-states" checked />
+          <label for="chk-states">State sentiment</label>
+          <span class="val" id="val-states">55%</span>
+        </div>
+        <input type="range" id="op-states" min="0" max="100" value="55" />
+        <div class="row">
+          <input type="checkbox" id="chk-gdelt" checked />
+          <label for="chk-gdelt">GDELT heat (18–20)</label>
+          <span class="val" id="val-gdelt">80%</span>
+        </div>
+        <input type="range" id="op-gdelt" min="0" max="100" value="80" />
+        <div class="meta" id="gdelt-meta" style="margin-top:6px"></div>
+      </div>
       <details class="method">
         <summary>Methodology &amp; sources</summary>
         <div class="method-body" id="method-body"></div>
@@ -96,18 +121,30 @@
     const LABEL = { cold:"Cold", cool:"Cool", mixed:"Mixed", warm:"Warm" };
     const GEO = "https://cdn.jsdelivr.net/gh/iamspruce/intro-d3@main/data/nigeria_state_boundaries.geojson";
     const alias = { "Federal Capital Territory": "FCT", "Fct": "FCT", "Nassarawa": "Nasarawa" };
-    let DATA = null, LAYER = "president", layerGroup = null, selected = null, heatLayer = null, heatOn = true;
+    let DATA = null, LAYER = "president", layerGroup = null, selected = null;
+    let heatLayer = null, baseLayer = null;
+    const vis = { base: true, states: true, gdelt: true };
+    const opac = { base: 0.70, states: 0.55, gdelt: 0.80 };
     const map = L.map("map", { zoomControl: true }).setView([9.1, 8.1], 6);
+    map.createPane("states");
+    map.getPane("states").style.zIndex = 350;
+    map.createPane("heat");
+    map.getPane("heat").style.zIndex = 450;
+    map.getPane("heat").style.pointerEvents = "none";
     function addOsm() {
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap", maxZoom: 12
-      }).addTo(map);
+      if (baseLayer) map.removeLayer(baseLayer);
+      baseLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap", maxZoom: 12, opacity: opac.base
+      });
+      if (vis.base) baseLayer.addTo(map);
     }
     function addMapbox(token) {
-      L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=" + token, {
-        tileSize: 512, zoomOffset: -1, maxZoom: 12,
+      if (baseLayer) map.removeLayer(baseLayer);
+      baseLayer = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=" + token, {
+        tileSize: 512, zoomOffset: -1, maxZoom: 12, opacity: opac.base,
         attribution: "&copy; Mapbox &copy; OSM"
-      }).addTo(map);
+      });
+      if (vis.base) baseLayer.addTo(map);
     }
     fetch("/ped-tool/").then(r => r.text()).then(html => {
       const m = html.match(/MB_TOKEN_DEFAULT\s*=\s*['\"]([^'\"]+)['\"]/);
@@ -127,44 +164,16 @@
         "<div class='src'><b>" + s.name + "</b><span>" + s.date + (s.use ? " — " + s.use : "") + "</span></div>"
       ).join("");
       document.getElementById("method-body").innerHTML =
-        "<h4>What the colours mean</h4>" +
-        "<ul>" +
-        "<li><b>Warm</b> — net-positive or clearly better than the zone/national baseline.</li>" +
-        "<li><b>Mixed</b> — approve and disapprove close, or split signals.</li>" +
-        "<li><b>Cool</b> — net-negative, but not the coldest band.</li>" +
-        "<li><b>Cold</b> — strongly negative, or insecurity is the dominant local test.</li>" +
-        "</ul>" +
-        "<h4>How a state is scored</h4>" +
-        "<p>" + (DATA.method || "") + "</p>" +
-        "<ul>" +
-        "<li><b>President</b> starts from the six-zone poll (approve / disapprove). A state is then shifted if citizen-satisfaction or local politics clearly diverge from the zone.</li>" +
-        "<li><b>NSA / ONSA</b> has no state popularity poll. Score is insecurity perception + incident / kidnap load for that state or zone. Ribadu is not separately polled.</li>" +
-        "<li>State tiles are directional. They are not percentages and not a census.</li>" +
-        "<li><b>GDELT heat</b> pulls assault/clash/mass-violence points (CAMEO 18–20) from the activity map. News-coded, not UCDP. Intensity = article count. Use it against the NSA layer.</li>" +
-        "</ul>" +
-        "<h4>National anchors</h4>" +
-        "<p>Approve " + DATA.national.president_approve + "% · disapprove " + DATA.national.president_disapprove +
-        "% · trust " + DATA.national.president_trust + "% · feel unsafe " + DATA.national.feel_unsafe_pct + "%.</p>" +
-        "<p>" + (DATA.caveat || "") + "</p>" +
-        "<h4>Sources</h4>" + src +
-        "<p>" + (DATA.classification || "") + ". Daily refresh rewrites data.json only.</p>";
+        "<h4>Layers</h4><p>Checkboxes and sliders control visibility and opacity. President / NSA only recoulours states.</p>" +
+        "<h4>How a state is scored</h4><p>" + (DATA.method || "") + "</p>" +
+        "<p>GDELT heat is CAMEO 18–20 from gdelt.json (activity-map extract). News-coded, not UCDP.</p>" +
+        "<h4>Sources</h4>" + src;
     }
     function why(s) {
       const z = zoneOf(s);
       let pres = "<h3>President — " + LABEL[s.president] + "</h3><p>" + s.note + "</p>";
-      if (z) {
-        pres += "<p class='nums'>" + z.name + " poll: approve " + z.approve +
-          "% · disapprove " + z.disapprove + "%. " + z.read + "</p>";
-      }
-      let nsa = "<h3>NSA / ONSA — " + LABEL[s.nsa] + "</h3>";
-      if (s.nsa === "cold") {
-        nsa += "<p>Security load is high enough that the office is judged locally by violence, kidnap or insurgency — not by national talking points.</p>";
-      } else if (s.nsa === "cool") {
-        nsa += "<p>ONSA is not the main daily story here. Residual threat exists, but presidential or economic politics usually outrank Ribadu personally.</p>";
-      } else {
-        nsa += "<p>Compared with the northern theatres, this state is a quieter ONSA file. Sentiment tracks the President more than the security architecture.</p>";
-      }
-      nsa += "<p>" + s.note + "</p>";
+      if (z) pres += "<p class='nums'>" + z.name + " poll: approve " + z.approve + "% · disapprove " + z.disapprove + "%. " + z.read + "</p>";
+      let nsa = "<h3>NSA / ONSA — " + LABEL[s.nsa] + "</h3><p>" + s.note + "</p>";
       if (z) nsa += "<p class='nums'>Zone unsafe: " + z.unsafe + "%.</p>";
       return pres + nsa;
     }
@@ -183,7 +192,7 @@
         "<div><span>Language</span>" + (s.language||"—") + "</div>";
       document.getElementById("p-body").innerHTML = why(s);
       document.getElementById("panel").classList.add("on");
-      if (layerGroup) layerGroup.eachLayer(l => styleFeat(l));
+      paint();
     }
     function styleFeat(l) {
       const name = geoName(l.feature.properties);
@@ -194,19 +203,21 @@
         color: active ? "#16171a" : "#f4f1ea",
         weight: active ? 2.4 : 1,
         fillColor: COLORS[t] || COLORS.mixed,
-        fillOpacity: active ? 0.88 : (heatOn ? 0.52 : 0.78)
+        fillOpacity: vis.states ? (active ? Math.min(1, opac.states + 0.25) : opac.states) : 0,
+        opacity: vis.states ? 1 : 0
       });
     }
     function paint() { if (layerGroup) layerGroup.eachLayer(l => styleFeat(l)); }
     function bindLayer(gj) {
       if (layerGroup) map.removeLayer(layerGroup);
       layerGroup = L.geoJSON(gj, {
-        style: () => ({ color:"#f4f1ea", weight:1, fillOpacity:0.78 }),
+        pane: "states",
+        style: () => ({ color:"#f4f1ea", weight:1, fillOpacity: opac.states }),
         onEachFeature: (feat, l) => {
           const name = geoName(feat.properties);
           const s = rec(name);
           l.bindTooltip(name, { sticky:true, className:"state-tip" });
-          l.on("mouseover", () => l.setStyle({ weight:2, fillOpacity:0.92 }));
+          l.on("mouseover", () => { if (vis.states) l.setStyle({ weight:2, fillOpacity: Math.min(1, opac.states + 0.2) }); });
           l.on("mouseout", () => styleFeat(l));
           l.on("click", () => { if (s) openPanel(s); });
         }
@@ -214,44 +225,60 @@
       paint();
       map.fitBounds(layerGroup.getBounds(), { padding:[20,20], maxZoom:7 });
     }
-    function parseArray(html, name) {
-      const tag = "const " + name + " = ";
-      const i = html.indexOf(tag);
-      if (i < 0) return [];
-      const start = html.indexOf("[", i);
-      let depth = 0;
-      for (let p = start; p < html.length; p++) {
-        const ch = html[p];
-        if (ch === "[") depth++;
-        else if (ch === "]") { depth--; if (!depth) return JSON.parse(html.slice(start, p + 1)); }
+    function applyHeatOpacity() {
+      if (!heatLayer) return;
+      if (heatLayer._canvas) heatLayer._canvas.style.opacity = opac.gdelt;
+      if (heatLayer.setOptions) heatLayer.setOptions({ minOpacity: Math.max(0.05, opac.gdelt * 0.3) });
+    }
+    function setHeat(points, meta) {
+      if (heatLayer) map.removeLayer(heatLayer);
+      if (typeof L.heatLayer !== "function") {
+        document.getElementById("gdelt-meta").textContent = "leaflet.heat failed to load.";
+        return;
       }
-      return [];
+      heatLayer = L.heatLayer(points, {
+        pane: "heat",
+        radius: 28, blur: 22, maxZoom: 10, minOpacity: Math.max(0.08, opac.gdelt * 0.35),
+        gradient: { 0.15: "#4a90d9", 0.4: "#f0c14b", 0.65: "#d35400", 1: "#8b1e3f" }
+      });
+      if (vis.gdelt) heatLayer.addTo(map);
+      applyHeatOpacity();
+      document.getElementById("gdelt-meta").textContent = meta;
     }
     function loadGdelt() {
-      fetch("/nigeria-activity-map/?ts=" + Date.now()).then(r => r.text()).then(html => {
-        const ev = parseArray(html, "GDELT_EVENTS").filter(e => e.r >= 18 && e.la && e.lo);
-        const pts = ev.map(e => [e.la, e.lo, Math.min(1, (e.n || 1) / 25)]);
-        if (heatLayer) map.removeLayer(heatLayer);
-        heatLayer = L.heatLayer(pts, {
-          radius: 22, blur: 16, maxZoom: 11, minOpacity: 0.22,
-          gradient: { 0.2: "#4a90d9", 0.45: "#f0c14b", 0.7: "#d35400", 1: "#8b1e3f" }
-        });
-        if (heatOn) heatLayer.addTo(map);
-        const dates = ev.map(e => e.d).sort();
-        const span = dates.length ? dates[0] + " to " + dates[dates.length - 1] : "";
-        document.getElementById("gdelt-meta").textContent =
-          "GDELT assault/clash overlay · " + ev.length + " points · " + span + " · news-coded, not UCDP.";
+      fetch("gdelt.json?ts=" + Date.now()).then(r => {
+        if (!r.ok) throw new Error("no json");
+        return r.json();
+      }).then(d => {
+        const pts = (d.points || []).map(e => Array.isArray(e)
+          ? [e[0], e[1], Math.min(1, (e[2] || 1) / 20)]
+          : [e.la, e.lo, Math.min(1, (e.n || 1) / 20)]);
+        setHeat(pts, "GDELT " + (d.count || pts.length) + " points · " + (d.from || "") + " to " + (d.to || "") + " · CAMEO 18–20");
       }).catch(() => {
-        document.getElementById("gdelt-meta").textContent = "GDELT layer failed to load from activity map.";
+        document.getElementById("gdelt-meta").textContent = "gdelt.json missing — check publish.";
       });
     }
-    document.getElementById("gdelt-btn").onclick = () => {
-      heatOn = !heatOn;
-      document.getElementById("gdelt-btn").classList.toggle("on", heatOn);
+    function hook(idChk, idOp, idVal, key, apply) {
+      document.getElementById(idChk).onchange = e => { vis[key] = e.target.checked; apply(); };
+      document.getElementById(idOp).oninput = e => {
+        opac[key] = Number(e.target.value) / 100;
+        document.getElementById(idVal).textContent = e.target.value + "%";
+        apply();
+      };
+    }
+    hook("chk-base", "op-base", "val-base", "base", () => {
+      if (!baseLayer) return;
+      if (vis.base) { if (!map.hasLayer(baseLayer)) baseLayer.addTo(map); }
+      else if (map.hasLayer(baseLayer)) map.removeLayer(baseLayer);
+      if (baseLayer.setOpacity) baseLayer.setOpacity(opac.base);
+    });
+    hook("chk-states", "op-states", "val-states", "states", paint);
+    hook("chk-gdelt", "op-gdelt", "val-gdelt", "gdelt", () => {
       if (!heatLayer) return;
-      if (heatOn) heatLayer.addTo(map); else map.removeLayer(heatLayer);
-      paint();
-    };
+      if (vis.gdelt) { if (!map.hasLayer(heatLayer)) heatLayer.addTo(map); }
+      else if (map.hasLayer(heatLayer)) map.removeLayer(heatLayer);
+      applyHeatOpacity();
+    });
     document.getElementById("close").onclick = () => {
       selected = null;
       document.getElementById("panel").classList.remove("on");
@@ -272,8 +299,7 @@
     ]).then(([data, geo]) => {
       DATA = data;
       document.getElementById("meta").textContent =
-        data.subjects.president + " · NSA " + data.subjects.nsa +
-        " · updated " + data.updated;
+        data.subjects.president + " · NSA " + data.subjects.nsa + " · updated " + data.updated;
       fillMethod();
       bindLayer(geo);
       loadGdelt();
