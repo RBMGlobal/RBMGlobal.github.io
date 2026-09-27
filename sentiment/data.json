@@ -1,0 +1,80 @@
+{
+  "updated": "2026-09-27",
+  "updated_iso": "2026-09-27T13:00:00+01:00",
+  "classification": "INTERNAL BRIEF — directional, not a census",
+  "subjects": {
+    "president": "Bola Ahmed Tinubu",
+    "nsa": "Nuhu Ribadu",
+    "onsa": "Office of the National Security Adviser"
+  },
+  "national": {
+    "president_approve": 30.2,
+    "president_disapprove": 47.5,
+    "president_trust": 28,
+    "little_or_no_trust": 72,
+    "tinubu_net_favorability_sbm_sep": -3.3,
+    "tinubu_net_favorability_sbm_may": -58.5,
+    "feel_unsafe_pct": 57,
+    "note": "Approval still net-negative nationally. SBM (Sep 2026) shows a sharp improvement from May, not a flip to net-positive. No scientific 37-unit poll exists for NSA/ONSA."
+  },
+  "zones": [
+    { "id": "NE", "name": "North East", "approve": 39.2, "disapprove": 40.8, "unsafe": 68, "president": "mixed", "nsa": "cold", "read": "Least hostile to Tinubu. Insurgency still frames ONSA." },
+    { "id": "NW", "name": "North West", "approve": 37.0, "disapprove": 44.4, "unsafe": 72, "president": "mixed", "nsa": "cold", "read": "Soft APC ground. Banditry is the NSA tax." },
+    { "id": "SW", "name": "South West", "approve": 37.0, "disapprove": 38.9, "unsafe": 40, "president": "mixed", "nsa": "cool", "read": "Home base. Economy and cost of living drag more than security." },
+    { "id": "NC", "name": "North Central", "approve": 30.3, "disapprove": 44.9, "unsafe": 60, "president": "cool", "nsa": "cold", "read": "Farmer-herder and highway kidnap dominate." },
+    { "id": "SE", "name": "South East", "approve": 16.5, "disapprove": 62.9, "unsafe": 51, "president": "cold", "nsa": "cool", "read": "Coldest presidential zone. Sit-at-home / gunmen overlay." },
+    { "id": "SS", "name": "South South", "approve": 13.5, "disapprove": 59.8, "unsafe": 48, "president": "cold", "nsa": "cool", "read": "Coldest approval. Oil crime is the ONSA local test." }
+  ],
+  "states": [
+    { "name": "Abia", "zone": "SE", "president": "cold", "nsa": "cool", "note": "Local governance satisfaction is high; federal/presidential sentiment is not." },
+    { "name": "Adamawa", "zone": "NE", "president": "mixed", "nsa": "cool", "note": "Ribadu home state. Residual insurgency pressure." },
+    { "name": "Akwa Ibom", "zone": "SS", "president": "cold", "nsa": "cool", "note": "Presidential cold; security less salient than economy/oil politics." },
+    { "name": "Anambra", "zone": "SE", "president": "cold", "nsa": "cool", "note": "Strong anti-incumbent presidential lean." },
+    { "name": "Bauchi", "zone": "NE", "president": "mixed", "nsa": "cool", "note": "Zonal mixed. Not a primary violence hotspot." },
+    { "name": "Bayelsa", "zone": "SS", "president": "cold", "nsa": "cool", "note": "SS presidential cold. Local oil-security overlay." },
+    { "name": "Benue", "zone": "NC", "president": "cool", "nsa": "cold", "note": "Low citizen satisfaction. Farmer-herder fatalities keep ONSA cold." },
+    { "name": "Borno", "zone": "NE", "president": "mixed", "nsa": "cold", "note": "Highest conflict-event load. Insurgency still defines the office." },
+    { "name": "Cross River", "zone": "SS", "president": "cold", "nsa": "cool", "note": "SS presidential cold." },
+    { "name": "Delta", "zone": "SS", "president": "cold", "nsa": "cool", "note": "Oil infrastructure security is the ONSA local file." },
+    { "name": "Ebonyi", "zone": "SE", "president": "cold", "nsa": "cool", "note": "Among least satisfied on governance surveys." },
+    { "name": "Edo", "zone": "SS", "president": "cold", "nsa": "cool", "note": "Low-to-mid citizen satisfaction. Not a banditry theatre." },
+    { "name": "Ekiti", "zone": "SW", "president": "mixed", "nsa": "warm", "note": "SW mixed. Security less of the daily story." },
+    { "name": "Enugu", "zone": "SE", "president": "cold", "nsa": "cool", "note": "SE presidential cold; unknown-gunmen overlay." },
+    { "name": "FCT", "zone": "NC", "president": "mixed", "nsa": "cool", "note": "Competitive politically. Incident load present but not Zamfara-class." },
+    { "name": "Gombe", "zone": "NE", "president": "mixed", "nsa": "cool", "note": "NE mixed. Lower incident load than Borno." },
+    { "name": "Imo", "zone": "SE", "president": "cold", "nsa": "cold", "note": "Low satisfaction. Sit-at-home / gunmen keep NSA cold." },
+    { "name": "Jigawa", "zone": "NW", "president": "mixed", "nsa": "cool", "note": "Better local satisfaction than Katsina/Zamfara." },
+    { "name": "Kaduna", "zone": "NW", "president": "mixed", "nsa": "cold", "note": "High kidnap load. ONSA judged on highways and southern Kaduna." },
+    { "name": "Kano", "zone": "NW", "president": "mixed", "nsa": "cool", "note": "Political weight high. Security perception better than rural NW." },
+    { "name": "Katsina", "zone": "NW", "president": "cool", "nsa": "cold", "note": "Lowest citizen satisfaction in pSPI sample. Banditry hotspot." },
+    { "name": "Kebbi", "zone": "NW", "president": "cool", "nsa": "cold", "note": "Low satisfaction. School abductions sit on the ONSA ledger." },
+    { "name": "Kogi", "zone": "NC", "president": "mixed", "nsa": "cool", "note": "Corridor violence; politically contested." },
+    { "name": "Kwara", "zone": "NC", "president": "mixed", "nsa": "cold", "note": "2025-26 mass-abduction events keep NSA cold." },
+    { "name": "Lagos", "zone": "SW", "president": "mixed", "nsa": "cool", "note": "Tinubu base, but governance satisfaction is weak. Economy first." },
+    { "name": "Nasarawa", "zone": "NC", "president": "cool", "nsa": "cool", "note": "NC split. Kidnap corridors matter more than presidential brand." },
+    { "name": "Niger", "zone": "NC", "president": "cool", "nsa": "cold", "note": "High incident / abduction load." },
+    { "name": "Ogun", "zone": "SW", "president": "mixed", "nsa": "cool", "note": "Among least-satisfied SW states. Economy/infra, not ONSA." },
+    { "name": "Ondo", "zone": "SW", "president": "cool", "nsa": "cool", "note": "Low citizen satisfaction. Not a primary security theatre." },
+    { "name": "Osun", "zone": "SW", "president": "mixed", "nsa": "warm", "note": "SW mixed. Security quieter than the North." },
+    { "name": "Oyo", "zone": "SW", "president": "mixed", "nsa": "cool", "note": "SW mixed. Urban crime more than national CT." },
+    { "name": "Plateau", "zone": "NC", "president": "cool", "nsa": "cold", "note": "Communal / farmer-herder violence. ONSA cold." },
+    { "name": "Rivers", "zone": "SS", "president": "cold", "nsa": "cool", "note": "Low satisfaction. Oil-theft / cultism is the security file." },
+    { "name": "Sokoto", "zone": "NW", "president": "mixed", "nsa": "cold", "note": "High kidnap load. Local satisfaction better than Katsina." },
+    { "name": "Taraba", "zone": "NE", "president": "cool", "nsa": "cold", "note": "Communal violence. Weak governance scores." },
+    { "name": "Yobe", "zone": "NE", "president": "mixed", "nsa": "cold", "note": "Insurgency neighbour. Sparse survey samples." },
+    { "name": "Zamfara", "zone": "NW", "president": "cool", "nsa": "cold", "note": "Worst kidnap load nationally. Hardest ONSA score." }
+  ],
+  "sources": [
+    { "name": "StatiSense / EagleBadger zonal approval", "date": "2026-05", "use": "President approve/disapprove by zone" },
+    { "name": "Africa Polling Institute Social Cohesion Survey", "date": "2026-06", "use": "28% trust in Tinubu government; 72% little/no trust" },
+    { "name": "SBM Intelligence Voter Sentiment Tracker Wave 2", "date": "2026-09", "use": "Tinubu net favourability -3.3 (from -58.5 in May)" },
+    { "name": "NigeriaPolls insecurity perception", "date": "2026", "use": "57% feel unsafe; 72% NW, 68% NE" },
+    { "name": "SBM kidnap dataset", "date": "2025-07 to 2026-06", "use": "Zamfara / NW concentration" },
+    { "name": "Conflict-event tallies (Borno, Katsina, Zamfara)", "date": "2025-07 to 2026-06", "use": "NSA/ONSA state heat" },
+    { "name": "pSPI / StatiSense citizen satisfaction", "date": "2026", "use": "State exceptions (Katsina, Imo, Lagos, Abia)" }
+  ],
+  "method": "Zones use published polls. States are directional overlays (zone poll + violence + satisfaction). Do not treat a state tile as a percentage. NSA/ONSA has no state popularity poll — scored from insecurity perception and incident load.",
+  "changelog": [
+    { "date": "2026-09-27", "text": "Initial brief. Zonal presidential numbers from May 2026 StatiSense; SBM September net-favourability update applied nationally, not reallocated by state." }
+  ]
+}
