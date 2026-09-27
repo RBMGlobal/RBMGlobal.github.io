@@ -75,9 +75,21 @@
     const alias = { "Federal Capital Territory": "FCT", "Fct": "FCT", "Nassarawa": "Nasarawa" };
     let DATA = null, LAYER = "president", layerGroup = null, selected = null;
     const map = L.map("map", { zoomControl: true }).setView([9.1, 8.1], 6);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap", maxZoom: 12
-    }).addTo(map);
+    function addOsm() {
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap", maxZoom: 12
+      }).addTo(map);
+    }
+    function addMapbox(token) {
+      L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token=" + token, {
+        tileSize: 512, zoomOffset: -1, maxZoom: 12,
+        attribution: "&copy; Mapbox &copy; OSM"
+      }).addTo(map);
+    }
+    fetch("/ped-tool/").then(r => r.text()).then(html => {
+      const m = html.match(/MB_TOKEN_DEFAULT\s*=\s*['\"]([^'\"]+)['\"]/);
+      if (m) addMapbox(m[1]); else addOsm();
+    }).catch(addOsm);
     function geoName(props) {
       const raw = props.admin1Name || props.name || "";
       return alias[raw] || raw;
