@@ -5,104 +5,192 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NG Sentiment — President / NSA / ONSA</title>
   <meta name="robots" content="noindex,nofollow" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    :root { --paper:#f4f1ea; --ink:#16171a; --muted:#5c615c; --line:#d4d0c6; --card:#fffdf8; --cold:#8b1e3f; --cool:#c46b4a; --mixed:#c4b48a; --warm:#2f6f4e; }
+    :root {
+      --paper:#f4f1ea; --ink:#16171a; --muted:#5c615c; --line:#d4d0c6;
+      --card:#fffdf8; --cold:#8b1e3f; --cool:#c46b4a; --mixed:#c4b48a; --warm:#2f6f4e;
+    }
     * { box-sizing: border-box; }
-    body { margin:0; font:15px/1.45 "Segoe UI",sans-serif; background:var(--paper); color:var(--ink); }
-    header { padding:28px 24px 12px; max-width:1180px; margin:0 auto; }
-    .kicker { letter-spacing:.14em; text-transform:uppercase; font-size:11px; color:var(--muted); }
-    h1 { font-size:28px; margin:6px 0 8px; }
-    .meta { color:var(--muted); font-size:13px; }
-    .banner { max-width:1180px; margin:0 auto 18px; padding:0 24px; }
-    .banner p { background:#efe7d6; border-left:3px solid var(--ink); margin:0; padding:10px 12px; font-size:13px; }
-    .stats { max-width:1180px; margin:0 auto; padding:0 24px 8px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
-    .stat { background:var(--card); border:1px solid var(--line); padding:12px 14px; }
-    .stat b { display:block; font-size:22px; }
-    .stat span { color:var(--muted); font-size:12px; }
-    .toolbar { max-width:1180px; margin:0 auto; padding:16px 24px 8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    button.layer { border:1px solid var(--ink); background:transparent; color:var(--ink); padding:7px 12px; cursor:pointer; font:inherit; }
+    html, body { margin:0; height:100%; font:15px/1.45 "Segoe UI",sans-serif; background:var(--paper); color:var(--ink); }
+    #map { position:absolute; inset:0; }
+    .hud {
+      position:absolute; z-index:500; top:16px; left:16px; right:16px;
+      display:flex; gap:12px; align-items:flex-start; pointer-events:none;
+    }
+    .hud > * { pointer-events:auto; }
+    .brand {
+      background:rgba(244,241,234,.94); border:1px solid var(--line); padding:12px 14px; max-width:420px;
+    }
+    .kicker { letter-spacing:.14em; text-transform:uppercase; font-size:10px; color:var(--muted); }
+    h1 { font-size:18px; margin:4px 0 6px; font-weight:650; }
+    .meta { font-size:12px; color:var(--muted); }
+    .tools { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+    button.layer {
+      border:1px solid var(--ink); background:transparent; color:var(--ink);
+      padding:6px 10px; cursor:pointer; font:inherit; font-size:13px;
+    }
     button.layer.on { background:var(--ink); color:var(--paper); }
-    .legend { margin-left:auto; display:flex; gap:10px; font-size:12px; color:var(--muted); }
-    .sw { width:10px; height:10px; display:inline-block; margin-right:4px; }
-    main { max-width:1180px; margin:0 auto; padding:8px 24px 40px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:8px; }
-    .tile { background:var(--card); border:1px solid var(--line); padding:10px 11px 12px; min-height:108px; cursor:pointer; }
-    .tile h3 { margin:0 0 4px; font-size:15px; }
-    .tile .zone { font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
-    .tile .mark { display:inline-block; margin-top:8px; padding:2px 7px; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#fff; }
-    .tile.cold { border-top:4px solid var(--cold); } .tile.cool { border-top:4px solid var(--cool); }
-    .tile.mixed { border-top:4px solid var(--mixed); } .tile.warm { border-top:4px solid var(--warm); }
-    .mark.cold { background:var(--cold); } .mark.cool { background:var(--cool); }
-    .mark.mixed { background:#8a7a4e; } .mark.warm { background:var(--warm); }
-    table { width:100%; border-collapse:collapse; margin-top:28px; font-size:13px; }
-    th,td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; }
-    th { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
-    .drawer { position:fixed; right:16px; bottom:16px; width:min(380px,calc(100vw - 32px)); background:var(--ink); color:var(--paper); padding:16px 18px; display:none; }
-    .drawer.on { display:block; }
-    .drawer h2 { margin:0 0 6px; font-size:18px; }
-    .drawer button { float:right; background:none; border:0; color:var(--paper); cursor:pointer; font-size:18px; }
-    footer { max-width:1180px; margin:0 auto; padding:0 24px 40px; color:var(--muted); font-size:12px; }
-    @media (max-width:800px) { .stats { grid-template-columns:1fr 1fr; } .legend { margin-left:0; width:100%; } }
+    .legend { margin-top:8px; display:flex; gap:10px; font-size:11px; color:var(--muted); }
+    .sw { width:10px; height:10px; display:inline-block; margin-right:3px; vertical-align:middle; }
+    .panel {
+      margin-left:auto; width:min(380px,100%); max-height:calc(100vh - 32px);
+      overflow:auto; background:rgba(22,23,26,.96); color:var(--paper);
+      padding:16px 18px; display:none;
+    }
+    .panel.on { display:block; }
+    .panel h2 { margin:0 0 4px; font-size:20px; }
+    .panel .zone { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#b7b3a8; }
+    .panel .close { float:right; background:none; border:0; color:var(--paper); font-size:20px; cursor:pointer; }
+    .chip { display:inline-block; margin:10px 6px 0 0; padding:2px 8px; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+    .chip.cold { background:var(--cold); } .chip.cool { background:var(--cool); }
+    .chip.mixed { background:#8a7a4e; } .chip.warm { background:var(--warm); }
+    .panel h3 { font-size:12px; letter-spacing:.08em; text-transform:uppercase; margin:16px 0 6px; color:#b7b3a8; }
+    .panel p { margin:0 0 8px; font-size:14px; }
+    .nums { font-size:12px; color:#cfc8b8; }
+    .leaflet-container { background:#d9d4c8; }
+    .leaflet-tooltip.state-tip {
+      background:var(--ink); color:var(--paper); border:0; border-radius:0;
+      font:12px/1.3 "Segoe UI",sans-serif; padding:4px 7px;
+    }
+    @media (max-width:720px) {
+      .hud { flex-direction:column; }
+      .panel { margin-left:0; width:100%; max-height:42vh; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="kicker">RBM Global · internal brief</div>
-    <h1>Nigeria sentiment — President, NSA, ONSA</h1>
-    <p class="meta" id="meta">Loading…</p>
-  </header>
-  <div class="banner"><p id="caveat"></p></div>
-  <section class="stats" id="stats"></section>
-  <div class="toolbar">
-    <button class="layer on" data-layer="president">President</button>
-    <button class="layer" data-layer="nsa">NSA / ONSA</button>
-    <div class="legend">
-      <span><i class="sw" style="background:var(--cold)"></i>Cold</span>
-      <span><i class="sw" style="background:var(--cool)"></i>Cool</span>
-      <span><i class="sw" style="background:var(--mixed)"></i>Mixed</span>
-      <span><i class="sw" style="background:var(--warm)"></i>Warm</span>
+  <div id="map"></div>
+  <div class="hud">
+    <div class="brand">
+      <div class="kicker">RBM Global · internal brief</div>
+      <h1>Nigeria sentiment</h1>
+      <div class="meta" id="meta">Loading map…</div>
+      <div class="tools">
+        <button class="layer on" data-layer="president">President</button>
+        <button class="layer" data-layer="nsa">NSA / ONSA</button>
+      </div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--cold)"></i>Cold</span>
+        <span><i class="sw" style="background:var(--cool)"></i>Cool</span>
+        <span><i class="sw" style="background:var(--mixed)"></i>Mixed</span>
+        <span><i class="sw" style="background:var(--warm)"></i>Warm</span>
+      </div>
     </div>
+    <aside class="panel" id="panel">
+      <button class="close" id="close" type="button">×</button>
+      <div class="zone" id="p-zone"></div>
+      <h2 id="p-name"></h2>
+      <div id="p-chips"></div>
+      <div id="p-body"></div>
+    </aside>
   </div>
-  <main>
-    <div class="grid" id="grid"></div>
-    <table>
-      <thead><tr><th>Zone</th><th>Approve</th><th>Disapprove</th><th>Feel unsafe</th><th>Read</th></tr></thead>
-      <tbody id="zones"></tbody>
-    </table>
-  </main>
-  <footer id="footer"></footer>
-  <aside class="drawer" id="drawer">
-    <button type="button" id="close">×</button>
-    <h2 id="d-name"></h2>
-    <p id="d-body"></p>
-  </aside>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    let DATA=null, LAYER="president";
-    const label={cold:"Cold",cool:"Cool",mixed:"Mixed",warm:"Warm"};
-    function render(){
-      document.getElementById("meta").textContent=DATA.subjects.president+" · NSA "+DATA.subjects.nsa+" · updated "+DATA.updated+" · "+DATA.classification;
-      document.getElementById("caveat").textContent=DATA.method;
-      const n=DATA.national;
-      document.getElementById("stats").innerHTML=[["Tinubu approve",n.president_approve+"%"],["Tinubu disapprove",n.president_disapprove+"%"],["Trust in government",n.president_trust+"%"],["Feel unsafe",n.feel_unsafe_pct+"%"]].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("");
-      const grid=document.getElementById("grid"); grid.innerHTML="";
-      DATA.states.forEach(s=>{
-        const tone=s[LAYER==="president"?"president":"nsa"];
-        const el=document.createElement("article");
-        el.className="tile "+tone;
-        el.innerHTML=`<div class="zone">${s.zone}</div><h3>${s.name}</h3><span class="mark ${tone}">${label[tone]}</span>`;
-        el.onclick=()=>openDrawer(s); grid.appendChild(el);
+    const COLORS = { cold:"#8b1e3f", cool:"#c46b4a", mixed:"#c4b48a", warm:"#2f6f4e" };
+    const LABEL = { cold:"Cold", cool:"Cool", mixed:"Mixed", warm:"Warm" };
+    const GEO = "https://cdn.jsdelivr.net/gh/iamspruce/intro-d3@main/data/nigeria_state_boundaries.geojson";
+    const alias = { "Federal Capital Territory": "FCT", "Fct": "FCT", "Nassarawa": "Nasarawa" };
+    let DATA = null, LAYER = "president", layerGroup = null, selected = null;
+    const map = L.map("map", { zoomControl: true }).setView([9.1, 8.1], 6);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OSM &copy; CARTO", subdomains: "abcd", maxZoom: 12
+    }).addTo(map);
+    function geoName(props) {
+      const raw = props.admin1Name || props.name || "";
+      return alias[raw] || raw;
+    }
+    function rec(name) {
+      return DATA.states.find(s => s.name.toLowerCase() === name.toLowerCase());
+    }
+    function zoneOf(s) { return DATA.zones.find(z => z.id === s.zone); }
+    function tone(s) { return s[LAYER === "president" ? "president" : "nsa"]; }
+    function why(s) {
+      const z = zoneOf(s);
+      let pres = "<h3>President — " + LABEL[s.president] + "</h3><p>" + s.note + "</p>";
+      if (z) {
+        pres += "<p class='nums'>" + z.name + " poll: approve " + z.approve +
+          "% · disapprove " + z.disapprove + "%. " + z.read + "</p>";
+      }
+      let nsa = "<h3>NSA / ONSA — " + LABEL[s.nsa] + "</h3>";
+      if (s.nsa === "cold") {
+        nsa += "<p>Security load is high enough that the office is judged locally by violence, kidnap or insurgency — not by national talking points.</p>";
+      } else if (s.nsa === "cool") {
+        nsa += "<p>ONSA is not the main daily story here. Residual threat exists, but presidential or economic politics usually outrank Ribadu personally.</p>";
+      } else {
+        nsa += "<p>Compared with the northern theatres, this state is a quieter ONSA file. Sentiment tracks the President more than the security architecture.</p>";
+      }
+      nsa += "<p>" + s.note + "</p>";
+      if (z) nsa += "<p class='nums'>Zone unsafe: " + z.unsafe + "%.</p>";
+      return pres + nsa;
+    }
+    function openPanel(s) {
+      selected = s.name;
+      document.getElementById("p-zone").textContent = s.zone + " · directional, not a poll %";
+      document.getElementById("p-name").textContent = s.name;
+      document.getElementById("p-chips").innerHTML =
+        "<span class='chip " + s.president + "'>President " + LABEL[s.president] + "</span>" +
+        "<span class='chip " + s.nsa + "'>NSA " + LABEL[s.nsa] + "</span>";
+      document.getElementById("p-body").innerHTML = why(s);
+      document.getElementById("panel").classList.add("on");
+      if (layerGroup) layerGroup.eachLayer(l => styleFeat(l));
+    }
+    function styleFeat(l) {
+      const name = geoName(l.feature.properties);
+      const s = rec(name);
+      const t = s ? tone(s) : "mixed";
+      const active = selected === (s && s.name);
+      l.setStyle({
+        color: active ? "#16171a" : "#f4f1ea",
+        weight: active ? 2.4 : 1,
+        fillColor: COLORS[t] || COLORS.mixed,
+        fillOpacity: active ? 0.92 : 0.78
       });
-      document.getElementById("zones").innerHTML=DATA.zones.map(z=>`<tr><td>${z.name}</td><td>${z.approve}%</td><td>${z.disapprove}%</td><td>${z.unsafe}%</td><td>${z.read}</td></tr>`).join("");
-      document.getElementById("footer").innerHTML="Sources: "+DATA.sources.map(s=>s.name+" ("+s.date+")").join(" · ")+".<br>Daily refresh writes data.json only. State tiles are directional, not poll percentages.";
     }
-    function openDrawer(s){
-      document.getElementById("d-name").textContent=s.name+" · "+s.zone;
-      document.getElementById("d-body").textContent="President: "+label[s.president]+". NSA/ONSA: "+label[s.nsa]+". "+s.note;
-      document.getElementById("drawer").classList.add("on");
+    function paint() { if (layerGroup) layerGroup.eachLayer(l => styleFeat(l)); }
+    function bindLayer(gj) {
+      if (layerGroup) map.removeLayer(layerGroup);
+      layerGroup = L.geoJSON(gj, {
+        style: () => ({ color:"#f4f1ea", weight:1, fillOpacity:0.78 }),
+        onEachFeature: (feat, l) => {
+          const name = geoName(feat.properties);
+          const s = rec(name);
+          l.bindTooltip(name, { sticky:true, className:"state-tip" });
+          l.on("mouseover", () => l.setStyle({ weight:2, fillOpacity:0.92 }));
+          l.on("mouseout", () => styleFeat(l));
+          l.on("click", () => { if (s) openPanel(s); });
+        }
+      }).addTo(map);
+      paint();
+      map.fitBounds(layerGroup.getBounds(), { padding:[20,20], maxZoom:7 });
     }
-    document.getElementById("close").onclick=()=>document.getElementById("drawer").classList.remove("on");
-    document.querySelectorAll("button.layer").forEach(b=>b.onclick=()=>{LAYER=b.dataset.layer;document.querySelectorAll("button.layer").forEach(x=>x.classList.remove("on"));b.classList.add("on");render();});
-    fetch("data.json?ts="+Date.now()).then(r=>r.json()).then(d=>{DATA=d;render();}).catch(()=>{document.getElementById("meta").textContent="Failed to load data.json";});
+    document.getElementById("close").onclick = () => {
+      selected = null;
+      document.getElementById("panel").classList.remove("on");
+      paint();
+    };
+    document.querySelectorAll("button.layer").forEach(b => {
+      b.onclick = () => {
+        LAYER = b.dataset.layer;
+        document.querySelectorAll("button.layer").forEach(x => x.classList.remove("on"));
+        b.classList.add("on");
+        paint();
+        if (selected) { const s = rec(selected); if (s) openPanel(s); }
+      };
+    });
+    Promise.all([
+      fetch("data.json?ts=" + Date.now()).then(r => r.json()),
+      fetch(GEO).then(r => r.json())
+    ]).then(([data, geo]) => {
+      DATA = data;
+      document.getElementById("meta").textContent =
+        data.subjects.president + " · NSA " + data.subjects.nsa +
+        " · updated " + data.updated;
+      bindLayer(geo);
+    }).catch(err => {
+      document.getElementById("meta").textContent = "Failed to load map or data.json";
+      console.error(err);
+    });
   </script>
 </body>
 </html>
