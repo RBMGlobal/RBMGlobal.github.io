@@ -45,7 +45,10 @@ details.method summary::-webkit-details-marker{display:none}
 .nums{font-size:12px;color:#cfc8b8}
 .xchip{display:inline-block;margin:3px 4px 0 0;padding:2px 8px;font-size:11px;background:#2a2c30;color:#e8e2d4;border:1px solid #4a4d52}
 .xchip.lead{background:#c4b48a;color:#16171a;border-color:#c4b48a;font-weight:650}
-.x-block{margin-top:14px}.leaflet-container{background:#d9d4c8}
+.x-block{margin-top:14px}
+.leaflet-heatmap-layer,.leaflet-pane.leaflet-heat-pane{pointer-events:none!important}
+.leaflet-interactive{cursor:pointer}
+.leaflet-container{background:#d9d4c8}
 .leaflet-tooltip.state-tip{background:var(--ink);color:var(--paper);border:0;border-radius:0;font:12px/1.3 "Segoe UI",sans-serif;padding:4px 7px}
 @media(max-width:720px){.hud{flex-direction:column}.panel{margin-left:0;width:100%;max-height:42vh}}
 </style></head><body>
@@ -98,8 +101,8 @@ let DATA=null,LAYER="president",layerGroup=null,selected=null,heatLayer=null,bas
 const vis={base:true,states:true,gdelt:true,x:true};
 const opac={base:.7,states:.55,gdelt:.8};
 const map=L.map("map",{zoomControl:true}).setView([9.1,8.1],6);
-map.createPane("states");map.getPane("states").style.zIndex=350;
-map.createPane("heat");map.getPane("heat").style.zIndex=450;map.getPane("heat").style.pointerEvents="none";
+map.createPane("states");map.getPane("states").style.zIndex=450;map.getPane("states").style.pointerEvents="auto";
+map.createPane("heat");map.getPane("heat").style.zIndex=440;map.getPane("heat").style.pointerEvents="none";
 function addOsm(){if(baseLayer)map.removeLayer(baseLayer);baseLayer=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap",maxZoom:12,opacity:opac.base});if(vis.base)baseLayer.addTo(map)}
 function addMapbox(token){if(baseLayer)map.removeLayer(baseLayer);baseLayer=L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token="+token,{tileSize:512,zoomOffset:-1,maxZoom:12,opacity:opac.base,attribution:"&copy; Mapbox &copy; OSM"});if(vis.base)baseLayer.addTo(map)}
 fetch("/ped-tool/").then(r=>r.text()).then(html=>{const m=html.match(/MB_TOKEN_DEFAULT\s*=\s*['\"]([^'\"]+)['\"]/);if(m)addMapbox(m[1]);else addOsm()}).catch(addOsm);
@@ -107,7 +110,7 @@ function geoName(props){const raw=props.admin1Name||props.name||"";return alias[
 function rec(name){return DATA.states.find(s=>s.name.toLowerCase()===name.toLowerCase())}
 function zoneOf(s){return DATA.zones.find(z=>z.id===s.zone)}
 function tone(s){return s[LAYER==="president"?"president":"nsa"]}
-function fillMethod(){const src=(DATA.sources||[]).map(s=>"<div class='src'><b>"+s.name+"</b><span>"+s.date+(s.use?" — "+s.use:"")+"</span></div>").join("");document.getElementById("method-body").innerHTML="<h4>Layers</h4><p>Checkboxes and sliders control visibility and opacity.</p><h4>How a state is scored</h4><p>"+(DATA.method||"")+"</p><p>GDELT: CAMEO 18–20, news-coded. X themes: click panel only, zone sample plus state overrides, not geotagged, not a word count. Lead chip highlighted.</p><h4>Sources</h4>"+src}
+function fillMethod(){const src=(DATA.sources||[]).map(s=>"<div class='src'><b>"+s.name+"</b><span>"+s.date+(s.use?" — "+s.use:"")+"</span></div>").join("");document.getElementById("method-body").innerHTML="<h4>Layers</h4><p>Checkboxes and sliders control visibility and opacity.</p><h4>How a state is scored</h4><p>"+(DATA.method||"")+"</p><p>GDELT: CAMEO 18–20, news-coded. X themes: click panel only. Lead chip highlighted.</p><h4>Sources</h4>"+src}
 function why(s){const z=zoneOf(s);let p="<h3>President — "+LABEL[s.president]+"</h3><p>"+s.note+"</p>";if(z)p+="<p class='nums'>"+z.name+" poll: approve "+z.approve+"% · disapprove "+z.disapprove+"%. "+z.read+"</p>";let n="<h3>NSA / ONSA — "+LABEL[s.nsa]+"</h3><p>"+s.note+"</p>";if(z)n+="<p class='nums'>Zone unsafe: "+z.unsafe+"%.</p>";return p+n}
 function xThemes(s){const xs=DATA.x_sample;if(!xs)return null;const z=(xs.zones||{})[s.zone]||{president:[],nsa:[]};const o=(xs.states||{})[s.name]||{};return{window:xs.window,caveat:xs.caveat,grain:o.president?"state override":"zone sample",president:o.president||z.president||[],nsa:o.nsa||z.nsa||[]}}
 function chipsHtml(arr){return(arr||[]).map((w,i)=>"<span class='xchip"+(i===0?" lead":"")+"'>"+w+"</span>").join("")}
@@ -116,8 +119,8 @@ function openPanel(s){selected=s.name;document.getElementById("p-zone").textCont
 function styleFeat(l){const name=geoName(l.feature.properties);const s=rec(name);const t=s?tone(s):"mixed";const active=selected===(s&&s.name);l.setStyle({color:active?"#16171a":"#f4f1ea",weight:active?2.4:1,fillColor:COLORS[t]||COLORS.mixed,fillOpacity:vis.states?(active?Math.min(1,opac.states+.25):opac.states):0,opacity:vis.states?1:0})}
 function paint(){if(layerGroup)layerGroup.eachLayer(l=>styleFeat(l))}
 function bindLayer(gj){if(layerGroup)map.removeLayer(layerGroup);layerGroup=L.geoJSON(gj,{pane:"states",style:()=>({color:"#f4f1ea",weight:1,fillOpacity:opac.states}),onEachFeature:(feat,l)=>{const name=geoName(feat.properties);const s=rec(name);l.bindTooltip(name,{sticky:true,className:"state-tip"});l.on("mouseover",()=>{if(vis.states)l.setStyle({weight:2,fillOpacity:Math.min(1,opac.states+.2)})});l.on("mouseout",()=>styleFeat(l));l.on("click",()=>{if(s)openPanel(s)})}}).addTo(map);paint();map.fitBounds(layerGroup.getBounds(),{padding:[20,20],maxZoom:7})}
-function applyHeatOpacity(){if(!heatLayer)return;if(heatLayer._canvas)heatLayer._canvas.style.opacity=opac.gdelt;if(heatLayer.setOptions)heatLayer.setOptions({minOpacity:Math.max(.05,opac.gdelt*.3)})}
-function setHeat(points,meta){if(heatLayer)map.removeLayer(heatLayer);if(typeof L.heatLayer!=="function"){document.getElementById("gdelt-meta").textContent="leaflet.heat failed to load.";return}heatLayer=L.heatLayer(points,{pane:"heat",radius:28,blur:22,maxZoom:10,minOpacity:Math.max(.08,opac.gdelt*.35),gradient:{.15:"#4a90d9",.4:"#f0c14b",.65:"#d35400",1:"#8b1e3f"}});if(vis.gdelt)heatLayer.addTo(map);applyHeatOpacity();document.getElementById("gdelt-meta").textContent=meta}
+function applyHeatOpacity(){if(!heatLayer)return;if(heatLayer._canvas){heatLayer._canvas.style.opacity=opac.gdelt;heatLayer._canvas.style.pointerEvents="none"}if(heatLayer.setOptions)heatLayer.setOptions({minOpacity:Math.max(.05,opac.gdelt*.3)})}
+function setHeat(points,meta){if(heatLayer)map.removeLayer(heatLayer);if(typeof L.heatLayer!=="function"){document.getElementById("gdelt-meta").textContent="leaflet.heat failed to load.";return}heatLayer=L.heatLayer(points,{pane:"heat",radius:28,blur:22,maxZoom:10,minOpacity:Math.max(.08,opac.gdelt*.35),gradient:{.15:"#4a90d9",.4:"#f0c14b",.65:"#d35400",1:"#8b1e3f"}});if(vis.gdelt)heatLayer.addTo(map);if(heatLayer._canvas)heatLayer._canvas.style.pointerEvents="none";applyHeatOpacity();document.getElementById("gdelt-meta").textContent=meta}
 function loadGdelt(){fetch("gdelt.json?ts="+Date.now()).then(r=>{if(!r.ok)throw new Error("no json");return r.json()}).then(d=>{const pts=(d.points||[]).map(e=>Array.isArray(e)?[e[0],e[1],Math.min(1,(e[2]||1)/20)]:[e.la,e.lo,Math.min(1,(e.n||1)/20)]);setHeat(pts,"GDELT "+(d.count||pts.length)+" points · "+(d.from||"")+" to "+(d.to||"")+" · CAMEO 18–20")}).catch(()=>{document.getElementById("gdelt-meta").textContent="gdelt.json missing — check publish."})}
 function hook(idChk,idOp,idVal,key,apply){document.getElementById(idChk).onchange=e=>{vis[key]=e.target.checked;apply()};document.getElementById(idOp).oninput=e=>{opac[key]=Number(e.target.value)/100;document.getElementById(idVal).textContent=e.target.value+"%";apply()}}
 hook("chk-base","op-base","val-base","base",()=>{if(!baseLayer)return;if(vis.base){if(!map.hasLayer(baseLayer))baseLayer.addTo(map)}else if(map.hasLayer(baseLayer))map.removeLayer(baseLayer);if(baseLayer.setOpacity)baseLayer.setOpacity(opac.base)});
