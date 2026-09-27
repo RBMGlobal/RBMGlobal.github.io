@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NG Sentiment — President / NSA / ONSA</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    :root { --paper:#f4f1ea; --ink:#16171a; --muted:#5c615c; --line:#d4d0c6; --card:#fffdf8; --cold:#8b1e3f; --cool:#c46b4a; --mixed:#c4b48a; --warm:#2f6f4e; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:15px/1.45 "Segoe UI",sans-serif; background:var(--paper); color:var(--ink); }
+    header { padding:28px 24px 12px; max-width:1180px; margin:0 auto; }
+    .kicker { letter-spacing:.14em; text-transform:uppercase; font-size:11px; color:var(--muted); }
+    h1 { font-size:28px; margin:6px 0 8px; }
+    .meta { color:var(--muted); font-size:13px; }
+    .banner { max-width:1180px; margin:0 auto 18px; padding:0 24px; }
+    .banner p { background:#efe7d6; border-left:3px solid var(--ink); margin:0; padding:10px 12px; font-size:13px; }
+    .stats { max-width:1180px; margin:0 auto; padding:0 24px 8px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+    .stat { background:var(--card); border:1px solid var(--line); padding:12px 14px; }
+    .stat b { display:block; font-size:22px; }
+    .stat span { color:var(--muted); font-size:12px; }
+    .toolbar { max-width:1180px; margin:0 auto; padding:16px 24px 8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    button.layer { border:1px solid var(--ink); background:transparent; color:var(--ink); padding:7px 12px; cursor:pointer; font:inherit; }
+    button.layer.on { background:var(--ink); color:var(--paper); }
+    .legend { margin-left:auto; display:flex; gap:10px; font-size:12px; color:var(--muted); }
+    .sw { width:10px; height:10px; display:inline-block; margin-right:4px; }
+    main { max-width:1180px; margin:0 auto; padding:8px 24px 40px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:8px; }
+    .tile { background:var(--card); border:1px solid var(--line); padding:10px 11px 12px; min-height:108px; cursor:pointer; }
+    .tile h3 { margin:0 0 4px; font-size:15px; }
+    .tile .zone { font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+    .tile .mark { display:inline-block; margin-top:8px; padding:2px 7px; font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#fff; }
+    .tile.cold { border-top:4px solid var(--cold); } .tile.cool { border-top:4px solid var(--cool); }
+    .tile.mixed { border-top:4px solid var(--mixed); } .tile.warm { border-top:4px solid var(--warm); }
+    .mark.cold { background:var(--cold); } .mark.cool { background:var(--cool); }
+    .mark.mixed { background:#8a7a4e; } .mark.warm { background:var(--warm); }
+    table { width:100%; border-collapse:collapse; margin-top:28px; font-size:13px; }
+    th,td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .drawer { position:fixed; right:16px; bottom:16px; width:min(380px,calc(100vw - 32px)); background:var(--ink); color:var(--paper); padding:16px 18px; display:none; }
+    .drawer.on { display:block; }
+    .drawer h2 { margin:0 0 6px; font-size:18px; }
+    .drawer button { float:right; background:none; border:0; color:var(--paper); cursor:pointer; font-size:18px; }
+    footer { max-width:1180px; margin:0 auto; padding:0 24px 40px; color:var(--muted); font-size:12px; }
+    @media (max-width:800px) { .stats { grid-template-columns:1fr 1fr; } .legend { margin-left:0; width:100%; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="kicker">RBM Global · internal brief</div>
+    <h1>Nigeria sentiment — President, NSA, ONSA</h1>
+    <p class="meta" id="meta">Loading…</p>
+  </header>
+  <div class="banner"><p id="caveat"></p></div>
+  <section class="stats" id="stats"></section>
+  <div class="toolbar">
+    <button class="layer on" data-layer="president">President</button>
+    <button class="layer" data-layer="nsa">NSA / ONSA</button>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cold)"></i>Cold</span>
+      <span><i class="sw" style="background:var(--cool)"></i>Cool</span>
+      <span><i class="sw" style="background:var(--mixed)"></i>Mixed</span>
+      <span><i class="sw" style="background:var(--warm)"></i>Warm</span>
+    </div>
+  </div>
+  <main>
+    <div class="grid" id="grid"></div>
+    <table>
+      <thead><tr><th>Zone</th><th>Approve</th><th>Disapprove</th><th>Feel unsafe</th><th>Read</th></tr></thead>
+      <tbody id="zones"></tbody>
+    </table>
+  </main>
+  <footer id="footer"></footer>
+  <aside class="drawer" id="drawer">
+    <button type="button" id="close">×</button>
+    <h2 id="d-name"></h2>
+    <p id="d-body"></p>
+  </aside>
+  <script>
+    let DATA=null, LAYER="president";
+    const label={cold:"Cold",cool:"Cool",mixed:"Mixed",warm:"Warm"};
+    function render(){
+      document.getElementById("meta").textContent=DATA.subjects.president+" · NSA "+DATA.subjects.nsa+" · updated "+DATA.updated+" · "+DATA.classification;
+      document.getElementById("caveat").textContent=DATA.method;
+      const n=DATA.national;
+      document.getElementById("stats").innerHTML=[["Tinubu approve",n.president_approve+"%"],["Tinubu disapprove",n.president_disapprove+"%"],["Trust in government",n.president_trust+"%"],["Feel unsafe",n.feel_unsafe_pct+"%"]].map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("");
+      const grid=document.getElementById("grid"); grid.innerHTML="";
+      DATA.states.forEach(s=>{
+        const tone=s[LAYER==="president"?"president":"nsa"];
+        const el=document.createElement("article");
+        el.className="tile "+tone;
+        el.innerHTML=`<div class="zone">${s.zone}</div><h3>${s.name}</h3><span class="mark ${tone}">${label[tone]}</span>`;
+        el.onclick=()=>openDrawer(s); grid.appendChild(el);
+      });
+      document.getElementById("zones").innerHTML=DATA.zones.map(z=>`<tr><td>${z.name}</td><td>${z.approve}%</td><td>${z.disapprove}%</td><td>${z.unsafe}%</td><td>${z.read}</td></tr>`).join("");
+      document.getElementById("footer").innerHTML="Sources: "+DATA.sources.map(s=>s.name+" ("+s.date+")").join(" · ")+".<br>Daily refresh writes data.json only. State tiles are directional, not poll percentages.";
+    }
+    function openDrawer(s){
+      document.getElementById("d-name").textContent=s.name+" · "+s.zone;
+      document.getElementById("d-body").textContent="President: "+label[s.president]+". NSA/ONSA: "+label[s.nsa]+". "+s.note;
+      document.getElementById("drawer").classList.add("on");
+    }
+    document.getElementById("close").onclick=()=>document.getElementById("drawer").classList.remove("on");
+    document.querySelectorAll("button.layer").forEach(b=>b.onclick=()=>{LAYER=b.dataset.layer;document.querySelectorAll("button.layer").forEach(x=>x.classList.remove("on"));b.classList.add("on");render();});
+    fetch("data.json?ts="+Date.now()).then(r=>r.json()).then(d=>{DATA=d;render();}).catch(()=>{document.getElementById("meta").textContent="Failed to load data.json";});
+  </script>
+</body>
+</html>
