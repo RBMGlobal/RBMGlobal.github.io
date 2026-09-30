@@ -63,6 +63,7 @@ details.method summary::-webkit-details-marker{display:none}
 <div class="kicker">RBM Global · internal brief</div>
 <h1>Nigeria sentiment</h1>
 <div class="meta" id="meta">Loading map…</div>
+<p class="meta" style="max-width:44rem">Assessments carried forward from 27 September 2026; underlying sources span May–September. No new poll or verified X sample was added during the 30 September repair.</p>
 <div class="tools">
 <button class="layer on" data-layer="president">President</button>
 <button class="layer" data-layer="nsa">NSA / ONSA</button>
@@ -114,7 +115,7 @@ map.createPane("states");map.getPane("states").style.zIndex=450;map.getPane("sta
 stateRenderer=L.svg({pane:"states",padding:0.5});
 function addOsm(){if(baseLayer)map.removeLayer(baseLayer);baseLayer=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap",maxZoom:12,opacity:opac.base});if(vis.base)baseLayer.addTo(map)}
 function addMapbox(token){if(baseLayer)map.removeLayer(baseLayer);baseLayer=L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v11/tiles/{z}/{x}/{y}?access_token="+token,{tileSize:512,zoomOffset:-1,maxZoom:12,opacity:opac.base,attribution:"&copy; Mapbox &copy; OSM"});if(vis.base)baseLayer.addTo(map)}
-fetch("/ped-tool/").then(r=>r.text()).then(html=>{const m=html.match(/MB_TOKEN_DEFAULT\s*=\s*['"]([^'"]+)['"]/);if(m)addMapbox(m[1]);else addOsm()}).catch(addOsm);
+fetch("/ped-tool/beta/").then(r=>r.text()).then(html=>{const m=html.match(/MB_TOKEN_DEFAULT\s*=\s*['"]([^'"]+)['"]/);if(m)addMapbox(m[1]);else addOsm()}).catch(addOsm);
 function geoName(props){const raw=props.admin1Name||props.name||"";return alias[raw]||raw}
 function rec(name){return DATA.states.find(s=>s.name.toLowerCase()===String(name||"").toLowerCase())}
 function zoneOf(s){return DATA.zones.find(z=>z.id===s.zone)}
@@ -147,5 +148,5 @@ document.getElementById("close").onclick=()=>{selected=null;document.getElementB
 document.getElementById("state-jump").onchange=e=>{const s=rec(e.target.value);if(s)openPanel(s)};
 document.querySelectorAll("button.layer[data-layer]").forEach(b=>{b.onclick=()=>{LAYER=b.dataset.layer;document.querySelectorAll("button.layer[data-layer]").forEach(x=>x.classList.remove("on"));b.classList.add("on");paint();if(selected){const s=rec(selected);if(s)openPanel(s)}}});
 map.on("click",e=>{const s=stateAt(e.latlng);if(s)openPanel(s)});
-Promise.all([fetch("data.json?ts="+Date.now()).then(r=>r.json()),fetch(GEO).then(r=>r.json()),fetch("x_sample.json?ts="+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([data,geo,xs])=>{DATA=data;if(xs)DATA.x_sample=xs;document.getElementById("meta").textContent=data.subjects.president+" · NSA "+data.subjects.nsa+" · updated "+data.updated;fillMethod();fillJump();bindLayer(geo);loadGdelt()}).catch(err=>{document.getElementById("meta").textContent="Failed to load map or data.json";console.error(err)});
+Promise.all([fetch("data.json?ts="+Date.now()).then(r=>r.json()),fetch(GEO).then(r=>r.json()),fetch("x_sample.json?ts="+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([data,geo,xs])=>{DATA=data;if(xs)DATA.x_sample=xs;document.getElementById("meta").textContent=data.subjects.president+" · NSA "+data.subjects.nsa+" · assessment "+(data.assessment_updated||data.updated)+" · source dates vary; see methodology";fillMethod();fillJump();bindLayer(geo);loadGdelt()}).catch(err=>{document.getElementById("meta").textContent="Failed to load map or data.json";console.error(err)});
 </script></body></html>
