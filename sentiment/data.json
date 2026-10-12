@@ -1,6 +1,6 @@
 {
-  "updated": "2026-09-30",
-  "updated_iso": "2026-09-30T08:00:00+01:00",
+  "updated": "2026-10-12",
+  "updated_iso": "2026-10-12T11:44:01.488811+00:00",
   "classification": "INTERNAL BRIEF — directional, not a census",
   "subjects": {
     "president": "Bola Ahmed Tinubu",
@@ -570,6 +570,10 @@
   "method": "Zones use published polls. States are directional overlays (zone poll + violence + satisfaction). Do not treat a state tile as a percentage. NSA/ONSA has no state popularity poll — scored from insecurity perception and incident load. Governor, party and affiliation from Annex A of the weekly threat brief (21 Sep 2026). Majority tribe and main language are conventional ethnographic labels for briefing, not a census.",
   "changelog": [
     {
+      "date": "2026-10-12",
+      "text": "Added separately dated Yiaga NVIS 3.0 national evidence with sampling caveats. State/zonal ratings, prior national measures and historical X data unchanged."
+    },
+    {
       "date": "2026-09-30",
       "text": "Publication maintenance: separated source/assessment age from maintenance date. No new polling or X observations claimed."
     },
@@ -599,6 +603,40 @@
     }
   ],
   "assessment_updated": "2026-09-27",
-  "maintenance_checked": "2026-09-30",
-  "freshness_note": "Assessment carried forward from 27 September 2026. Underlying source dates vary from May to September 2026; this is not a new poll. New polling and X evidence have not been independently revalidated during the publication repair."
+  "maintenance_checked": "2026-10-12",
+  "freshness_note": "State assessments remain dated 27 September 2026. New national evidence was added on 12 October; it does not update the state ratings or historical, unverified X sample.",
+  "national_evidence": [
+    {
+      "source": "Yiaga Africa NVIS 3.0: Willing but Wary",
+      "url": "https://nvis.yiaga.org/assets/Willing%20But%20Wary%20NVIS%203.0%20Report-C6rt7tL9.pdf",
+      "publication_date": "2026-10-07",
+      "fieldwork_month": "2026-09",
+      "fieldwork_exact_dates": null,
+      "fieldwork_note": "Report gives September 2026 only; exact days not disclosed.",
+      "sample": 2470,
+      "population": "Nigerian citizens aged 18+; all 36 states and FCT",
+      "telephone_sample": 2066,
+      "rural_face_to_face_sample": 404,
+      "selection": "Telephone: zone/state stratification, random dialling and validated panel contacts; rural: convenience selection at one purposively selected site per zone.",
+      "weighting": "Sex within geopolitical zone; no age weighting.",
+      "limitations": "Youth underrepresentation, telephone coverage/education bias, convenience rural sample; nominal margin of error is not a fully probabilistic guarantee.",
+      "comparability": "Different source, measures and mixed-mode sample. Do not interpret as change from older dashboard approval/favourability measures or allocate to states.",
+      "results": {
+        "president_approve": 22,
+        "president_disapprove": 54,
+        "president_indifferent": 24,
+        "fear_of_violence_could_prevent_voting_pct": 61
+      },
+      "reviewed": "2026-10-12",
+      "pages": [
+        14,
+        15,
+        16,
+        17,
+        21,
+        23
+      ]
+    }
+  ],
+  "national_evidence_updated": "2026-10-12"
 }
