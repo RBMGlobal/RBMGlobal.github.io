@@ -1,5 +1,38 @@
 {
   "schema_version": 1,
-  "status": "awaiting_activation",
-  "note": "AI source review is prepared; API access is not yet active. Published assessment dates remain unchanged."
+  "reviewed_at": "2026-10-25T22:16:42.693933+00:00",
+  "review_date": "2026-10-25",
+  "status": "no_material_change",
+  "data_changed": false,
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. Bounded review of the supplied evidence only. The provided Afrobarometer item is a Nigeria-wide survey publication about health-care access and insurance attitudes, but the excerpt does not supply the full methodological metadata needed for a compliant new poll record, including sample design details, sample size, weighting, and exact fieldwork days. No attributed security incident context is present in the supplied evidence. This review therefore records no new eligible poll or security-context entry and makes no state-level proposal.",
+  "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
+  "assessment_updated": "2026-09-27",
+  "evidence_added": [],
+  "duplicate_evidence": [],
+  "state_changes": [],
+  "withheld_state_changes": [],
+  "security_context": [],
+  "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
+  "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
+  "candidate_sha256": "12142884096264ebed37144ba11a2a4cc9f4e949791239b39afa3407767e5b04",
+  "evidence_manifest_sha256": "ee4ad3925809a0f5e83fcaae1000f7ed451020a3ca7ae9dc73221173b7c2bb1d",
+  "verification": {
+    "method": "Independent AI review plus deterministic provenance and schema checks",
+    "reviewed_at": "2026-10-25T22:16:42.693933+00:00",
+    "model": "gpt-6.1-sol"
+  },
+  "sources": [
+    {
+      "id": "s1",
+      "url": "https://www.afrobarometer.org/publication/ad1228-nigerians-worry-about-access-to-medical-care-amid-widespread-lack-of-health-insurance/",
+      "final_url": "https://www.afrobarometer.org/publication/ad1228-nigerians-worry-about-access-to-medical-care-amid-widespread-lack-of-health-insurance/",
+      "title": "AD1228: Nigerians worry about access to medical care amid widespread lack of health insurance",
+      "publisher": "Afrobarometer",
+      "published_at": "2026-09-04",
+      "fetched_at": "2026-10-25T22:16:28.329205+00:00",
+      "body_sha256": "e70a8613a03b209bc22cecf3fe1a4df9497220edfe0518e220a073672986dc4a",
+      "text_sha256": "a051de09936f4356c9eaad8b4b2376d0622c36fe999760d144920129eb627088"
+    }
+  ],
+  "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
 }
