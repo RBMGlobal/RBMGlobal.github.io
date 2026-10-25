@@ -304,8 +304,8 @@ class ClientTests(unittest.TestCase):
     def test_open_find_and_failed_actions_are_charged_conservatively(self):
         def mixed(r):
             r["output"][1:1] = [
-                {"type": "web_search_call", "status": "completed", "action": {"type": "open_page"}},
-                {"type": "web_search_call", "status": "completed", "action": {"type": "find_in_page"}},
+                {"type": "web_search_call", "status": "completed", "action": {"type": "open_page", "sources": None}},
+                {"type": "web_search_call", "status": "completed", "action": {"type": "find_in_page", "sources": None}},
                 { "type": "web_search_call", "status": "incomplete", "action": {"sources": [{"url": "https://untrusted.example/ignored"}]}},
             ]
             return r

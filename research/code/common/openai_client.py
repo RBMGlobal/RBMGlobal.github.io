@@ -198,7 +198,7 @@ def decode_response(response, schema, domains, search, expected_model, max_calls
             # max_tool_calls. Count their cost conservatively, never their evidence.
             if item.get("status") != "completed":
                 continue
-            for source in item.get("action", {}).get("sources", []):
+            for source in (item.get("action") or {}).get("sources") or []:
                 checked = _source(source.get("url"), source.get("title"), domains)
                 sources[checked["url"]] = checked
         elif kind == "message":
@@ -208,7 +208,7 @@ def decode_response(response, schema, domains, search, expected_model, max_calls
                 if part.get("type") != "output_text":
                     raise InvalidResponse("Provider refused or returned unsupported output")
                 parts.append(part.get("text", ""))
-                for annotation in part.get("annotations", []):
+                for annotation in part.get("annotations") or []:
                     if annotation.get("type") == "url_citation" and search:
                         checked = _source(annotation.get("url"), annotation.get("title"), domains)
                         sources[checked["url"]] = checked
