@@ -13,7 +13,7 @@ import re
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 
-from .budget import BudgetError, BudgetExceeded, BudgetLedger, MINI, SOL, envelope
+from .budget import BudgetError, BudgetExceeded, BudgetLedger, PersistenceError, MINI, SOL, envelope
 
 MAX_PROMPT_BYTES = 150 * 1024
 MAX_SCHEMA_BYTES = 24 * 1024
@@ -51,6 +51,54 @@ class Result:
     usage: dict
     max_search_calls: int
     charged_microusd: int
+
+
+def _accounting_diagnostics(response, model, limits):
+    """Bounded metadata only: never copy provider text, URLs, or credentials."""
+    output, usage = response.get("output"), response.get("usage")
+    known_types = ("reasoning", "message", "web_search_call")
+    counts = {kind: 0 for kind in known_types}
+    counts.update(unrecognized=0, malformed=0)
+    if isinstance(output, list):
+        for item in output:
+            if not isinstance(item, dict):
+                counts["malformed"] += 1
+            elif item.get("type") in known_types:
+                counts[item["type"]] += 1
+            else:
+                counts["unrecognized"] += 1
+    checks = {
+        "terminal_status": response.get("status") in ("completed", "incomplete", "failed"),
+        "expected_model": response.get("model") == model,
+        "budgeted_service_tier": response.get("service_tier") in (None, "default", "standard"),
+        "usage_object": isinstance(usage, dict),
+        "approved_output_types": (isinstance(output, list) and not counts["unrecognized"]
+                                  and not counts["malformed"]),
+        "search_count_within_limit": counts["web_search_call"] <= limits["max_search_calls"],
+    }
+
+    def known(value, choices):
+        return value if value is None or (isinstance(value, str) and value in choices) else "unrecognized"
+
+    token_checks = {}
+    for key, cap in (("input_tokens", limits["max_input_tokens"]),
+                     ("output_tokens", limits["max_output_tokens"])):
+        value = usage.get(key) if isinstance(usage, dict) else None
+        token_checks[key + "_valid"] = type(value) is int and 0 <= value <= cap
+    return {
+        "checks": checks,
+        "failed_checks": [key for key, passed in checks.items() if not passed],
+        "status": known(response.get("status"), ("completed", "incomplete", "failed", "queued", "in_progress", "cancelled")),
+        "model": known(response.get("model"), (MINI, SOL, "gpt-5.4-mini")),
+        "service_tier": known(response.get("service_tier"), ("auto", "default", "standard", "flex", "scale", "priority", "fast", "ultrafast")),
+        "output_counts": counts,
+        "token_checks": token_checks,
+        "response_id_valid": isinstance(response.get("id"), str) and bool(re.fullmatch(r"resp_[A-Za-z0-9_-]{1,200}", response["id"])),
+    }
+
+
+def _diagnostic_error(message, diagnostic):
+    return ProviderOutcomeUnknown(message + "; safe metadata: " + json.dumps(diagnostic, sort_keys=True))
 
 
 def _domains(domains):
@@ -241,26 +289,22 @@ class OpenAIEditorialClient:
         # Settle only terminal, correctly attributed, complete usage. A rejected
         # content/schema result may still incur a known charge and can settle.
         usage = response.get("usage")
-        output = response.get("output")
-        approved_output = (isinstance(output, list)
-                           and all(isinstance(item, dict) and item.get("type") in
-                                   ("reasoning", "message", "web_search_call") for item in output)
-                           and sum(item.get("type") == "web_search_call" for item in output) <= calls)
-        safe = (response.get("status") in ("completed", "incomplete", "failed")
-                and response.get("model") == model
-                and response.get("service_tier") in (None, "default", "standard")
-                and isinstance(usage, dict) and approved_output)
-        if not safe:
+        diagnostic = _accounting_diagnostics(response, model, limits)
+        if diagnostic["failed_checks"]:
             self.ledger.uncertain(request_id, "usage_unverifiable")
-            raise ProviderOutcomeUnknown("Usage is unverifiable; full reservation retained")
+            raise _diagnostic_error("Usage is unverifiable; full reservation retained", diagnostic)
         counted = {key: usage.get(key) for key in ("input_tokens", "output_tokens")}
         try:
             self.ledger.settle(request_id, counted, response.get("id"))
+        except PersistenceError:
+            # A failed confirmation may follow a successful remote write. Do not
+            # issue a second mutation or assume the reservation was released.
+            raise _diagnostic_error("Settlement persistence was not confirmed; stop and reconcile the central ledger", diagnostic) from None
         except BudgetError:
             entry = next(e for e in self.ledger.state["entries"] if e["request_id"] == request_id)
             if entry["status"] == "reserved":
                 self.ledger.uncertain(request_id, "usage_unverifiable")
-            raise ProviderOutcomeUnknown("Settlement was not confirmed; retained reservation needs reconciliation") from None
+            raise _diagnostic_error("Settlement was not confirmed; retained reservation needs reconciliation", diagnostic) from None
         try:
             data, sources = decode_response(response, schema, domains, search, model, calls)
         except InvalidResponse:

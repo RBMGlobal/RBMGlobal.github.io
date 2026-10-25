@@ -61,11 +61,11 @@ Prices were checked on25October2026; update reviewed tariffs when changing model
 1. Sign in to the OpenAI API platform. Use a dedicated project named **RBM Public
    Research**, with funded API billing and a US$10 enforced monthly spend limit.
 2. Prefer GitHub OIDC workload identity: map only repository
-   `RBMGlobal/RBMGlobal.github.io`, `ref=refs/heads/main`, and this exact workflow
-   `RBMGlobal/RBMGlobal.github.io/.github/workflows/ai-research.yml@refs/heads/main`
+   `RBMGlobal/RBMGlobal.github.io`, `ref=refs/heads/main`, `environment=github-pages`,
+   and exact `workflow_ref=RBMGlobal/RBMGlobal.github.io/.github/workflows/ai-research.yml@refs/heads/main`
    to a project service account with only Responses/model-use access. The issuer is
    `https://token.actions.githubusercontent.com`; audience `https://api.openai.com/v1`.
-   Use exact repository/ref/workflow claims, never a wildcard owner binding.
+   Use exact repository/ref/workflow_ref/environment claims, never a wildcard owner binding.
 3. Company Actions variables: `OPENAI_PROJECT_ID`, `OPENAI_IDENTITY_PROVIDER_ID`,
    `OPENAI_SERVICE_ACCOUNT_ID`, `OPENAI_WIF_AUDIENCE`. If federation is unavailable,
    use a project-restricted `OPENAI_API_KEY` Actions secret plus OPENAI_PROJECT_ID,

@@ -273,6 +273,75 @@ class ClientTests(unittest.TestCase):
                 run(OpenAIEditorialClient(store.ledger(), FakeSDK(store, lambda r: {**r, **changes})))
             self.assertEqual(store.state["entries"][0]["status"], "uncertain")
 
+    def test_accounting_failure_identifies_each_rejected_guard_without_relaxing_it(self):
+        cases = (
+            ({"status": "queued"}, "terminal_status"),
+            ({"model": "gpt-5.4-mini"}, "expected_model"),
+            ({"service_tier": "flex"}, "budgeted_service_tier"),
+            ({"usage": None}, "usage_object"),
+            ({"output": [{"type": "function_call"}]}, "approved_output_types"),
+            ({"output": [{"type": "web_search_call"}] * 3}, "search_count_within_limit"),
+        )
+        for change, expected in cases:
+            store = Store()
+            sdk = FakeSDK(store, lambda r: {**r, **change})
+            with self.subTest(expected=expected), self.assertRaises(ProviderOutcomeUnknown) as raised:
+                run(OpenAIEditorialClient(store.ledger(), sdk))
+            diagnostic = json.loads(str(raised.exception).split("; safe metadata: ")[1])
+            self.assertEqual(diagnostic["failed_checks"], [expected])
+            self.assertEqual(store.state["entries"][0]["status"], "uncertain")
+            self.assertEqual(committed_microusd(store.state, NOW), 659000)
+            self.assertEqual(len(sdk.calls), 1)
+
+    def test_diagnostic_never_echoes_untrusted_provider_strings(self):
+        private = "Bearer synthetic-private-token https://private.example/article"
+        changed = {"status": private, "model": private, "service_tier": private,
+                   "id": private, "usage": {"input_tokens": private, "output_tokens": True},
+                   "output": [{"type": private, "text": private}, private]}
+        sdk = FakeSDK(self.store, lambda r: {**r, **changed})
+        with self.assertRaises(ProviderOutcomeUnknown) as raised:
+            run(OpenAIEditorialClient(self.store.ledger(), sdk))
+        message = str(raised.exception)
+        self.assertNotIn(private, message)
+        self.assertNotIn("private.example", message)
+        diagnostic = json.loads(message.split("; safe metadata: ")[1])
+        self.assertEqual(diagnostic["model"], "unrecognized")
+        self.assertEqual(diagnostic["output_counts"]["unrecognized"], 1)
+        self.assertEqual(diagnostic["output_counts"]["malformed"], 1)
+        self.assertFalse(diagnostic["token_checks"]["input_tokens_valid"])
+        self.assertFalse(diagnostic["token_checks"]["output_tokens_valid"])
+
+    def test_invalid_usage_reports_flags_and_keeps_full_reservation(self):
+        sdk = FakeSDK(self.store, lambda r: {**r, "usage": {"input_tokens": 1, "output_tokens": 6001}})
+        with self.assertRaises(ProviderOutcomeUnknown) as raised:
+            run(OpenAIEditorialClient(self.store.ledger(), sdk))
+        diagnostic = json.loads(str(raised.exception).split("; safe metadata: ")[1])
+        self.assertEqual(diagnostic["failed_checks"], [])
+        self.assertTrue(diagnostic["token_checks"]["input_tokens_valid"])
+        self.assertFalse(diagnostic["token_checks"]["output_tokens_valid"])
+        self.assertEqual(committed_microusd(self.store.state, NOW), 659000)
+
+    def test_unconfirmed_settlement_stops_without_second_ledger_mutation(self):
+        for remote_committed in (False, True):
+            store = Store()
+            def persist(state, revision):
+                if len(store.calls) == 1:
+                    store.calls.append(deepcopy(state))
+                    if remote_committed:
+                        store.state = deepcopy(state)
+                    raise RuntimeError("settlement confirmation lost")
+                return store.persist(state, revision)
+            ledger = BudgetLedger(store.state, persist, lambda: NOW)
+            sdk = FakeSDK(store)
+            with self.subTest(remote_committed=remote_committed), self.assertRaises(ProviderOutcomeUnknown) as raised:
+                run(OpenAIEditorialClient(ledger, sdk))
+            self.assertIn("Settlement persistence was not confirmed", str(raised.exception))
+            self.assertEqual(len(store.calls), 2)
+            self.assertEqual(len(sdk.calls), 1)
+            self.assertEqual(ledger.state["entries"][0]["status"], "reserved")
+            self.assertEqual(ledger.remaining(), 10000000 - 659000)
+            self.assertEqual(store.state["entries"][0]["status"], "settled" if remote_committed else "reserved")
+
     def test_sdk_pinned_endpoint_zero_retries_and_no_network_on_construction(self):
         sdk = sdk_from_env({"OPENAI_API_KEY": "test-not-a-real-key", "OPENAI_PROJECT_ID": "proj_test"})
         self.assertEqual(sdk.max_retries, 0)
