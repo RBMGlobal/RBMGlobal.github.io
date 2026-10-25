@@ -306,7 +306,7 @@ class ClientTests(unittest.TestCase):
             r["output"][1:1] = [
                 {"type": "web_search_call", "status": "completed", "action": {"type": "open_page"}},
                 {"type": "web_search_call", "status": "completed", "action": {"type": "find_in_page"}},
-                {"type": "web_search_call", "status": "failed", "action": {}},
+                { "type": "web_search_call", "status": "incomplete", "action": {"sources": [{"url": "https://untrusted.example/ignored"}]}},
             ]
             return r
         result = run(OpenAIEditorialClient(self.store.ledger(), FakeSDK(self.store, mixed)))

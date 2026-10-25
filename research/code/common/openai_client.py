@@ -192,9 +192,11 @@ def decode_response(response, schema, domains, search, expected_model, max_calls
         kind = item.get("type")
         if kind == "web_search_call":
             calls += 1
-            if not search or item.get("status") not in ("completed", "failed"):
-                raise InvalidResponse("Unexpected or incomplete search")
-            if item.get("status") == "failed":
+            if not search:
+                raise InvalidResponse("Unexpected search on a source-only request")
+            # A completed response can include ignored/unfinished attempts after
+            # max_tool_calls. Count their cost conservatively, never their evidence.
+            if item.get("status") != "completed":
                 continue
             for source in item.get("action", {}).get("sources", []):
                 checked = _source(source.get("url"), source.get("title"), domains)
