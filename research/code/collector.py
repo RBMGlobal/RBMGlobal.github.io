@@ -147,6 +147,12 @@ def date_supported(value, quote, text, metadata_dates):
         raise ValueError('Future source publication date')
     if metadata_dates and set(metadata_dates) != {value}:
         raise ValueError('Source publication date is ambiguous or contradicts page metadata')
+    # Models may wrap a copied date in quotation marks. Remove only a matched
+    # outer delimiter; the remaining full excerpt must still occur verbatim.
+    if isinstance(quote, str):
+        quote = quote.strip()
+        if len(quote) > 1 and (quote[0], quote[-1]) in {('"', '"'), ("'", "'"), ('“', '”'), ('‘', '’')}:
+            quote = quote[1:-1]
     if not isinstance(quote, str) or not 4 <= len(quote) <= 300 or quote not in text:
         raise ValueError('Source publication date needs an exact visible excerpt')
     compact = re.sub(r'[^a-z0-9]', '', quote.lower())

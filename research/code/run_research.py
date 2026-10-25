@@ -92,7 +92,10 @@ def run(kind, repo, accepted_brief, output, work):
     client = OpenAIEditorialClient(ledger)
     discovery_prompt = f'''Today is {now.date()}, Europe/London. {focus}
 Use actual web search on approved publishers, not memory. Return 1-{policy['max_sources']} source URLs actually consulted.
-Each source needs an exact visible publication-date quotation and ISO publication date. Do not
+Copy consulted URLs and titles verbatim; do not reconstruct or correct them.
+Each source needs an exact visible publication-date excerpt with no added quotation marks,
+and its complete ISO publication date. Omit navigation pages, relative dates and reports
+whose exact publication day cannot be verified. Return fewer sources rather than guess. Do not
 confuse an update date, fieldwork date or event date with first publication. Prefer primary
 survey releases, UN/NGO reports, original official claims and independent journalism.
 Do not imply exhaustive coverage. State blocked pages, source gaps and uncertainty.

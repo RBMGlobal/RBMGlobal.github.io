@@ -64,6 +64,13 @@ class CollectorTests(unittest.TestCase):
             collector.date_supported('2026-10-12', 'Synthetic services report',
                                      'Synthetic services report', ['2026-10-12'])
 
+    def test_quoted_date_delimiters_do_not_change_evidence(self):
+        collector.date_supported('2026-10-12', '“' + DATE_QUOTE + '”', DATE_QUOTE, ['2026-10-12'])
+        with self.assertRaises(ValueError):
+            collector.date_supported('2026-10-11', '“Published 11 October 2026”', DATE_QUOTE, ['2026-10-12'])
+        with self.assertRaises(ValueError):
+            collector.date_supported('2026-10-12', '“October 2026”', 'October 2026', [])
+
     def test_first_of_month_does_not_match_eleventh(self):
         quote = 'Published 11 October 2026'
         with self.assertRaisesRegex(ValueError, 'independently located'):
