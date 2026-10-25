@@ -56,7 +56,7 @@ jobs:
       - name: Check sentiment regressions
         run: node --test sentiment/tests/dashboard.test.cjs
       - name: Check maintenance safeguards
-        run: python -m unittest discover -s maintenance/tests -v
+        run: python maintenance/run_tests.py
       - name: Synchronize verified public events heat
         id: heat
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'maintenance')

@@ -58,8 +58,8 @@ class HealthTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'bytes/hash'):h.verify_file(release(),'sentiment-gdelt.json',body)
 
     def test_safe_array_parser_handles_brackets_in_strings(self):
-        body='const EVENTS = [{"d":"2026-01-01","la":1,"lo":2,"text":"] ;"}]; const GDELT_EVENTS = [{"d":"2026-10-23","la":2,"lo":3}];'
-        self.assertEqual(len(h.validate_events(body)['EVENTS']),1)
+        body='const EVENTS = [{"d":"2026-01-01","la":1,"lo":2,"text":"literal ]; text and object }; text"}]; const GDELT_EVENTS = [{"d":"2026-10-23","la":2,"lo":3}];'
+        self.assertEqual(h.validate_events(body)['EVENTS'][0]['text'],'literal ]; text and object }; text')
         with self.assertRaises(ValueError):h.parse_array('const EVENTS = [];','EVENTS')
 
     def test_retired_redirect_needs_exact_target_and_no_old_app(self):
