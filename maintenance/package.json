@@ -1,0 +1,8 @@
+{
+  "name": "rbm-public-site-maintenance",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Independent public-site smoke checks; no API keys or account access",
+  "scripts": {"smoke": "node scripts/browser_smoke.cjs"},
+  "devDependencies": {"playwright": "1.62.1"}
+}

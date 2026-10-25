@@ -1,0 +1,153 @@
+name: Maintain public sites
+
+on:
+  schedule:
+    - cron: '15 12,16 * * *'
+      timezone: Europe/London
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Maintenance syncs verified events heat; redeploy restores current files only'
+        required: true
+        default: maintenance
+        type: choice
+        options: [maintenance, redeploy]
+  push:
+    branches: [main]
+    paths:
+      - 'CNAME'
+      - 'index.html'
+      - 'og.png'
+      - 'privacy.html'
+      - 'robots.txt'
+      - 'sentiment/**'
+      - 'maintenance/**'
+      - '.github/workflows/maintain-public-sites.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: company-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check sentiment regressions
+        run: node --test sentiment/tests/dashboard.test.cjs
+      - name: Check maintenance safeguards
+        run: python -m unittest discover -s maintenance/tests -v
+      - name: Synchronize verified public events heat
+        id: heat
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'maintenance')
+        continue-on-error: true
+        run: python maintenance/scripts/sync_sentiment_heat.py --destination sentiment/gdelt.json
+      - name: Commit only the verified heat file
+        id: commit
+        if: steps.heat.outputs.changed == 'true'
+        continue-on-error: true
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- sentiment/gdelt.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refresh verified public news heat'
+          git push origin HEAD:main
+      - name: Keep publication on the current committed source
+        if: always() && (steps.heat.outcome == 'failure' || steps.commit.outcome == 'failure')
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+      - name: Prepare the complete public site
+        id: build
+        if: success()
+        run: python maintenance/scripts/build_company_site.py --root . --output _site
+      - name: Configure Pages
+        if: success()
+        uses: actions/configure-pages@v5
+      - name: Upload complete site
+        if: success()
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy complete site (also retries an unchanged earlier publication)
+        id: deployment
+        if: success()
+        uses: actions/deploy-pages@v4
+      - name: Verify every deployed public file against the artifact
+        if: success()
+        run: python maintenance/scripts/verify_company_live.py --manifest company-artifact-manifest.json --timeout 420
+      - name: Surface a failed synchronization or commit
+        if: always() && (steps.heat.outcome == 'failure' || steps.commit.outcome == 'failure')
+        run: |
+          echo '::error::Heat synchronization failed; the committed company site was preserved/redeployed. Review the source release or write permission before retrying.'
+          exit 1
+
+  check:
+    needs: publish
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check all live routes, source windows and release hashes
+        id: live
+        continue-on-error: true
+        run: python maintenance/scripts/site_health.py --output health-output
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: maintenance/package-lock.json
+      - name: Install pinned browser checks
+        working-directory: maintenance
+        run: npm ci
+      - name: Install Chromium
+        working-directory: maintenance
+        run: npx playwright install --with-deps chromium
+      - name: Exercise public application controls and redirects
+        id: browser
+        continue-on-error: true
+        env:
+          HEALTH_OUTPUT: ../health-output
+        working-directory: maintenance
+        run: npm run smoke
+      - name: Retain check evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-site-health-${{ github.run_id }}
+          path: health-output
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Fail on any failed live or browser check
+        if: always() && (steps.live.outcome == 'failure' || steps.browser.outcome == 'failure')
+        run: exit 1
