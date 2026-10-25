@@ -66,6 +66,7 @@ class DailyOrchestrationTests(unittest.TestCase):
             data = {"sources": [{"url": "https://primary.example.test/survey.pdf"}], "limitations": "Synthetic bounded discovery"}
         elif role == "candidate":
             data = copy.deepcopy(self.packet["candidate"])
+            data["review_scope"] = "Only supplied fixture evidence was reviewed; this is not exhaustive."
             if self.bad_candidate:
                 data["baseline_sha256"] = "0" * 64
         elif role == "review":
@@ -74,8 +75,8 @@ class DailyOrchestrationTests(unittest.TestCase):
             raise AssertionError(role)
         return SimpleNamespace(data=data, sources=[{"url": "https://primary.example.test/survey.pdf"}], model="synthetic-review-model", response_id="synthetic-response-" + role)
 
-    def run_daily(self, enabled=True):
-        env = {"AI_RESEARCH_ENABLED": "true" if enabled else "false", "OPENAI_HARD_LIMIT_CONFIRMED": "10", "GITHUB_RUN_ID": "12345"}
+    def run_daily(self, enabled=True, attempt="1"):
+        env = {"AI_RESEARCH_ENABLED": "true" if enabled else "false", "OPENAI_HARD_LIMIT_CONFIRMED": "10", "GITHUB_RUN_ID": "12345", "GITHUB_RUN_ATTEMPT": attempt}
         ledger = SimpleNamespace(remaining=lambda: 10_000_000)
         store = SimpleNamespace(read=lambda: ({}, "unused"), persist=lambda *_: True)
         def validate(*args):
@@ -86,7 +87,7 @@ class DailyOrchestrationTests(unittest.TestCase):
     def test_daily_full_chain_uses_independent_review_then_complete_outputs(self):
         before = (self.repo / "sentiment/data.json").read_bytes()
         self.run_daily()
-        self.assertEqual([x["request_id"] for x in self.calls], ["12345:daily:discovery", "12345:daily:candidate", "12345:daily:review"])
+        self.assertEqual([x["request_id"] for x in self.calls], ["12345.1:daily:discovery", "12345.1:daily:candidate", "12345.1:daily:review"])
         self.assertTrue(self.calls[0]["search"])
         self.assertFalse(self.calls[1]["search"])
         self.assertFalse(self.calls[2]["search"])
@@ -101,6 +102,13 @@ class DailyOrchestrationTests(unittest.TestCase):
         summary = json.loads((self.output / "run-summary.json").read_text())
         self.assertFalse(summary["publication_changed"])
         self.assertIn("still required", summary["note"])
+        review = json.loads((self.output / "files/sentiment/review.json").read_text())
+        self.assertIn("Only supplied fixture evidence", review["scope"])
+        self.assertIn("DAILY SENTIMENT EVIDENCE CHECK", self.calls[2]["prompt"])
+
+    def test_explicit_retry_has_distinct_request_ids(self):
+        self.run_daily(attempt="2")
+        self.assertTrue(all(x["request_id"].startswith("12345.2:") for x in self.calls))
 
     def test_disabled_gate_prevents_every_model_call(self):
         with self.assertRaisesRegex(RuntimeError, "disabled"):

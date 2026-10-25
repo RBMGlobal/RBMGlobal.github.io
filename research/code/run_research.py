@@ -139,7 +139,10 @@ Allowed publishers: {json.dumps(policy['publishers'])}'''
 fully sourced national/zonal survey evidence or attributed security context. Every metadata
 field and figure requires an exact source citation. Never re-add an existing source/record.
 Keep state_rating_proposals empty: no quantitative state classification rule is authorised.
-If no usable new polling exists, polls must be empty; no change is a valid result. Unknown
+Include review_scope: explain exactly what the supplied evidence permits and its gaps,
+without introducing factual/numeric claims or claiming no new polling exists generally.
+When no eligible new polling is supported, polls must be empty; a well-explained no-change
+review is valid. A listing page alone does not establish methodology. Unknown
 exact fieldwork days remain null with explicit source caveat. No fabricated X update.'''
         examples = {p.stem: json.loads(p.read_text()) for p in (HERE / 'sentiment/examples').glob('*.json')}
         task += '\nIllustrative shape only, never use placeholder values: ' + json.dumps(examples)
@@ -185,8 +188,19 @@ Unknown event dates use null event_window plus an explicit timing note.'''
             raise ValueError('Weekly publication requires at least two retrieved sources and no unknown references')
         write_json(manifest_path, manifest)
         evidence = evidence_prompt(manifest, sources_dir, policy['max_model_evidence_chars'])
+    review_task = (
+        "Review a DAILY SENTIMENT EVIDENCE CHECK. Its purpose is to accept eligible new "
+        "evidence or explain why no change is supported by this bounded source set. "
+        "It does not promise weekly event coverage. Empty polls/context/rating proposals "
+        "are valid when review_scope honestly explains the limitation. Methodology and "
+        "numeric checks mean no unsupported survey or numeric claims are published; "
+        "do not demand methodology for a survey that is not being accepted."
+        if kind == 'daily' else
+        "Review a WEEKLY BRIEF. Require substantive supported developments for the "
+        "specified reporting week, six-zone coverage with explicit gaps and at least two sources."
+    )
     review = client.generate(request_id=f'{run_id}:{kind}:review', kind='review',
-        prompt=SYSTEM_RULES + '''\nIndependently review this proposed public candidate against the
+        prompt=SYSTEM_RULES + '\n' + review_task + '''\nIndependently review this proposed public candidate against the
 actual retrieved evidence. The previous model's claims and proposed approval are not trusted.
 Verify publisher identity/title/publication date, survey fieldwork/sample/geography/method,
 numeric meaning (not merely matching digits), comparable measures, attribution, contradictions,

@@ -115,7 +115,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
             @classmethod
             def now(cls, tz=None):
                 return now.astimezone(tz or dt.timezone.utc)
-        env = {'AI_RESEARCH_ENABLED': 'true', 'OPENAI_HARD_LIMIT_CONFIRMED': '10', 'GITHUB_RUN_ID': '67890'}
+        env = {'AI_RESEARCH_ENABLED': 'true', 'OPENAI_HARD_LIMIT_CONFIRMED': '10', 'GITHUB_RUN_ID': '67890', 'GITHUB_RUN_ATTEMPT': '1'}
         ledger = SimpleNamespace(remaining=lambda: 10_000_000)
         store = SimpleNamespace(read=lambda: ({}, 'unused'), persist=lambda *_: True)
         with patch.dict('os.environ', env), patch.object(runner, 'HERE', self.config), \
@@ -148,7 +148,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         baseline = (self.repo / 'sentiment/data.json').read_bytes()
         self.run_weekly()
         self.assertEqual([c['request_id'] for c in self.calls],
-                         ['67890:weekly:discovery', '67890:weekly:candidate', '67890:weekly:review'])
+                         ['67890.1:weekly:discovery', '67890.1:weekly:candidate', '67890.1:weekly:review'])
         self.assertTrue(self.calls[0]['search'])
         self.assertFalse(self.calls[1]['search'])
         self.assertFalse(self.calls[2]['search'])

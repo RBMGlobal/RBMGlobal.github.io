@@ -5,5 +5,6 @@
   "review_date": "2026-10-25",
   "polls": [],
   "security_context": [],
-  "state_rating_proposals": []
+  "state_rating_proposals": [],
+  "review_scope": "Illustrative bounded source review; coverage is not exhaustive."
 }

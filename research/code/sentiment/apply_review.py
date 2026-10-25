@@ -380,7 +380,9 @@ def apply_review(baseline_path, candidate_path, manifest_path, evidence_root, at
     # these fields affect sentiment; policy is not model-authored input.
     need(isinstance(policy, dict) and {"schema_version", "primary_hosts"} <= policy.keys(), "Missing sentiment policy fields")
     need(policy["schema_version"] == 1, "Unsupported policy version")
-    keys(candidate, {"schema_version", "baseline_sha256", "evidence_manifest_sha256", "review_date", "polls", "security_context", "state_rating_proposals"})
+    keys(candidate, {"schema_version", "baseline_sha256", "evidence_manifest_sha256", "review_date", "polls", "security_context", "state_rating_proposals"}, {"review_scope"})
+    if "review_scope" in candidate:
+        text(candidate["review_scope"], 800)
     need(type(candidate["schema_version"]) is int and candidate["schema_version"] == 1, "Unsupported candidate version")
     need(digest(candidate["baseline_sha256"]) == sha(baseline_bytes), "Baseline digest mismatch; re-review latest published data")
     need(digest(candidate["evidence_manifest_sha256"]) == sha(manifest_bytes), "Evidence manifest digest mismatch")
@@ -473,7 +475,7 @@ def apply_review(baseline_path, candidate_path, manifest_path, evidence_root, at
     review = {
         "schema_version": 1, "reviewed_at": attestation["reviewed_at"], "review_date": candidate["review_date"],
         "status": "updated" if changed else "no_material_change", "data_changed": changed,
-        "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications.",
+        "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. " + candidate.get("review_scope", ""),
         "summary": "New verified evidence was accepted; source and assessment dates remain separate." if changed else "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
         "assessment_updated": data["assessment_updated"], "evidence_added": accepted, "duplicate_evidence": duplicate,
         "state_changes": applied, "withheld_state_changes": withheld, "security_context": context,

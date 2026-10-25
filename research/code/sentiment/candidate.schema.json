@@ -33,6 +33,10 @@
       "items": {
         "$ref": "#/$defs/state_proposal"
       }
+    },
+    "review_scope": {
+      "type": "string",
+      "maxLength": 800
     }
   },
   "required": [
@@ -42,7 +46,8 @@
     "review_date",
     "polls",
     "security_context",
-    "state_rating_proposals"
+    "state_rating_proposals",
+    "review_scope"
   ],
   "additionalProperties": false,
   "$defs": {
