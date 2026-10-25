@@ -71,8 +71,12 @@ def run(kind, repo, accepted_brief, output, work):
     policy = json.loads((HERE / 'policy.json').read_text())
     now = datetime.now(LONDON)
     run_id = os.environ.get('GITHUB_RUN_ID', '')
-    if not run_id.isdigit():
-        raise RuntimeError('Paid execution requires a hosted Actions run identifier')
+    attempt = os.environ.get('GITHUB_RUN_ATTEMPT', '1')
+    if not run_id.isdigit() or not attempt.isdigit() or int(attempt) < 1:
+        raise RuntimeError('Paid execution requires a hosted Actions run identifier and attempt')
+    # Explicit GitHub reruns are new bounded requests. Prior uncertain attempts
+    # remain encumbered; a restart within one attempt cannot duplicate a call.
+    run_id = run_id + '.' + attempt
     baseline = repo / 'sentiment/data.json'
     baseline_sha = sha(baseline)
     prior = end = start = issue = None
