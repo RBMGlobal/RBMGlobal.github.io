@@ -102,7 +102,19 @@ Allowed publishers: {json.dumps(policy['publishers'])}'''
                                 allowed_domains=list(policy['publishers']), search=True)
     sources_dir = work / 'sources'
     urls = [x['url'] if isinstance(x, dict) else x for x in discovery.sources]
-    manifest = collect(discovery.data['sources'], policy, sources_dir, urls)
+    try:
+        manifest = collect(discovery.data['sources'], policy, sources_dir, urls)
+    except ValueError:
+        collection_path = sources_dir / 'collection.json'
+        collection = json.loads(collection_path.read_text()) if collection_path.exists() else {'accepted': 0, 'rejected': []}
+        # Public bibliographic metadata only; no extracted articles or API transcript.
+        write_json(output / 'run-summary.json', {
+            'status': 'source_collection_withheld', 'kind': kind,
+            'publication_changed': False, 'collection': collection,
+            'proposed_sources': discovery.data['sources'],
+            'consulted_urls': urls,
+            'ledger_remaining_usd': ledger.remaining() / 1_000_000})
+        raise
     manifest_path = sources_dir / 'manifest.json'
     observed_at = datetime.now(LONDON).isoformat()
     evidence = evidence_prompt(manifest, sources_dir, policy['max_model_evidence_chars'])
