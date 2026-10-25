@@ -189,14 +189,19 @@ def settle(state, request_id, usage, response_id, now=None):
     limits = entry["envelope"]
     if not isinstance(response_id, str) or not re.fullmatch(r"resp_[A-Za-z0-9_-]{1,200}", response_id):
         raise BudgetError("Invalid provider response identifier")
-    if not isinstance(usage, dict) or set(usage) != {"input_tokens", "output_tokens"}:
+    if not isinstance(usage, dict) or set(usage) not in ({"input_tokens", "output_tokens"}, {"input_tokens", "output_tokens", "web_actions"}):
         raise BudgetError("Incomplete usage")
     inputs = _integer(usage["input_tokens"], "usage input")
     outputs = _integer(usage["output_tokens"], "usage output")
     if inputs > limits["max_input_tokens"] or outputs > limits["max_output_tokens"]:
         raise BudgetError("Provider usage exceeds reviewed envelope")
-    # Reserve all permitted tool fees, not just the visible tool-call count.
-    amount = token_cost(limits["model"], inputs, outputs, limits["max_search_calls"])
+    # Charge every returned web action conservatively, including opens/failed attempts.
+    # More output items than requested do not invalidate otherwise verified usage.
+    # The precommitted monetary reservation is still an absolute settlement ceiling.
+    actions = _integer(usage.get("web_actions", limits["max_search_calls"]), "web actions")
+    if actions and not limits["max_search_calls"]:
+        raise BudgetError("Unexpected tool use on a source-only request")
+    amount = token_cost(limits["model"], inputs, outputs, max(actions, limits["max_search_calls"]))
     if amount > limits["reserved_microusd"]:
         raise BudgetError("Provider usage exceeds reserved amount")
     entry.update(status="settled", charged_microusd=amount, usage=dict(usage),

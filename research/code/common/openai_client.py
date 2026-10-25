@@ -74,7 +74,7 @@ def _accounting_diagnostics(response, model, limits):
         "usage_object": isinstance(usage, dict),
         "approved_output_types": (isinstance(output, list) and not counts["unrecognized"]
                                   and not counts["malformed"]),
-        "search_count_within_limit": counts["web_search_call"] <= limits["max_search_calls"],
+        "tools_permitted": not counts["web_search_call"] or limits["max_search_calls"] > 0,
     }
 
     def known(value, choices):
@@ -192,8 +192,10 @@ def decode_response(response, schema, domains, search, expected_model, max_calls
         kind = item.get("type")
         if kind == "web_search_call":
             calls += 1
-            if not search or item.get("status") != "completed":
+            if not search or item.get("status") not in ("completed", "failed"):
                 raise InvalidResponse("Unexpected or incomplete search")
+            if item.get("status") == "failed":
+                continue
             for source in item.get("action", {}).get("sources", []):
                 checked = _source(source.get("url"), source.get("title"), domains)
                 sources[checked["url"]] = checked
@@ -294,6 +296,7 @@ class OpenAIEditorialClient:
             self.ledger.uncertain(request_id, "usage_unverifiable")
             raise _diagnostic_error("Usage is unverifiable; full reservation retained", diagnostic)
         counted = {key: usage.get(key) for key in ("input_tokens", "output_tokens")}
+        counted["web_actions"] = diagnostic["output_counts"]["web_search_call"]
         try:
             self.ledger.settle(request_id, counted, response.get("id"))
         except PersistenceError:
@@ -306,7 +309,7 @@ class OpenAIEditorialClient:
                 self.ledger.uncertain(request_id, "usage_unverifiable")
             raise _diagnostic_error("Settlement was not confirmed; retained reservation needs reconciliation", diagnostic) from None
         try:
-            data, sources = decode_response(response, schema, domains, search, model, calls)
+            data, sources = decode_response(response, schema, domains, search, model, max(calls, counted["web_actions"]))
         except InvalidResponse:
             raise
         except Exception:

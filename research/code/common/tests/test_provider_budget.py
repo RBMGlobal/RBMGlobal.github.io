@@ -280,7 +280,6 @@ class ClientTests(unittest.TestCase):
             ({"service_tier": "flex"}, "budgeted_service_tier"),
             ({"usage": None}, "usage_object"),
             ({"output": [{"type": "function_call"}]}, "approved_output_types"),
-            ({"output": [{"type": "web_search_call"}] * 3}, "search_count_within_limit"),
         )
         for change, expected in cases:
             store = Store()
@@ -292,6 +291,37 @@ class ClientTests(unittest.TestCase):
             self.assertEqual(store.state["entries"][0]["status"], "uncertain")
             self.assertEqual(committed_microusd(store.state, NOW), 659000)
             self.assertEqual(len(sdk.calls), 1)
+
+    def test_extra_web_actions_settle_only_within_precommitted_money(self):
+        def extra(r):
+            r["output"] = [deepcopy(r["output"][0]) for _ in range(3)] + r["output"][1:]
+            return r
+        result = run(OpenAIEditorialClient(self.store.ledger(), FakeSDK(self.store, extra)))
+        self.assertEqual(result.charged_microusd, 31200)
+        self.assertEqual(result.usage["web_actions"], 3)
+        self.assertEqual(self.store.state["entries"][0]["envelope"]["reserved_microusd"], 659000)
+
+    def test_open_find_and_failed_actions_are_charged_conservatively(self):
+        def mixed(r):
+            r["output"][1:1] = [
+                {"type": "web_search_call", "status": "completed", "action": {"type": "open_page"}},
+                {"type": "web_search_call", "status": "completed", "action": {"type": "find_in_page"}},
+                {"type": "web_search_call", "status": "failed", "action": {}},
+            ]
+            return r
+        result = run(OpenAIEditorialClient(self.store.ledger(), FakeSDK(self.store, mixed)))
+        self.assertEqual(result.charged_microusd, 41200)
+        self.assertEqual(len(result.sources), 1)
+
+    def test_extra_actions_cannot_exceed_reserved_money(self):
+        def over(r):
+            r["output"] = [deepcopy(r["output"][0]) for _ in range(3)] + r["output"][1:]
+            r["usage"] = {"input_tokens": 816000, "output_tokens": 6000}
+            return r
+        with self.assertRaises(ProviderOutcomeUnknown):
+            run(OpenAIEditorialClient(self.store.ledger(), FakeSDK(self.store, over)))
+        self.assertEqual(self.store.state["entries"][0]["status"], "uncertain")
+        self.assertEqual(committed_microusd(self.store.state, NOW), 659000)
 
     def test_diagnostic_never_echoes_untrusted_provider_strings(self):
         private = "Bearer synthetic-private-token https://private.example/article"
