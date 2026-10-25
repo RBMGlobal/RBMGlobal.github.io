@@ -1,0 +1,420 @@
+{
+  "updated": "2026-10-25",
+  "updated_iso": "2026-10-25T11:00:00Z",
+  "assessment_updated": "2026-09-27",
+  "maintenance_checked": "2026-10-12",
+  "national_evidence_updated": "2026-10-25",
+  "national": {
+    "president_approve": 30.2
+  },
+  "classification": "Historical directional assessment",
+  "sources": [
+    {
+      "name": "Historical source",
+      "date": "2026-09-27"
+    }
+  ],
+  "method": "Legacy method remains unchanged.",
+  "national_evidence": [
+    {
+      "id": "synthetic-survey-2026-10",
+      "source_id": "survey",
+      "source": "Synthetic fixture survey",
+      "publisher": "Example Research (synthetic)",
+      "url": "https://primary.example.test/survey.pdf",
+      "publication_date": "2026-10-20",
+      "geography": {
+        "level": "national",
+        "name": "Nigeria"
+      },
+      "fieldwork_month": "2026-09",
+      "fieldwork_exact_dates": null,
+      "fieldwork_note": "Exact days were not disclosed.",
+      "sample": 2470,
+      "population": "Nigerian adults aged 18+",
+      "selection": "Stratified random telephone sample",
+      "weighting": "Sex within zone",
+      "representative": false,
+      "limitations": "Telephone coverage/nonresponse; rural underrepresentation.",
+      "comparability": "Different wording and sample. No trend inferred.",
+      "comparability_status": "not_comparable",
+      "results": {
+        "president_approve": 22
+      },
+      "result_details": [
+        {
+          "id": "president_approve",
+          "label": "Presidential performance approval",
+          "value": 22,
+          "unit": "percent",
+          "subject": "president",
+          "measure": "approval",
+          "citations": [
+            {
+              "source_id": "survey",
+              "url": "https://primary.example.test/survey.pdf",
+              "locator": "Synthetic fixture paragraph"
+            }
+          ]
+        }
+      ],
+      "reviewed": "2026-10-25",
+      "source_text_sha256": "a1473528774384e3a157941cac693d4969b127a87ab8f7c4353770e2b93ff4ec",
+      "citations": {
+        "publication_date": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "fieldwork": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "sample": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "geography": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "method": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "limitations": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "comparability": [
+          {
+            "source_id": "survey",
+            "url": "https://primary.example.test/survey.pdf",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ]
+      }
+    }
+  ],
+  "zones": [
+    {
+      "id": "NC",
+      "approve": 30,
+      "disapprove": 50,
+      "unsafe": 60
+    },
+    {
+      "id": "NE",
+      "approve": 30,
+      "disapprove": 50,
+      "unsafe": 60
+    },
+    {
+      "id": "NW",
+      "approve": 30,
+      "disapprove": 50,
+      "unsafe": 60
+    },
+    {
+      "id": "SE",
+      "approve": 30,
+      "disapprove": 50,
+      "unsafe": 60
+    },
+    {
+      "id": "SS",
+      "approve": 30,
+      "disapprove": 50,
+      "unsafe": 60
+    },
+    {
+      "id": "SW",
+      "approve": 30,
+      "disapprove": 50,
+      "unsafe": 60
+    }
+  ],
+  "states": [
+    {
+      "name": "Benue",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "FCT",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Kogi",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Kwara",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Nasarawa",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Niger",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Plateau",
+      "zone": "NC",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Adamawa",
+      "zone": "NE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Bauchi",
+      "zone": "NE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Borno",
+      "zone": "NE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Gombe",
+      "zone": "NE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Taraba",
+      "zone": "NE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Yobe",
+      "zone": "NE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Jigawa",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Kaduna",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Kano",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Katsina",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Kebbi",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Sokoto",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Zamfara",
+      "zone": "NW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Abia",
+      "zone": "SE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Anambra",
+      "zone": "SE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Ebonyi",
+      "zone": "SE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Enugu",
+      "zone": "SE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Imo",
+      "zone": "SE",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Akwa Ibom",
+      "zone": "SS",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Bayelsa",
+      "zone": "SS",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Cross River",
+      "zone": "SS",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Delta",
+      "zone": "SS",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Edo",
+      "zone": "SS",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Rivers",
+      "zone": "SS",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Ekiti",
+      "zone": "SW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Lagos",
+      "zone": "SW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Ogun",
+      "zone": "SW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Ondo",
+      "zone": "SW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Osun",
+      "zone": "SW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    },
+    {
+      "name": "Oyo",
+      "zone": "SW",
+      "president": "cold",
+      "nsa": "cool",
+      "note": "Historical assessment."
+    }
+  ],
+  "historical_extra": {
+    "untouched": true
+  },
+  "evidence_updated": "2026-10-25",
+  "freshness_note": "State assessment dates are separate from evidence review dates. National and zonal survey evidence does not determine state ratings. The historical X sample remains unverified."
+}

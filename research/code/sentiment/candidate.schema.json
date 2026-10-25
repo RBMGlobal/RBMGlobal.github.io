@@ -1,0 +1,427 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "baseline_sha256": {
+      "type": "string"
+    },
+    "evidence_manifest_sha256": {
+      "type": "string"
+    },
+    "review_date": {
+      "type": "string"
+    },
+    "polls": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/poll"
+      }
+    },
+    "security_context": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/security_context"
+      }
+    },
+    "state_rating_proposals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/state_proposal"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "baseline_sha256",
+    "evidence_manifest_sha256",
+    "review_date",
+    "polls",
+    "security_context",
+    "state_rating_proposals"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "citation": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "quote",
+        "locator"
+      ],
+      "additionalProperties": false
+    },
+    "poll": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "geography": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": [
+                "national",
+                "zone",
+                "state"
+              ]
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "level",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "publication_date": {
+          "type": "string"
+        },
+        "fieldwork": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "end": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "month": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "month",
+            "note"
+          ],
+          "additionalProperties": false
+        },
+        "sample": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "integer"
+            },
+            "population": {
+              "type": "string"
+            },
+            "selection": {
+              "type": "string"
+            },
+            "weighting": {
+              "type": "string"
+            },
+            "representative": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "size",
+            "population",
+            "selection",
+            "weighting",
+            "representative"
+          ],
+          "additionalProperties": false
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "percent"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "enum": [
+                  "president",
+                  "nsa",
+                  "public_security",
+                  "elections",
+                  "other"
+                ]
+              },
+              "measure": {
+                "type": "string"
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/citation"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "value",
+              "unit",
+              "subject",
+              "measure",
+              "citations"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "limitations": {
+          "type": "string"
+        },
+        "comparability": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "not_comparable",
+                "separate_measure",
+                "same_series"
+              ]
+            },
+            "explanation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "explanation"
+          ],
+          "additionalProperties": false
+        },
+        "citations": {
+          "type": "object",
+          "properties": {
+            "publication_date": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            },
+            "fieldwork": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            },
+            "sample": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            },
+            "geography": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            },
+            "method": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            },
+            "comparability": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/citation"
+              }
+            }
+          },
+          "required": [
+            "publication_date",
+            "fieldwork",
+            "sample",
+            "geography",
+            "method",
+            "limitations",
+            "comparability"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "geography",
+        "publication_date",
+        "fieldwork",
+        "sample",
+        "results",
+        "limitations",
+        "comparability",
+        "citations"
+      ],
+      "additionalProperties": false
+    },
+    "security_context": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "geography": {
+          "type": "string"
+        },
+        "event_window": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "to": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "from",
+            "to",
+            "note"
+          ],
+          "additionalProperties": false
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/citation"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "source_id",
+        "title",
+        "summary",
+        "geography",
+        "event_window",
+        "citations"
+      ],
+      "additionalProperties": false
+    },
+    "state_proposal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string",
+          "enum": [
+            "president",
+            "nsa"
+          ]
+        },
+        "tone": {
+          "type": "string",
+          "enum": [
+            "cold",
+            "cool",
+            "mixed",
+            "warm"
+          ]
+        },
+        "poll_id": {
+          "type": "string"
+        },
+        "result_id": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/citation"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "subject",
+        "tone",
+        "poll_id",
+        "result_id",
+        "rationale",
+        "citations"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-25T11:00:00Z",
+  "review_date": "2026-10-25",
+  "status": "updated",
+  "data_changed": true,
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications.",
+  "summary": "New verified evidence was accepted; source and assessment dates remain separate.",
+  "assessment_updated": "2026-09-27",
+  "evidence_added": [
+    "synthetic-survey-2026-10"
+  ],
+  "duplicate_evidence": [],
+  "state_changes": [],
+  "withheld_state_changes": [],
+  "security_context": [],
+  "baseline_sha256": "3849f52257ef866e127f386d505fd013db23495ce61753d0291719523d595212",
+  "data_sha256": "68721339d318433c421ee3350c5ee976d73aab5b6967315f9501b74516a8899c",
+  "candidate_sha256": "799765f72c90a08745a929b39091f1d4580721fdc6c0029fb78a10c636ba93de",
+  "evidence_manifest_sha256": "cdb13ab70d498db73ae22ff5a1cb0649f6de11151c2e672a7edefa6acba5c7fe",
+  "verification": {
+    "method": "Independent AI review plus deterministic provenance and schema checks",
+    "reviewed_at": "2026-10-25T11:00:00Z",
+    "model": "synthetic-independent-reviewer"
+  },
+  "sources": [
+    {
+      "id": "survey",
+      "url": "https://primary.example.test/survey.pdf",
+      "final_url": "https://primary.example.test/survey.pdf",
+      "title": "Synthetic fixture survey",
+      "publisher": "Example Research (synthetic)",
+      "published_at": "2026-10-20",
+      "fetched_at": "2026-10-25T10:00:00Z",
+      "body_sha256": "a1473528774384e3a157941cac693d4969b127a87ab8f7c4353770e2b93ff4ec",
+      "text_sha256": "a1473528774384e3a157941cac693d4969b127a87ab8f7c4353770e2b93ff4ec"
+    }
+  ],
+  "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "example-survey-october-2026",
+  "source_id": "collector-source-id",
+  "geography": {"level": "national", "name": "Nigeria"},
+  "publication_date": "2026-10-20",
+  "fieldwork": {"start": null, "end": null, "month": "2026-09", "note": "Exact fieldwork days were not disclosed."},
+  "sample": {"size": 2470, "population": "Nigerian adults aged 18+", "selection": "Replace with supported sampling description", "weighting": "Replace with supported weighting description", "representative": false},
+  "results": [{"id": "presidential-approval", "label": "Presidential approval", "value": 22, "unit": "percent", "subject": "president", "measure": "approval", "citations": [{"source_id": "collector-source-id", "quote": "Replace with exact collected passage including the numerical result.", "locator": "Page 21"}]}],
+  "limitations": "Replace with supported sampling limitations; never invent a margin of error.",
+  "comparability": {"status": "not_comparable", "explanation": "Different measures or methods; no trend is inferred or assigned to states."},
+  "citations": {
+    "publication_date": [{"source_id": "collector-source-id", "quote": "Replace with exact publication-date passage.", "locator": "Title page"}],
+    "fieldwork": [{"source_id": "collector-source-id", "quote": "Replace with exact fieldwork passage.", "locator": "Methods"}],
+    "sample": [{"source_id": "collector-source-id", "quote": "Replace with exact sample-size passage.", "locator": "Methods"}],
+    "geography": [{"source_id": "collector-source-id", "quote": "Replace with exact Nigeria or named zone/state sample geography.", "locator": "Methods"}],
+    "method": [{"source_id": "collector-source-id", "quote": "Replace with exact selection and weighting passage.", "locator": "Methods"}],
+    "limitations": [{"source_id": "collector-source-id", "quote": "Replace with exact source methodological limitations passage.", "locator": "Methods"}],
+    "comparability": [{"source_id": "collector-source-id", "quote": "Replace with exact measures/methods supporting the comparability explanation.", "locator": "Methods"}]
+  }
+}

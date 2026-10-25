@@ -1,0 +1,27 @@
+--- a/sentiment/index.html
++++ b/sentiment/index.html
+@@ -63,7 +63,7 @@
+ <div class="kicker">RBM Global · internal brief</div>
+ <h1>Nigeria sentiment</h1>
+ <div class="meta" id="meta" role="status" aria-live="polite">Loading map…</div>
+-<p class="meta" style="max-width:44rem">State assessments remain dated 27 September 2026. New national evidence was added on 12 October; it does not update the state ratings or historical, unverified X sample.</p>
++<p class="meta" id="evidence-freshness" style="max-width:44rem">State assessments remain dated 27 September 2026. New national evidence was added on 12 October; it does not update the state ratings or historical, unverified X sample.</p>
+ <details class="meta" id="national-evidence" style="margin:8px 0;max-width:44rem"><summary style="cursor:pointer"><b>New national evidence: Yiaga NVIS 3.0</b></summary><div style="max-height:36vh;overflow:auto;padding-top:8px"><p><b>Presidential performance:</b> 22% approve, 54% disapprove, 24% indifferent. Separately, 61% say fear of violence could prevent them voting. These are national survey results, not state scores or a measure of NSA/ONSA approval.</p><p><b>Dates and sample:</b> published 7 October 2026; fieldwork September 2026 (exact days not disclosed). Yiaga Africa commissioned ISCL/API: 2,470 adults aged 18+, covering 36 states and FCT; 2,066 telephone interviews and 404 rural face-to-face interviews.</p><p><b>Limits:</b> telephone sampling used random dialling and panel contacts; rural respondents were convenience-selected at six sites. Results were weighted by sex within zone, not age. Youth are underrepresented. The stated ±2.1-point national margin is only a nominal guide for this mixed sample. Added rural interviews and differing measures prevent a like-for-like trend comparison with the older dashboard polls. No national result has been assigned to states.</p><p><a href="https://nvis.yiaga.org/assets/Willing%20But%20Wary%20NVIS%203.0%20Report-C6rt7tL9.pdf" target="_blank" rel="noopener">Primary report: methods pp. 14–17; findings pp. 21, 23</a> · Reviewed 12 October 2026.</p></div></details>
+ <div class="tools">
+ <button class="layer on" data-layer="president" aria-pressed="true">President</button>
+@@ -103,6 +103,7 @@
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+ <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+ <script src="dashboard-utils.js"></script>
++<script src="evidence-panel.js"></script>
+ <script>
+ if(typeof SentimentUtils==="undefined"){document.getElementById("meta").textContent="Dashboard helpers unavailable. Reload to retry.";throw new Error("Dashboard helpers unavailable")}
+ const {escapeHtml:esc, fetchJson, validateData, validateGeo, heatPoints, validateX} = SentimentUtils;
+@@ -185,6 +186,7 @@
+     indexes.zones.forEach((v,k)=>zoneIndex.set(k,v));
+     document.getElementById("meta").textContent=data.subjects.president+" · NSA "+data.subjects.nsa+" · assessment "+(data.assessment_updated||data.updated)+" · source dates vary; see methodology";
+     fillMethod();fillJump();
++    if(typeof SentimentEvidence!=="undefined")SentimentEvidence.load(DATA,fetchJson);
+     // Optional overlays never delay the state selector or boundary rendering.
+     loadX();loadGdelt();
+     try {

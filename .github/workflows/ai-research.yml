@@ -1,0 +1,140 @@
+name: AI research and source review
+
+on:
+  schedule:
+    - cron: '30 7 * * *'
+      timezone: Europe/London
+    - cron: '15 13 * * 1'
+      timezone: Europe/London
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Validate is free; research requires configured API access and the US$10 project hard limit'
+        default: validate
+        required: true
+        type: choice
+        options: [validate, daily, weekly]
+  push:
+    branches: [main]
+    paths: ['research/code/**', '.github/workflows/ai-research.yml']
+  pull_request:
+    paths: ['research/code/**', '.github/workflows/ai-research.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r research/code/requirements.txt
+      - name: Test budget, source checks, assessment preservation and complete PDF generation (no API calls)
+        run: python research/code/run_tests.py
+      - name: Show access status
+        env:
+          ENABLED: ${{ vars.AI_RESEARCH_ENABLED }}
+        run: |
+          if [ "$ENABLED" != 'true' ]; then
+            echo 'AI research is installed but paid execution is disabled pending API access and the US$10 project hard limit.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  research:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name != 'push' && github.event_name != 'pull_request' && inputs.mode != 'validate' && vars.AI_RESEARCH_ENABLED == 'true'
+    # Only trusted writers share the production lock; PR validation cannot take
+    # or replace a pending company publication's concurrency slot.
+    concurrency:
+      group: company-pages
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/checkout@v4
+        with:
+          repository: RBMGlobal/weekly-threat-brief
+          ref: main
+          path: _accepted-brief
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r research/code/requirements.txt
+      - name: Select the requested research
+        id: task
+        env:
+          REQUESTED: ${{ inputs.mode }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          kind=daily
+          if [ "$REQUESTED" = 'weekly' ] || [ "$SCHEDULE" = '15 13 * * 1' ]; then kind=weekly; fi
+          echo "kind=$kind" >> "$GITHUB_OUTPUT"
+      - name: Research, retrieve sources, independently review and validate
+        id: research
+        env:
+          AI_RESEARCH_ENABLED: ${{ vars.AI_RESEARCH_ENABLED }}
+          OPENAI_HARD_LIMIT_CONFIRMED: ${{ vars.OPENAI_HARD_LIMIT_CONFIRMED }}
+          OPENAI_AUTH_MODE: ${{ vars.OPENAI_AUTH_MODE }}
+          OPENAI_PROJECT_ID: ${{ vars.OPENAI_PROJECT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID }}
+          OPENAI_SERVICE_ACCOUNT_ID: ${{ vars.OPENAI_SERVICE_ACCOUNT_ID }}
+          OPENAI_WIF_AUDIENCE: ${{ vars.OPENAI_WIF_AUDIENCE }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python research/code/run_research.py --kind '${{ steps.task.outputs.kind }}' --repo . --accepted-brief _accepted-brief --output "$RUNNER_TEMP/editorial-output"
+          if [ -f "$RUNNER_TEMP/editorial-output/plan.json" ]; then echo 'has_plan=true' >> "$GITHUB_OUTPUT"; fi
+      - name: Apply complete reviewed files to the latest repository state
+        if: steps.research.outputs.has_plan == 'true'
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+          python research/code/publication.py apply-company --root . --work "$RUNNER_TEMP/editorial-output"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- sentiment/data.json
+          if [ -f sentiment/review.json ]; then git add -- sentiment/review.json; fi
+          if [ -d research/public ]; then git add -- research/public; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish checked public evidence review'
+            git push origin HEAD:main
+          fi
+      - name: Build the complete company site
+        if: steps.research.outputs.has_plan == 'true'
+        run: python maintenance/scripts/build_company_site.py --root . --output _site
+      - uses: actions/configure-pages@v5
+        if: steps.research.outputs.has_plan == 'true'
+      - uses: actions/upload-pages-artifact@v4
+        if: steps.research.outputs.has_plan == 'true'
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v4
+        id: deployment
+        if: steps.research.outputs.has_plan == 'true'
+      - name: Verify every deployed byte against the complete artifact
+        if: steps.research.outputs.has_plan == 'true'
+        run: python maintenance/scripts/verify_company_live.py --manifest company-artifact-manifest.json --timeout 420
+      - name: Retain only safe run status (no fetched articles, credentials or provider transcripts)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-status-${{ github.run_id }}
+          path: ${{ runner.temp }}/editorial-output/run-summary.json
+          retention-days: 30
+          if-no-files-found: ignore

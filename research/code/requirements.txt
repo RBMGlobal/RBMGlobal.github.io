@@ -1,0 +1,4 @@
+-r common/requirements.txt
+-r brief/requirements.txt
+requests==2.32.5
+beautifulsoup4==4.14.3

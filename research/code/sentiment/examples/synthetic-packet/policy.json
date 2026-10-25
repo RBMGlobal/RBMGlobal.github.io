@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "primary_hosts": [
+    "primary.example.test"
+  ],
+  "state_rating_rules": [],
+  "polling_hosts": [
+    "primary.example.test"
+  ]
+}

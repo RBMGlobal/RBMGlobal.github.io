@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "approved": true,
+  "candidate_sha256": "799765f72c90a08745a929b39091f1d4580721fdc6c0029fb78a10c636ba93de",
+  "evidence_manifest_sha256": "cdb13ab70d498db73ae22ff5a1cb0649f6de11151c2e672a7edefa6acba5c7fe",
+  "reviewed_at": "2026-10-25T11:00:00Z",
+  "model": "synthetic-independent-reviewer",
+  "response_id": "synthetic-response-not-a-provider-call",
+  "issues": []
+}

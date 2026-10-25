@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "survey",
+      "url": "https://primary.example.test/survey.pdf",
+      "final_url": "https://primary.example.test/survey.pdf",
+      "title": "Synthetic fixture survey",
+      "publisher": "Example Research (synthetic)",
+      "published_at": "2026-10-20",
+      "fetched_at": "2026-10-25T10:00:00Z",
+      "http_status": 200,
+      "body_sha256": "a1473528774384e3a157941cac693d4969b127a87ab8f7c4353770e2b93ff4ec",
+      "text_sha256": "a1473528774384e3a157941cac693d4969b127a87ab8f7c4353770e2b93ff4ec",
+      "extract_path": "extracts/source.txt"
+    }
+  ]
+}

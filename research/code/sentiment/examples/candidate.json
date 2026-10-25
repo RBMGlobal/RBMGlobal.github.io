@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "baseline_sha256": "REPLACE_WITH_SHA256_OF_EXACT_BASELINE_BYTES",
+  "evidence_manifest_sha256": "REPLACE_WITH_SHA256_OF_EXACT_COLLECTOR_MANIFEST_BYTES",
+  "review_date": "2026-10-25",
+  "polls": [],
+  "security_context": [],
+  "state_rating_proposals": []
+}

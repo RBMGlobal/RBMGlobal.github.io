@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "owner": "RBMGlobal/RBMGlobal.github.io",
+  "currency": "USD",
+  "monthly_limit_microusd": 10000000,
+  "revision": 0,
+  "entries": []
+}

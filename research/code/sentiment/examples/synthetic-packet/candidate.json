@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "baseline_sha256": "3849f52257ef866e127f386d505fd013db23495ce61753d0291719523d595212",
+  "evidence_manifest_sha256": "cdb13ab70d498db73ae22ff5a1cb0649f6de11151c2e672a7edefa6acba5c7fe",
+  "review_date": "2026-10-25",
+  "polls": [
+    {
+      "id": "synthetic-survey-2026-10",
+      "source_id": "survey",
+      "geography": {
+        "level": "national",
+        "name": "Nigeria"
+      },
+      "publication_date": "2026-10-20",
+      "fieldwork": {
+        "start": null,
+        "end": null,
+        "month": "2026-09",
+        "note": "Exact days were not disclosed."
+      },
+      "sample": {
+        "size": 2470,
+        "population": "Nigerian adults aged 18+",
+        "selection": "Stratified random telephone sample",
+        "weighting": "Sex within zone",
+        "representative": false
+      },
+      "results": [
+        {
+          "id": "president_approve",
+          "label": "Presidential performance approval",
+          "value": 22,
+          "unit": "percent",
+          "subject": "president",
+          "measure": "approval",
+          "citations": [
+            {
+              "source_id": "survey",
+              "quote": "The question asked approval of presidential performance: 22 percent approved.",
+              "locator": "Synthetic fixture paragraph"
+            }
+          ]
+        }
+      ],
+      "limitations": "Telephone coverage/nonresponse; rural underrepresentation.",
+      "comparability": {
+        "status": "not_comparable",
+        "explanation": "Different wording and sample. No trend inferred."
+      },
+      "citations": {
+        "publication_date": [
+          {
+            "source_id": "survey",
+            "quote": "Published 20 October 2026 by Example Research.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "fieldwork": [
+          {
+            "source_id": "survey",
+            "quote": "Fieldwork took place during September 2026; exact days were not disclosed.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "sample": [
+          {
+            "source_id": "survey",
+            "quote": "The Nigeria survey interviewed 2,470 adults aged 18 and over.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "geography": [
+          {
+            "source_id": "survey",
+            "quote": "The Nigeria survey interviewed 2,470 adults aged 18 and over.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "method": [
+          {
+            "source_id": "survey",
+            "quote": "A stratified random telephone sample was weighted by sex within zone.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "limitations": [
+          {
+            "source_id": "survey",
+            "quote": "Telephone coverage and nonresponse limit representativeness; rural adults were underrepresented.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ],
+        "comparability": [
+          {
+            "source_id": "survey",
+            "quote": "The question wording and mixed sample differ from the earlier survey; no like-for-like trend is justified.",
+            "locator": "Synthetic fixture paragraph"
+          }
+        ]
+      }
+    }
+  ],
+  "security_context": [],
+  "state_rating_proposals": []
+}

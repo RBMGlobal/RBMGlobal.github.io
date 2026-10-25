@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NG Sentiment — President / NSA / ONSA</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root{--paper:#f4f1ea;--ink:#16171a;--muted:#5c615c;--line:#d4d0c6;--cold:#8b1e3f;--cool:#c46b4a;--mixed:#c4b48a;--warm:#2f6f4e}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font:15px/1.45 "Segoe UI",sans-serif;background:var(--paper);color:var(--ink)}
+#map{position:absolute;inset:0}
+.brand{position:absolute;z-index:700;top:16px;left:16px;width:min(340px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:rgba(244,241,234,.96);border:1px solid var(--line);padding:12px 14px}
+.kicker{letter-spacing:.14em;text-transform:uppercase;font-size:10px;color:var(--muted)}
+h1{font-size:18px;margin:4px 0 6px;font-weight:650}
+.meta{font-size:12px;color:var(--muted)}
+.tools{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+button.layer{border:1px solid var(--ink);background:transparent;color:var(--ink);padding:6px 10px;cursor:pointer;font:inherit;font-size:13px}
+button.layer.on{background:var(--ink);color:var(--paper)}
+.legend{margin-top:8px;display:flex;gap:10px;font-size:11px;color:var(--muted)}
+.sw{width:10px;height:10px;display:inline-block;margin-right:3px;vertical-align:middle}
+.layers{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.layers h3{margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.row{display:grid;grid-template-columns:18px 1fr 72px;gap:8px;align-items:center;margin:0 0 8px;font-size:13px}
+.row input[type=range]{width:100%}
+.row .val{font-size:11px;color:var(--muted);text-align:right}
+#state-jump{width:100%;margin-top:6px;padding:7px 8px;font:inherit;font-size:13px;border:1px solid var(--ink);background:#fff;color:var(--ink)}
+details.method{margin-top:8px;border-top:1px solid var(--line);padding-top:8px}
+details.method summary{cursor:pointer;font-size:12px;letter-spacing:.06em;text-transform:uppercase;list-style:none}
+details.method summary::-webkit-details-marker{display:none}
+.method-body{margin-top:8px;font-size:12px;color:#333}
+.method-body h4{margin:10px 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.method-body p,.method-body li{margin:0 0 6px}
+.src b{display:block}.src span{color:var(--muted)}
+.panel{position:absolute;z-index:700;top:16px;right:16px;width:min(380px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;background:rgba(22,23,26,.96);color:var(--paper);padding:16px 18px;display:none}
+.panel.on{display:block}.panel h2{margin:0 0 4px;font-size:20px}
+.panel .zone{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#b7b3a8}
+.panel .close{float:right;background:none;border:0;color:var(--paper);font-size:20px;cursor:pointer}
+.chip{display:inline-block;margin:10px 6px 0 0;padding:2px 8px;font-size:11px;text-transform:uppercase}
+.chip.cold{background:var(--cold)}.chip.cool{background:var(--cool)}.chip.mixed{background:#8a7a4e}.chip.warm{background:var(--warm)}
+.panel h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:16px 0 6px;color:#b7b3a8}
+.panel p{margin:0 0 8px;font-size:14px}
+.facts{margin:12px 0 4px;font-size:13px}.facts div{margin:0 0 5px}.facts span{color:#b7b3a8;display:inline-block;min-width:92px}
+.nums{font-size:12px;color:#cfc8b8}
+.xchip{display:inline-block;margin:3px 4px 0 0;padding:2px 8px;font-size:11px;background:#2a2c30;color:#e8e2d4;border:1px solid #4a4d52;cursor:pointer}
+.xchip.lead{background:#c4b48a;color:#16171a;border-color:#c4b48a;font-weight:650}
+.xchip:focus,.xchip.open{outline:1px solid #c4b48a}
+.x-block{margin-top:14px}
+.chip-def{margin-top:10px;padding:8px 10px;background:#2a2c30;border-left:3px solid #c4b48a;font-size:13px;color:#e8e2d4}
+.chip-def b{display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:#c4b48a}
+.chip-def .nums{margin:6px 0 0}
+.leaflet-heatmap-layer,.leaflet-pane.leaflet-heat-pane,.leaflet-overlay-pane canvas{pointer-events:none!important}
+.leaflet-interactive{cursor:pointer}
+.leaflet-container{background:#d9d4c8}
+.leaflet-tooltip.state-tip{background:var(--ink);color:var(--paper);border:0;border-radius:0;font:12px/1.3 "Segoe UI",sans-serif;padding:4px 7px}
+@media(max-width:720px){
+  .brand{max-height:46vh}
+  .panel{top:auto;bottom:12px;right:12px;left:12px;width:auto;max-height:40vh}
+}
+</style></head><body>
+<div id="map"></div>
+<div class="brand">
+<div class="kicker">RBM Global · internal brief</div>
+<h1>Nigeria sentiment</h1>
+<div class="meta" id="meta" role="status" aria-live="polite">Loading map…</div>
+<p class="meta" id="evidence-freshness" style="max-width:44rem">State assessments remain dated 27 September 2026. New national evidence was added on 12 October; it does not update the state ratings or historical, unverified X sample.</p>
+<details class="meta" id="national-evidence" style="margin:8px 0;max-width:44rem"><summary style="cursor:pointer"><b>New national evidence: Yiaga NVIS 3.0</b></summary><div style="max-height:36vh;overflow:auto;padding-top:8px"><p><b>Presidential performance:</b> 22% approve, 54% disapprove, 24% indifferent. Separately, 61% say fear of violence could prevent them voting. These are national survey results, not state scores or a measure of NSA/ONSA approval.</p><p><b>Dates and sample:</b> published 7 October 2026; fieldwork September 2026 (exact days not disclosed). Yiaga Africa commissioned ISCL/API: 2,470 adults aged 18+, covering 36 states and FCT; 2,066 telephone interviews and 404 rural face-to-face interviews.</p><p><b>Limits:</b> telephone sampling used random dialling and panel contacts; rural respondents were convenience-selected at six sites. Results were weighted by sex within zone, not age. Youth are underrepresented. The stated ±2.1-point national margin is only a nominal guide for this mixed sample. Added rural interviews and differing measures prevent a like-for-like trend comparison with the older dashboard polls. No national result has been assigned to states.</p><p><a href="https://nvis.yiaga.org/assets/Willing%20But%20Wary%20NVIS%203.0%20Report-C6rt7tL9.pdf" target="_blank" rel="noopener">Primary report: methods pp. 14–17; findings pp. 21, 23</a> · Reviewed 12 October 2026.</p></div></details>
+<div class="tools">
+<button class="layer on" data-layer="president" aria-pressed="true">President</button>
+<button class="layer" data-layer="nsa" aria-pressed="false">NSA / ONSA</button>
+</div>
+<div class="legend">
+<span><i class="sw" style="background:var(--cold)"></i>Cold</span>
+<span><i class="sw" style="background:var(--cool)"></i>Cool</span>
+<span><i class="sw" style="background:var(--mixed)"></i>Mixed</span>
+<span><i class="sw" style="background:var(--warm)"></i>Warm</span>
+</div>
+<label class="meta" for="state-jump" style="display:block;margin-top:10px">Open a state</label>
+<select id="state-jump"><option value="">Select a state…</option></select>
+<div class="meta" id="click-hint" style="margin-top:4px">Or click a coloured polygon. Turn GDELT off if the heat is in the way.</div>
+<div class="layers">
+<h3>Layers</h3>
+<div class="row"><input type="checkbox" id="chk-base" checked/><label for="chk-base">Basemap</label><span class="val" id="val-base">70%</span></div>
+<input type="range" id="op-base" aria-label="Basemap opacity" min="0" max="100" value="70"/>
+<div class="row"><input type="checkbox" id="chk-states" checked/><label for="chk-states">State sentiment</label><span class="val" id="val-states">55%</span></div>
+<input type="range" id="op-states" aria-label="State sentiment opacity" min="0" max="100" value="55"/>
+<div class="row"><input type="checkbox" id="chk-gdelt" checked/><label for="chk-gdelt">GDELT heat (18–20)</label><span class="val" id="val-gdelt">80%</span></div>
+<input type="range" id="op-gdelt" aria-label="GDELT heat opacity" min="0" max="100" value="80"/>
+<div class="meta" id="gdelt-meta" style="margin-top:6px"></div>
+<div class="row" style="margin-top:10px"><input type="checkbox" id="chk-x" checked/><label for="chk-x">X themes (panel)</label><span class="val">on</span></div>
+</div>
+<details class="method"><summary>Methodology & sources</summary><div class="method-body" id="method-body"></div></details>
+</div>
+<aside class="panel" id="panel">
+<button class="close" id="close" type="button" aria-label="Close state details">×</button>
+<div class="zone" id="p-zone"></div>
+<h2 id="p-name"></h2>
+<div id="p-chips"></div>
+<div class="facts" id="p-facts"></div>
+<div id="p-x" class="x-block"></div>
+<div id="p-body"></div>
+</aside>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="dashboard-utils.js"></script>
+<script src="evidence-panel.js"></script>
+<script>
+if(typeof SentimentUtils==="undefined"){document.getElementById("meta").textContent="Dashboard helpers unavailable. Reload to retry.";throw new Error("Dashboard helpers unavailable")}
+const {escapeHtml:esc, fetchJson, validateData, validateGeo, heatPoints, validateX} = SentimentUtils;
+const stateIndex = new Map(), zoneIndex = new Map();
+const COLORS={cold:"#8b1e3f",cool:"#c46b4a",mixed:"#c4b48a",warm:"#2f6f4e"};
+const LABEL={cold:"Cold",cool:"Cool",mixed:"Mixed",warm:"Warm"};
+const GEO="https://cdn.jsdelivr.net/gh/iamspruce/intro-d3@main/data/nigeria_state_boundaries.geojson";
+let DATA=null,LAYER="president",layerGroup=null,selected=null,heatLayer=null,baseLayer=null,stateRenderer=null;
+let xStatus="Loading historical X themes…";
+const vis={base:true,states:true,gdelt:true,x:true};
+const opac={base:.7,states:.55,gdelt:.8};
+if(typeof L==="undefined"){document.getElementById("meta").textContent="Map library unavailable. Reload to retry.";throw new Error("Leaflet unavailable")}
+const map=L.map("map",{zoomControl:false,tap:true}).setView([9.1,8.1],6);
+L.control.zoom({position:"bottomright"}).addTo(map);
+map.createPane("heat");map.getPane("heat").style.zIndex=350;map.getPane("heat").style.pointerEvents="none";
+map.createPane("states");map.getPane("states").style.zIndex=450;map.getPane("states").style.pointerEvents="auto";
+stateRenderer=L.svg({pane:"states",padding:0.5});
+function addOsm(){if(baseLayer)map.removeLayer(baseLayer);baseLayer=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap",maxZoom:12,opacity:opac.base});if(vis.base)baseLayer.addTo(map)}
+// The basemap is independent of the PED app and its token/configuration.
+addOsm();
+function geoName(props){return SentimentUtils.geoName(props)}
+function rec(name){return stateIndex.get(String(name||"").toLowerCase())}
+function zoneOf(s){return zoneIndex.get(s.zone)}
+function tone(s){return s[LAYER==="president"?"president":"nsa"]}
+function fillMethod(){const src=(DATA.sources||[]).map(s=>"<div class='src'><b>"+esc(s.name)+"</b><span>"+esc(s.date)+(s.use?" — "+esc(s.use):"")+"</span></div>").join("");document.getElementById("method-body").innerHTML="<h4>Layers</h4><p>Checkboxes and sliders control visibility and opacity. Use the state list if the map will not take a click.</p><h4>How a state is scored</h4><p>"+esc(DATA.method||"")+"</p><p>GDELT: CAMEO 18–20, news-coded. X themes: click a chip in the panel for the glossary brief. Lead chip opens first.</p><h4>Sources</h4>"+src}
+function fillJump(){const sel=document.getElementById("state-jump");const names=DATA.states.map(s=>s.name).sort();sel.innerHTML="<option value=''>Select a state…</option>"+names.map(n=>"<option value=\""+esc(n)+"\">"+esc(n)+"</option>").join("")}
+function why(s){const z=zoneOf(s);let p="<h3>President — "+LABEL[s.president]+"</h3><p>"+esc(s.note)+"</p>";if(z)p+="<p class='nums'>"+esc(z.name)+" poll: approve "+esc(z.approve)+"% · disapprove "+esc(z.disapprove)+"%. "+esc(z.read)+"</p>";let n="<h3>NSA / ONSA — "+LABEL[s.nsa]+"</h3><p>"+esc(s.note)+"</p>";if(z)n+="<p class='nums'>Zone unsafe: "+esc(z.unsafe)+"%.</p>";return p+n}
+function xThemes(s){const xs=DATA.x_sample;if(!xs)return null;const z=(xs.zones||{})[s.zone]||{president:[],nsa:[]};const o=(xs.states||{})[s.name]||{};return{window:xs.window,caveat:xs.caveat,grain:(o.president||o.nsa)?"state override":"zone sample",president:o.president||z.president||[],nsa:o.nsa||z.nsa||[]}}
+function chipDef(key){const g=(DATA.x_sample&&DATA.x_sample.glossary)||{};return g[key]||"No glossary line for this tag yet. It is a theme label from the X sample, not a count."}
+function chipsHtml(arr){return(arr||[]).map((w,i)=>"<button type='button' class='xchip"+(i===0?" lead":"")+"' data-chip='"+esc(w)+"' title='Click for brief'>"+esc(w)+"</button>").join("")}
+function showChip(key){const box=document.getElementById("chip-def");if(!box)return;document.querySelectorAll(".xchip.open").forEach(n=>n.classList.remove("open"));const btn=[...document.querySelectorAll(".xchip")].find(n=>n.dataset.chip===key);if(btn)btn.classList.add("open");box.innerHTML="<b>"+esc(key)+"</b>"+esc(chipDef(key))+"<div class='nums'>Theme brief for the team. Not a verdict and not a geotagged count.</div>";box.style.display="block"}
+function renderX(s){const el=document.getElementById("p-x");if(!vis.x){el.innerHTML="";return}const t=xThemes(s);if(!t){el.textContent=xStatus;return}el.innerHTML="<h3>X sample · "+t.grain+"</h3><div class='nums'>President — click a chip</div>"+chipsHtml(t.president)+"<div class='nums'>NSA / ONSA — click a chip</div>"+chipsHtml(t.nsa)+"<div class='chip-def' id='chip-def'></div><p class='nums'>"+esc(t.window)+". "+esc(t.caveat)+"</p>";el.querySelectorAll(".xchip").forEach(btn=>{btn.onclick=()=>showChip(btn.dataset.chip)});const lead=(t.president&&t.president[0])||(t.nsa&&t.nsa[0]);if(lead)showChip(lead)}
+function openPanel(s){if(!s)return;selected=s.name;document.getElementById("p-zone").textContent=s.zone+" · directional, not a poll %";document.getElementById("p-name").textContent=s.name;document.getElementById("p-chips").innerHTML="<span class='chip "+s.president+"'>President "+LABEL[s.president]+"</span><span class='chip "+s.nsa+"'>NSA "+LABEL[s.nsa]+"</span>";document.getElementById("p-facts").innerHTML="<div><span>Party</span>"+esc(s.party||"—")+"</div><div><span>Governor</span>"+esc(s.governor||"—")+"</div><div><span>Affiliation</span>"+esc(s.affiliation||"—")+"</div><div><span>Majority</span>"+esc(s.tribe||"—")+"</div><div><span>Language</span>"+esc(s.language||"—")+"</div>";document.getElementById("p-body").innerHTML=why(s);renderX(s);document.getElementById("panel").classList.add("on");const jump=document.getElementById("state-jump");if(jump.value!==s.name)jump.value=s.name;paint()}
+function styleFeat(l){const name=geoName(l.feature.properties);const s=rec(name);const t=s?tone(s):"mixed";const active=selected===(s&&s.name);l.setStyle({color:active?"#16171a":"#f4f1ea",weight:active?2.4:1,fillColor:COLORS[t]||COLORS.mixed,fillOpacity:vis.states?(active?Math.min(1,opac.states+.25):opac.states):0.01,opacity:vis.states?1:0.4})}
+let paintFrame=null;
+function paint(){if(paintFrame!==null)return;paintFrame=requestAnimationFrame(()=>{paintFrame=null;if(layerGroup)layerGroup.eachLayer(l=>styleFeat(l))})}
+function featContains(feat,ll){return SentimentUtils.featureContains(feat,ll)}
+function stateAt(ll){if(!layerGroup)return null;let found=null;layerGroup.eachLayer(l=>{if(found||!l.feature)return;if(l.getBounds&&!l.getBounds().contains(ll))return;if(featContains(l.feature,ll))found=rec(geoName(l.feature.properties))});return found}
+function bindLayer(gj){if(layerGroup)map.removeLayer(layerGroup);layerGroup=L.geoJSON(gj,{pane:"states",renderer:stateRenderer,interactive:true,style:()=>({color:"#f4f1ea",weight:1,fillOpacity:opac.states,fillColor:"#c46b4a"}),onEachFeature:(feat,l)=>{const name=geoName(feat.properties);const s=rec(name);l.bindTooltip(esc(name),{sticky:true,className:"state-tip",direction:"top"});l.on("mouseover",()=>{if(vis.states)l.setStyle({weight:2,fillOpacity:Math.min(1,opac.states+.2)})});l.on("mouseout",()=>styleFeat(l));l.on("click",e=>{L.DomEvent.stopPropagation(e);if(s)openPanel(s)})}}).addTo(map);paint();map.fitBounds(layerGroup.getBounds(),{padding:[20,20],maxZoom:7})}
+function muteHeatPointers(){document.querySelectorAll(".leaflet-overlay-pane canvas, .leaflet-heat-pane canvas, canvas.leaflet-heatmap-layer").forEach(c=>{c.style.pointerEvents="none"})}
+function applyHeatOpacity(){if(!heatLayer)return;if(heatLayer._canvas){heatLayer._canvas.style.opacity=opac.gdelt;heatLayer._canvas.style.pointerEvents="none"}muteHeatPointers()}
+function setHeat(points,meta){if(heatLayer)map.removeLayer(heatLayer);if(typeof L.heatLayer!=="function"){document.getElementById("gdelt-meta").textContent="leaflet.heat failed to load.";return}heatLayer=L.heatLayer(points,{pane:"heat",radius:28,blur:22,maxZoom:10,minOpacity:.28,gradient:{.15:"#4a90d9",.4:"#f0c14b",.65:"#d35400",1:"#8b1e3f"}});if(vis.gdelt)heatLayer.addTo(map);applyHeatOpacity();document.getElementById("gdelt-meta").textContent=meta}
+async function loadGdelt(){
+  try {
+    const d=await fetchJson("gdelt.json");
+    const pts=heatPoints(d);
+    setHeat(pts,"GDELT "+pts.length+" points · "+d.from+" to "+d.to+" · CAMEO 18–20");
+  } catch(err) {
+    document.getElementById("gdelt-meta").textContent="GDELT heat unavailable. State assessments remain available; reload to retry.";
+    console.error(err);
+  }
+}
+async function loadX(){
+  try {
+    const xs=validateX(await fetchJson("x_sample.json"));
+    DATA.x_sample=xs;
+    xStatus="";
+  } catch(err) {
+    xStatus="Historical X themes unavailable. State assessments remain available; reload to retry.";
+    console.error(err);
+  }
+  if(selected)renderX(rec(selected));
+}
+function hook(idChk,idOp,idVal,key,apply){document.getElementById(idChk).onchange=e=>{vis[key]=e.target.checked;apply()};document.getElementById(idOp).oninput=e=>{opac[key]=Number(e.target.value)/100;document.getElementById(idVal).textContent=e.target.value+"%";apply()}}
+hook("chk-base","op-base","val-base","base",()=>{if(!baseLayer)return;if(vis.base){if(!map.hasLayer(baseLayer))baseLayer.addTo(map)}else if(map.hasLayer(baseLayer))map.removeLayer(baseLayer);if(baseLayer.setOpacity)baseLayer.setOpacity(opac.base)});
+hook("chk-states","op-states","val-states","states",paint);
+document.getElementById("chk-x").onchange=e=>{vis.x=e.target.checked;if(selected){const s=rec(selected);if(s)renderX(s)}};
+hook("chk-gdelt","op-gdelt","val-gdelt","gdelt",()=>{if(!heatLayer)return;if(vis.gdelt){if(!map.hasLayer(heatLayer))heatLayer.addTo(map)}else if(map.hasLayer(heatLayer))map.removeLayer(heatLayer);applyHeatOpacity()});
+document.getElementById("close").onclick=()=>{selected=null;document.getElementById("panel").classList.remove("on");document.getElementById("state-jump").value="";paint()};
+document.getElementById("state-jump").onchange=e=>{const s=rec(e.target.value);if(s)openPanel(s)};
+document.querySelectorAll("button.layer[data-layer]").forEach(b=>{b.onclick=()=>{LAYER=b.dataset.layer;document.querySelectorAll("button.layer[data-layer]").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-pressed","false")});b.classList.add("on");b.setAttribute("aria-pressed","true");paint();if(selected){const s=rec(selected);if(s)openPanel(s)}}});
+map.on("click",e=>{const s=stateAt(e.latlng);if(s)openPanel(s)});
+async function loadDashboard(){
+  const boundaries=fetchJson(GEO,{cache:"default"}).then(geo=>({geo}),error=>({error}));
+  try {
+    const data=await fetchJson("data.json");
+    const indexes=validateData(data);
+    DATA=data;
+    indexes.states.forEach((v,k)=>stateIndex.set(k,v));
+    indexes.zones.forEach((v,k)=>zoneIndex.set(k,v));
+    document.getElementById("meta").textContent=data.subjects.president+" · NSA "+data.subjects.nsa+" · assessment "+(data.assessment_updated||data.updated)+" · source dates vary; see methodology";
+    fillMethod();fillJump();
+    if(typeof SentimentEvidence!=="undefined")SentimentEvidence.load(DATA,fetchJson);
+    // Optional overlays never delay the state selector or boundary rendering.
+    loadX();loadGdelt();
+    try {
+      const result=await boundaries;
+      if(result.error)throw result.error;
+      bindLayer(validateGeo(result.geo,stateIndex));
+    } catch(err) {
+      document.getElementById("click-hint").textContent="State boundaries unavailable. Use the state list above; reload to retry the map.";
+      console.error(err);
+    }
+  } catch(err) {
+    document.getElementById("meta").textContent="State assessment data unavailable or incomplete. Reload to retry.";
+    console.error(err);
+  }
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("close").click()});
+loadDashboard();
+</script></body></html>
