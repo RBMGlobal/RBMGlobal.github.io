@@ -235,6 +235,13 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 4)
         self.assertTrue((self.output / 'plan.json').exists())
 
+    def test_recovery_search_seeks_another_publisher_when_one_is_already_accepted(self):
+        self.initial_source_count = 1
+        self.manifest['sources'][0]['publisher'] = 'Synthetic Publisher 1'
+        self.run_weekly()
+        self.assertNotIn('publisher.example.test', self.calls[1]['allowed_domains'])
+        self.assertIn('publisher2.example.test', self.calls[1]['allowed_domains'])
+
     def test_failed_recovery_stops_before_drafting_or_review(self):
         self.initial_source_count = self.recovery_source_count = 1
         with self.assertRaisesRegex(ValueError, 'before drafting'):

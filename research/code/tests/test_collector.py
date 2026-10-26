@@ -81,6 +81,28 @@ class CollectorTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'update date alone'):
             collector.date_supported('2026-10-12', quote, quote, [])
 
+    def test_same_day_update_requires_explicit_first_publication_metadata(self):
+        quote = 'Updated 12 October 2026'
+        collector.date_supported('2026-10-12', quote, quote, ['2026-10-12'], ['2026-10-12'])
+        with self.assertRaisesRegex(ValueError, 'update date alone'):
+            collector.date_supported('2026-10-12', quote, quote, ['2026-10-12'])
+        with self.assertRaisesRegex(ValueError, 'ambiguous'):
+            collector.date_supported('2026-10-12', quote, quote, ['2026-10-11'], ['2026-10-11'])
+
+    def test_updated_source_keeps_first_publication_proof_for_review(self):
+        self.proposal['publication_date_quote'] = 'Updated 12 October 2026'
+        body = HTML.replace(DATE_QUOTE.encode(), self.proposal['publication_date_quote'].encode())
+        self.collect(fetched=(body, 'text/html', URL))
+        proof = json.loads((self.root / 'out/publication-evidence.json').read_text())['s1']
+        self.assertEqual(proof['first_publication_metadata'], ['2026-10-12'])
+        self.assertEqual(proof['visible_excerpt'], self.proposal['publication_date_quote'])
+
+    def test_generic_metadata_does_not_establish_first_publication(self):
+        body = HTML.replace(b'article:published_time', b'date')
+        _, dates, first = collector.extract(body, 'text/html')
+        self.assertEqual(dates, ['2026-10-12'])
+        self.assertEqual(first, [])
+
     def test_ambiguous_metadata_rejected(self):
         with self.assertRaisesRegex(ValueError, 'ambiguous'):
             collector.date_supported('2026-10-12', DATE_QUOTE, DATE_QUOTE,
@@ -91,8 +113,9 @@ class CollectorTests(unittest.TestCase):
           "@type":"NewsArticle", "datePublished":"2026-10-12",
           "related":{"@type":"NewsArticle","datePublished":"2026-10-11"}}
           </script></body></html>'''
-        _, dates = collector.extract(body, 'text/html')
+        _, dates, first = collector.extract(body, 'text/html')
         self.assertEqual(dates, ['2026-10-12'])
+        self.assertEqual(first, ['2026-10-12'])
 
     def test_future_source_date_rejected(self):
         with self.assertRaisesRegex(ValueError, 'Future'):

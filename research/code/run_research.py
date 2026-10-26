@@ -54,12 +54,15 @@ def sha(path):
 
 def evidence_prompt(manifest, root, limit):
     parts = []
+    date_file = root / 'publication-evidence.json'
+    dates = json.loads(date_file.read_text()) if date_file.exists() else {}
     allowance = limit // len(manifest['sources'])
     for source in manifest['sources']:
         text = (root / source['extract_path']).read_text()
         # Explicitly labelled selection; full fetched text remains available to validators.
         selected = text[:allowance]
         parts.append({'source': source, 'text_selection': selected,
+                      'publication_date_evidence': dates.get(source['id']),
                       'text_truncated': len(selected) != len(text)})
     return json.dumps(parts, ensure_ascii=False)
 
@@ -153,11 +156,14 @@ Do not substitute a general country page, listing, or old background for this we
         if kind != 'weekly':
             raise
         manifest = {'schema_version': 1, 'sources': []}
-    if kind == 'weekly' and len(manifest['sources']) < 2:
+    if kind == 'weekly' and (len(manifest['sources']) < 2 or len({s['publisher'] for s in manifest['sources']}) < 2):
         # One explicit recovery search, separately reserved in the shared ledger.
         # Never spend on drafting/review before the minimum evidence exists.
         collection = json.loads((sources_dir / 'collection.json').read_text()) if (sources_dir / 'collection.json').exists() else {}
         domains = recovery_domains(policy, collection)
+        accepted_publishers = {s['publisher'] for s in manifest['sources']}
+        if len(accepted_publishers) == 1:
+            domains = [d for d in domains if policy['publishers'][d] not in accepted_publishers]
         if not domains:
             raise ValueError('No accessible approved publisher remains for the bounded recovery search')
         followup = client.generate(request_id=f'{run_id}:{kind}:source-recovery', kind=kind,
@@ -178,14 +184,14 @@ Do not substitute a general country page, listing, or old background for this we
             manifest = collect(proposals, policy, sources_dir, urls)
         except ValueError:
             manifest = {'schema_version': 1, 'sources': []}
-    if kind == 'weekly' and len(manifest['sources']) < 2:
+    if kind == 'weekly' and (len(manifest['sources']) < 2 or len({s['publisher'] for s in manifest['sources']}) < 2):
         collection_path = sources_dir / 'collection.json'
         write_json(output / 'run-summary.json', {
             'status': 'source_collection_withheld', 'kind': kind, 'publication_changed': False,
-            'sources': manifest['sources'], 'minimum_sources': 2,
+            'sources': manifest['sources'], 'minimum_sources': 2, 'minimum_publishers': 2,
             'collection': json.loads(collection_path.read_text()) if collection_path.exists() else {},
             'ledger_remaining_usd': ledger.remaining() / 1_000_000})
-        raise ValueError('Weekly publication requires at least two retrieved sources before drafting')
+        raise ValueError('Weekly publication requires at least two retrieved sources from two publishers before drafting')
     manifest_path = sources_dir / 'manifest.json'
     observed_at = datetime.now(LONDON).isoformat()
     evidence = evidence_prompt(manifest, sources_dir, policy['max_model_evidence_chars'])
@@ -217,7 +223,7 @@ exact fieldwork days remain null with explicit source caveat. No fabricated X up
                    'reporting_window': {'from': start.isoformat(), 'to': end.isoformat()}}
         task = '''Produce the next complete sourced weekly brief in the supplied schema. Use the
 exact trusted dates. Cover six zones with explicit gaps where evidence is insufficient.
-Substantively cite at least TWO distinct supplied source IDs across the report, using the
+Substantively cite at least TWO distinct supplied source IDs from TWO publishers, using the
 IDs exactly as supplied. Two references to the same report do not satisfy this requirement.
 Use short plain-language analysis and sources, avoiding duplicate developments or inflation
 of totals. Include at least one relevant supported development; if evidence is insufficient
@@ -261,14 +267,15 @@ timing note, and cannot be used to claim verified in-week events.'''
                 for value in obj: citations(value)
         citations(candidate)
         manifest['sources'] = [x for x in manifest['sources'] if x['id'] in used]
-        if used != {x['id'] for x in manifest['sources']} or len(used) < 2:
+        if (used != {x['id'] for x in manifest['sources']} or len(used) < 2
+                or len({x['publisher'] for x in manifest['sources']}) < 2):
             collection_path = sources_dir / 'collection.json'
             write_json(output / 'run-summary.json', {
                 'status': 'candidate_sources_withheld', 'kind': kind, 'publication_changed': False,
                 'cited_source_ids': sorted(used), 'sources': manifest['sources'],
                 'collection': json.loads(collection_path.read_text()) if collection_path.exists() else {},
                 'ledger_remaining_usd': ledger.remaining() / 1_000_000})
-            raise ValueError('Weekly publication requires at least two retrieved sources and no unknown references')
+            raise ValueError('Weekly publication requires at least two retrieved sources from two publishers and no unknown references')
         write_json(manifest_path, manifest)
         evidence = evidence_prompt(manifest, sources_dir, policy['max_model_evidence_chars'])
     review_task = (

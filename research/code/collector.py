@@ -87,6 +87,7 @@ def fetch(url, policy, session=None):
 
 def extract(body, content_type):
     metadata_dates = []
+    first_publication_dates = []
     if body.startswith(b'%PDF-'):
         reader = PdfReader(io.BytesIO(body))
         if reader.is_encrypted or len(reader.pages) > 250:
@@ -95,11 +96,14 @@ def extract(body, content_type):
     elif 'html' in content_type:
         soup = BeautifulSoup(body, 'html.parser')
         for meta in soup.find_all('meta'):
-            if meta.get('property', meta.get('name', '')).lower() in (
+            key = meta.get('property', meta.get('name', '')).lower()
+            if key in (
                     'article:published_time', 'datepublished', 'date', 'dc.date', 'dcterms.date'):
                 value = meta.get('content', '')
                 if re.match(r'^\d{4}-\d{2}-\d{2}', value):
                     metadata_dates.append(value[:10])
+                    if key in ('article:published_time', 'datepublished'):
+                        first_publication_dates.append(value[:10])
         for script in soup.find_all('script', type='application/ld+json'):
             try:
                 def walk(obj):
@@ -108,6 +112,7 @@ def extract(body, content_type):
                         kinds = [kinds] if isinstance(kinds, str) else kinds
                         if set(kinds) & {'Article', 'NewsArticle', 'Report', 'ScholarlyArticle', 'BlogPosting', 'WebPage'} and isinstance(obj.get('datePublished'), str):
                             metadata_dates.append(obj['datePublished'][:10])
+                            first_publication_dates.append(obj['datePublished'][:10])
                         # Do not treat nested recommended-story, publisher or
                         # breadcrumb dates as the current article's publication.
                         if isinstance(obj.get('@graph'), list):
@@ -136,10 +141,10 @@ def extract(body, content_type):
                 valid_dates.append(value)
         except ValueError:
             pass
-    return text, sorted(set(valid_dates))
+    return text, sorted(set(valid_dates)), sorted(set(first_publication_dates) & set(valid_dates))
 
 
-def date_supported(value, quote, text, metadata_dates):
+def date_supported(value, quote, text, metadata_dates, first_publication_dates=()):
     if not isinstance(value, str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', value):
         raise ValueError('Publication date must be YYYY-MM-DD')
     d = date.fromisoformat(value)
@@ -157,7 +162,11 @@ def date_supported(value, quote, text, metadata_dates):
         raise ValueError('Source publication date needs an exact visible excerpt')
     compact = re.sub(r'[^a-z0-9]', '', quote.lower())
     if re.search(r'\b(updated|modified|revised)\b', quote, re.I) and not re.search(r'\b(published|issued|released)\b', quote, re.I):
-        raise ValueError('An update date alone is not a publication date')
+        # Some publishers label every visible date "Updated". Accept that day
+        # only when explicit first-publication metadata independently agrees.
+        # Generic date metadata and a later update never establish first publication.
+        if set(first_publication_dates) != {value}:
+            raise ValueError('An update date alone is not a publication date')
     formats = [d.isoformat(), d.strftime('%d %B %Y'), d.strftime('%B %d %Y'),
                d.strftime('%d %b %Y'), d.strftime('%b %d %Y'), d.strftime('%d/%m/%Y')]
     formats += [x.replace(' 0', ' ').lstrip('0') for x in formats]
@@ -178,6 +187,7 @@ def collect(proposals, policy, output, consulted_urls):
     output.mkdir(parents=True, exist_ok=False)
     consulted = {source_identity(u) for u in consulted_urls if isinstance(u, str)}
     sources, rejected, seen, seen_text = [], [], set(), set()
+    publication_evidence = {}
     for proposal in proposals:
         url = proposal.get('url', '') if isinstance(proposal, dict) else ''
         try:
@@ -186,12 +196,13 @@ def collect(proposals, policy, output, consulted_urls):
             if identity not in consulted or identity in seen:
                 raise ValueError('Source was not returned by real web research or is duplicated')
             body, content_type, final_url = fetch(url, policy)
-            text, metadata_dates = extract(body, content_type)
+            text, metadata_dates, first_publication_dates = extract(body, content_type)
             final_identity = source_identity(final_url)
             text_hash = digest(text.encode('utf-8'))
             if final_identity in seen or text_hash in seen_text:
                 raise ValueError('Duplicate final source or identical extracted content')
-            date_supported(proposal['published_at'], proposal['publication_date_quote'], text, metadata_dates)
+            date_supported(proposal['published_at'], proposal['publication_date_quote'], text,
+                           metadata_dates, first_publication_dates)
             title = proposal['title']
             if not isinstance(title, str) or not 3 <= len(title) <= 500:
                 raise ValueError('Invalid source title')
@@ -205,6 +216,9 @@ def collect(proposals, policy, output, consulted_urls):
                                 published_at=proposal['published_at'],
                                 fetched_at=datetime.now(timezone.utc).isoformat(), http_status=200,
                                 body_sha256=digest(body), text_sha256=digest(content), extract_path=extract_path))
+            publication_evidence[sid] = {'visible_excerpt': proposal['publication_date_quote'],
+                                        'first_publication_metadata': first_publication_dates,
+                                        'all_publication_metadata': metadata_dates}
             seen.add(identity)
             seen.add(final_identity)
             seen_text.add(text_hash)
@@ -216,4 +230,5 @@ def collect(proposals, policy, output, consulted_urls):
         raise ValueError('No source passed collection and publication-date checks')
     manifest = {'schema_version': 1, 'sources': sources}
     write_json(output / 'manifest.json', manifest)
+    write_json(output / 'publication-evidence.json', publication_evidence)
     return manifest
