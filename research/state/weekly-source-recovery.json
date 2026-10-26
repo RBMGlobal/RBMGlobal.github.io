@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-10-26",
+  "reporting_window": {
+    "from": "2026-10-19",
+    "to": "2026-10-25"
+  },
+  "purpose": "refetch-and-re-review-after-validation-fault",
+  "previous_independent_review_approved": true,
+  "research_run": "https://github.com/RBMGlobal/RBMGlobal.github.io/actions/runs/40384879713/attempts/7",
+  "source_status_sha256": "241c3be26c2396f23efee38656cd11a111b0049dc28ad743f6411c489d311cd5",
+  "sources": [
+    {
+      "url": "https://www.premiumtimesng.com/regional/nnorth-east/920137-death-toll-in-taraba-terror-attack-rises-to-40.html",
+      "title": "Death toll in Taraba terror attack rises to 40",
+      "published_at": "2026-10-25",
+      "publication_date_quote": "October 25, 2026",
+      "relevance": "Previously retrieved and independently reviewed for this reporting week; fetch and review all claims again."
+    },
+    {
+      "url": "https://www.channelstv.com/2026/10/25/ebola-53-contacts-including-healthcare-workers-spouse-under-surveillance-says-ncdc/",
+      "title": "Ebola: 53 Contacts, Including Healthcare Workers Under Surveillance, Says NCDC",
+      "published_at": "2026-10-25",
+      "publication_date_quote": "October 25, 2026",
+      "relevance": "Previously retrieved and independently reviewed for this reporting week; fetch and review all claims again."
+    }
+  ]
+}

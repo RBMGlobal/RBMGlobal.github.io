@@ -214,6 +214,34 @@ class WeeklyOrchestrationTests(unittest.TestCase):
             with self.assertRaises(jsonschema.ValidationError):
                 jsonschema.validate('Reported on 23 October 2026', field_schema)
 
+    def test_recovered_sources_skip_paid_search_but_require_new_draft_and_review(self):
+        record = {'schema_version': 1, 'issue_date': '2026-10-19',
+                  'reporting_window': {'from': '2026-10-12', 'to': '2026-10-18'},
+                  'purpose': 'refetch-and-re-review-after-validation-fault',
+                  'previous_independent_review_approved': True,
+                  'research_run': 'https://github.com/RBMGlobal/RBMGlobal.github.io/actions/runs/123/attempts/1',
+                  'source_status_sha256': 'a' * 64,
+                  'sources': [{'url': s['url']} for s in self.manifest['sources'][:2]]}
+        runner.write_json(self.repo / 'research/state/weekly-source-recovery.json', record)
+        self.run_weekly()
+        self.assertEqual([c['request_id'].split(':')[-1] for c in self.calls], ['candidate', 'review'])
+        self.assertFalse(self.calls[-1]['allow_review_fallback'])
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertTrue(summary['source_discovery_reused'])
+
+    def test_recovery_record_for_other_week_is_not_used(self):
+        runner.write_json(self.repo / 'research/state/weekly-source-recovery.json', {'issue_date': '2026-10-12'})
+        self.run_weekly()
+        self.assertEqual(len(self.calls), 4)
+
+    def test_quote_minimum_matches_renderer_requirement(self):
+        import jsonschema
+        schema = json.loads((HERE / 'brief/candidate.schema.json').read_text())
+        quote = schema['properties']['overview']['items']['properties']['evidence']['items']['properties']['quote']
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate('40 people', quote)
+        jsonschema.validate('Exact source excerpt', quote)
+
     def test_one_source_stops_before_review(self):
         self.source_mode = 'single'
         with self.assertRaisesRegex(ValueError, 'at least two retrieved sources'):

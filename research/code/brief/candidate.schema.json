@@ -67,7 +67,9 @@
                   "type": "string"
                 },
                 "quote": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 12,
+                  "maxLength": 2000
                 }
               },
               "required": [
@@ -155,7 +157,9 @@
                         "type": "string"
                       },
                       "quote": {
-                        "type": "string"
+                        "type": "string",
+                        "minLength": 12,
+                        "maxLength": 2000
                       }
                     },
                     "required": [
@@ -233,7 +237,9 @@
                         "type": "string"
                       },
                       "quote": {
-                        "type": "string"
+                        "type": "string",
+                        "minLength": 12,
+                        "maxLength": 2000
                       }
                     },
                     "required": [
@@ -293,7 +299,9 @@
                   "type": "string"
                 },
                 "quote": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 12,
+                  "maxLength": 2000
                 }
               },
               "required": [
@@ -345,7 +353,9 @@
                   "type": "string"
                 },
                 "quote": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 12,
+                  "maxLength": 2000
                 }
               },
               "required": [
