@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-10-26",
+  "previous_issue_date": "2026-10-19",
+  "publication_date": "2026-10-26",
+  "reviewed_at": "2026-10-26T19:58:53.069607+00:00",
+  "reporting_window": {
+    "from": "2026-10-19",
+    "to": "2026-10-25"
+  },
+  "overview": [
+    {
+      "kind": "limitation",
+      "text": "This brief covers a reported community attack and a public-health development. The supplied evidence cannot support a nationwide security assessment or comparisons between zones.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "developments": [
+    {
+      "title": "Deadly attack reported in Taraba",
+      "event_window": {
+        "from": "2026-10-23",
+        "to": "2026-10-23"
+      },
+      "event_timing_note": "The attack occurred during the reporting week; publication followed on the closing day.",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Premium Times reported an attack on Binnari village, Taraba, citing Amnesty International’s account of 40 deaths. It also described a lower initial police toll. These are differing accounts, not additive totals. The article was published on the window’s closing day.",
+          "source_ids": [
+            "s1"
+          ],
+          "evidence": [
+            {
+              "source_id": "s1",
+              "quote": "23 October terror attack"
+            },
+            {
+              "source_id": "s1",
+              "quote": "40 people were killed in the attack"
+            },
+            {
+              "source_id": "s1",
+              "quote": "October 25, 2026"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Ebola confirmation and contact follow-up",
+      "event_window": {
+        "from": "2026-10-20",
+        "to": "2026-10-20"
+      },
+      "event_timing_note": "Laboratory confirmation occurred during the reporting week; the later article also described contact follow-up.",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Channels Television attributed an Ebola laboratory confirmation in the Federal Capital Territory to NCDC. Its closing-day article reported 53 identified contacts under follow-up; contacts should not be read as confirmed infections.",
+          "source_ids": [
+            "s2"
+          ],
+          "evidence": [
+            {
+              "source_id": "s2",
+              "quote": "20th October 2026"
+            },
+            {
+              "source_id": "s2",
+              "quote": "has risen to 53"
+            },
+            {
+              "source_id": "s2",
+              "quote": "Federal Capital Territory"
+            },
+            {
+              "source_id": "s2",
+              "quote": "October 25, 2026"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "North East",
+      "paragraphs": [
+        {
+          "kind": "limitation",
+          "text": "Coverage is localised; wider conditions across the zone remain unassessed.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North Central",
+      "paragraphs": [
+        {
+          "kind": "limitation",
+          "text": "The supplied material does not establish a zone-wide security picture.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North West",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient supplied evidence for an in-week assessment.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient supplied evidence for an in-week assessment.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South West",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient supplied evidence for an in-week assessment.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South South",
+      "paragraphs": [
+        {
+          "kind": "limitation",
+          "text": "The material is insufficient for a broader security or humanitarian assessment.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "humanitarian_context": [
+    {
+      "kind": "limitation",
+      "text": "Displacement, assistance coverage and unmet needs cannot be quantified from this evidence.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "limitations": [
+    {
+      "kind": "limitation",
+      "text": "This bounded review provides no independent verification. Coverage gaps do not establish an absence of incidents, and isolated reports cannot establish persistent patterns.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ]
+}

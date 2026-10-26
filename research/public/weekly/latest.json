@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-10-26",
+  "files": {
+    "candidate.json": {
+      "bytes": 4949,
+      "sha256": "0c3f7a16647c09efa63ba0574edfa99df1c3192cf321f9acdb9054c1d86cdbf6"
+    },
+    "lastweek.png": {
+      "bytes": 4092960,
+      "sha256": "429565fd28161f2213792d87ae7354c3a9b5868dad25b56df5ff34f1b221d82a"
+    },
+    "events-release.json": {
+      "bytes": 1324,
+      "sha256": "86f8b43a8bd56fe6bb6ecdd32900f393e02b7c22033502a66dd9e80b48ce17c9"
+    },
+    "attestation.json": {
+      "bytes": 405,
+      "sha256": "c055f4397a43439b2adc46ed85972e679b1705da71e78aafb51d44b747d08330"
+    },
+    "sources.json": {
+      "bytes": 1543,
+      "sha256": "728925614bc0b9bf69fd966aba1c46a4523136085dca6cb714f3b7bdd5fe2993"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "s1",
+      "url": "https://www.premiumtimesng.com/regional/nnorth-east/920137-death-toll-in-taraba-terror-attack-rises-to-40.html",
+      "final_url": "https://www.premiumtimesng.com/regional/nnorth-east/920137-death-toll-in-taraba-terror-attack-rises-to-40.html",
+      "title": "Death toll in Taraba terror attack rises to 40",
+      "publisher": "Premium Times",
+      "published_at": "2026-10-25",
+      "fetched_at": "2026-10-26T19:58:52.851974+00:00",
+      "http_status": 200,
+      "body_sha256": "f74b2ac93f4aa5bdc36ce0c928affe499843a8de1ef8d1a18c454c0f5a80d3a0",
+      "text_sha256": "5e7f1c039fe2c86610bcd826cbbddf7dada00e588667fdb37a79b41081eb2855",
+      "extract_path": "s1.txt"
+    },
+    {
+      "id": "s2",
+      "url": "https://www.channelstv.com/2026/10/25/ebola-53-contacts-including-healthcare-workers-spouse-under-surveillance-says-ncdc/",
+      "final_url": "https://www.channelstv.com/2026/10/25/ebola-53-contacts-including-healthcare-workers-spouse-under-surveillance-says-ncdc/",
+      "title": "Ebola: 53 Contacts, Including Healthcare Workers Under Surveillance, Says NCDC",
+      "publisher": "Channels Television",
+      "published_at": "2026-10-25",
+      "fetched_at": "2026-10-26T19:58:53.069103+00:00",
+      "http_status": 200,
+      "body_sha256": "35de01e33e0aa38686b2d8819ec9bd7a847de75606e115158006565c1d8616d3",
+      "text_sha256": "e223a1678e5e31da76f74d5f598696fffb1ee0bdd8153f7826c29d024d4886f7",
+      "extract_path": "s2.txt"
+    }
+  ]
+}

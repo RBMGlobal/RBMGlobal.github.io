@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-26T17:29:41.273741Z",
+  "mode": "source-refresh",
+  "coverage": {
+    "ucdp": {
+      "min_event_date": "2024-10-01",
+      "max_event_date": "2026-09-30",
+      "events": 2291,
+      "source_versions": "annual 26.1; candidate: 26.0.1, 26.0.2, 26.0.3, 26.0.4, 26.0.5, 26.0.6, 26.0.7, 26.0.8, 26.0.9"
+    },
+    "gdelt": {
+      "input_from": "2026-09-23",
+      "input_through": "2026-10-25",
+      "input_days": 33,
+      "min_event_date": "2026-09-23",
+      "max_event_date": "2026-10-25",
+      "events": 1652
+    },
+    "reliefweb": {
+      "from": "2026-07-29",
+      "to": "2026-10-26",
+      "fetched_at": "2026-10-26T17:29:55.059479+00:00",
+      "latest_publication": "2026-10-25",
+      "count": 196,
+      "refresh": "checked"
+    },
+    "heat": {
+      "from": "2026-09-23",
+      "to": "2026-10-25"
+    }
+  },
+  "warnings": [],
+  "files": {
+    "index.html": {
+      "sha256": "d6f30945d883671fcc034a602ad0ff58fdb7db118bb099e4b9c24e430c802e95",
+      "bytes": 1292281
+    },
+    "lastweek.png": {
+      "sha256": "429565fd28161f2213792d87ae7354c3a9b5868dad25b56df5ff34f1b221d82a",
+      "bytes": 4092960
+    },
+    "sentiment-gdelt.json": {
+      "sha256": "e8576a6e5de54d3d5ede40973faa4511616bccfff86ea6d5e9722d248e7fa7d0",
+      "bytes": 13182
+    }
+  }
+}
