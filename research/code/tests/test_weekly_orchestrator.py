@@ -68,11 +68,18 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.reject_review = False
         self.incomplete_checklist = False
         self.fetch_count = 0
+        self.initial_source_count = 3
+        self.recovery_source_count = 3
 
     def fake_collect(self, proposals, policy, output, urls):
         shutil.copytree(self.input / 'sources', output)
         manifest = copy.deepcopy(self.manifest)
+        count = self.recovery_source_count if output.name == 'recovered-sources' else self.initial_source_count
+        manifest['sources'] = manifest['sources'][:count]
         runner.write_json(output / 'manifest.json', manifest)
+        runner.write_json(output / 'collection.json', {'accepted': count, 'rejected': []})
+        if count == 0:
+            raise ValueError('No source passed collection and publication-date checks')
         return manifest
 
     def fake_events(self, output):
@@ -85,7 +92,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
     def generate(self, **kwargs):
         self.calls.append(kwargs)
         role = kwargs['request_id'].split(':')[-1]
-        if role == 'discovery':
+        if role in ('discovery', 'source-recovery'):
             data = {'sources': [{'url': source['url']} for source in self.manifest['sources']],
                     'limitations': 'Synthetic bounded discovery'}
         elif role == 'candidate':
@@ -200,6 +207,36 @@ class WeeklyOrchestrationTests(unittest.TestCase):
             self.run_weekly()
         self.assertEqual(len(self.calls), 2)
         self.assertFalse((self.output / 'files').exists())
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['status'], 'candidate_sources_withheld')
+        self.assertNotIn(FULL_TEXT_MARKER, json.dumps(summary))
+
+    def test_insufficient_collection_recovers_once_before_drafting(self):
+        self.initial_source_count = 1
+        self.run_weekly()
+        self.assertEqual([c['request_id'].split(':')[-1] for c in self.calls],
+                         ['discovery', 'source-recovery', 'candidate', 'review'])
+        self.assertTrue(self.calls[1]['search'])
+        self.assertIn('67890.1:weekly:source-recovery', self.calls[1]['request_id'])
+        self.assertTrue((self.output / 'plan.json').exists())
+
+    def test_zero_sources_can_recover_but_cannot_be_published_as_evidence(self):
+        self.initial_source_count = 0
+        self.run_weekly()
+        self.assertEqual(len(self.calls), 4)
+        self.assertTrue((self.output / 'plan.json').exists())
+
+    def test_failed_recovery_stops_before_drafting_or_review(self):
+        self.initial_source_count = self.recovery_source_count = 1
+        with self.assertRaisesRegex(ValueError, 'before drafting'):
+            self.run_weekly()
+        self.assertEqual([c['request_id'].split(':')[-1] for c in self.calls],
+                         ['discovery', 'source-recovery'])
+        self.assertFalse((self.output / 'files').exists())
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['minimum_sources'], 2)
+        self.assertFalse(summary['publication_changed'])
+        self.assertNotIn(FULL_TEXT_MARKER, json.dumps(summary))
 
     def test_unknown_source_stops_before_review(self):
         self.source_mode = 'unknown'
