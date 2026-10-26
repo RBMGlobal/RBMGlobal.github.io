@@ -229,6 +229,31 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.assertEqual(runner.recovery_domains(policy, collection), ['other.example'])
         self.assertEqual(runner.recovery_domains(policy, {}), list(policy['publishers']))
 
+    def test_archive_discovery_is_bounded_to_requested_week_and_is_only_a_lead(self):
+        calls = []
+        def archive(url, policy):
+            calls.append(url)
+            body = (f'<a href="{url}security-report/">Police report example</a>'
+                    '<a href="https://evil.example/report/">Police unrelated host</a>'
+                    '<a href="https://www.channelstv.com/2026/10/01/old/">Police old report</a>')
+            return body.encode(), 'text/html', url
+        start, end = dt.date(2026, 10, 19), dt.date(2026, 10, 25)
+        with patch.object(runner, 'fetch', side_effect=archive):
+            result = runner.weekly_archive_hints(start, end, {'publishers': {'channelstv.com': 'Channels'}})
+        self.assertEqual(len(calls), 7)
+        self.assertEqual(len(result['articles']), 7)
+        self.assertEqual(result['articles'][0]['archive_day'], '2026-10-25')
+        self.assertEqual(result['articles'][-1]['archive_day'], '2026-10-19')
+        self.assertIn('not exhaustive evidence', result['scope'])
+        self.assertEqual(result['failures'], [])
+
+    def test_unavailable_archive_never_becomes_evidence(self):
+        with patch.object(runner, 'fetch', side_effect=ValueError('blocked')):
+            result = runner.weekly_archive_hints(dt.date(2026, 10, 19), dt.date(2026, 10, 25),
+                                                {'publishers': {'channelstv.com': 'Channels'}})
+        self.assertEqual(result['articles'], [])
+        self.assertEqual(len(result['failures']), 7)
+
     def test_zero_sources_can_recover_but_cannot_be_published_as_evidence(self):
         self.initial_source_count = 0
         self.run_weekly()
