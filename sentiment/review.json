@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-10-25T22:16:42.693933+00:00",
-  "review_date": "2026-10-25",
+  "reviewed_at": "2026-10-26T15:34:07.499496+00:00",
+  "review_date": "2026-10-26",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. Bounded review of the supplied evidence only. The provided Afrobarometer item is a Nigeria-wide survey publication about health-care access and insurance attitudes, but the excerpt does not supply the full methodological metadata needed for a compliant new poll record, including sample design details, sample size, weighting, and exact fieldwork days. No attributed security incident context is present in the supplied evidence. This review therefore records no new eligible poll or security-context entry and makes no state-level proposal.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. The supplied evidence is limited to a Nigeria-focused Afrobarometer working paper and a UNHCR displacement dashboard. The Afrobarometer item describes survey-based analysis, but the available text does not provide the exact fieldwork dates, full methods metadata, or reportable national or zonal topline percentages needed for a new poll record. The UNHCR material is a displacement dashboard rather than survey evidence for public sentiment. No state classification is supported, and no existing verified evidence is duplicated here.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,24 +14,35 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "12142884096264ebed37144ba11a2a4cc9f4e949791239b39afa3407767e5b04",
-  "evidence_manifest_sha256": "ee4ad3925809a0f5e83fcaae1000f7ed451020a3ca7ae9dc73221173b7c2bb1d",
+  "candidate_sha256": "703b326ea9df50c0845a3ae491cd6f43bc58f295faa36485dd2f70acc0de24ef",
+  "evidence_manifest_sha256": "20a53d8bc812d0d91405d363838a5f9d6e0886f2b432e4523f721e2c09cf2952",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-10-25T22:16:42.693933+00:00",
+    "reviewed_at": "2026-10-26T15:34:07.499496+00:00",
     "model": "gpt-6.1-sol"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.afrobarometer.org/publication/ad1228-nigerians-worry-about-access-to-medical-care-amid-widespread-lack-of-health-insurance/",
-      "final_url": "https://www.afrobarometer.org/publication/ad1228-nigerians-worry-about-access-to-medical-care-amid-widespread-lack-of-health-insurance/",
-      "title": "AD1228: Nigerians worry about access to medical care amid widespread lack of health insurance",
+      "url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
+      "final_url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
+      "title": "WP229: Trading privacy for peace? Violent conflict and support for government surveillance in Nigeria and the broader African context – Afrobarometer",
       "publisher": "Afrobarometer",
-      "published_at": "2026-09-04",
-      "fetched_at": "2026-10-25T22:16:28.329205+00:00",
-      "body_sha256": "e70a8613a03b209bc22cecf3fe1a4df9497220edfe0518e220a073672986dc4a",
-      "text_sha256": "a051de09936f4356c9eaad8b4b2376d0622c36fe999760d144920129eb627088"
+      "published_at": "2026-08-04",
+      "fetched_at": "2026-10-26T15:33:47.390297+00:00",
+      "body_sha256": "357d67f03a2319a11c8f7efc45a9042886b38582c15b47ca0b421730a905a136",
+      "text_sha256": "5e05e497ad4795beb69769f177b7daab488443ff8176a6f0078d35015b4aff2b"
+    },
+    {
+      "id": "s2",
+      "url": "https://data.unhcr.org/en/documents/details/124425",
+      "final_url": "https://data.unhcr.org/en/documents/details/124425",
+      "title": "Document - UNHCR Nigeria Forcibly Displaced Populations Dashboard - 1 October 2026",
+      "publisher": "UNHCR",
+      "published_at": "2026-10-01",
+      "fetched_at": "2026-10-26T15:33:52.555880+00:00",
+      "body_sha256": "6caffda7771740d88e28c08e1ba824d771ef9e5b93cec210f2f558173c0f4469",
+      "text_sha256": "c8964de9f466247ee052f0edafca508be0a252b01d393de35e446470d1d86d4b"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
