@@ -134,7 +134,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: editorial-status-${{ github.run_id }}
+          name: editorial-status-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/editorial-output/run-summary.json
           retention-days: 30
           if-no-files-found: ignore

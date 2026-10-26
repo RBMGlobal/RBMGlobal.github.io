@@ -36,6 +36,8 @@ class Session:
         self.tamper = None
     def get(self, url, **kwargs):
         self.calls.append(("GET", url, kwargs))
+        if url.endswith('/git/ref/heads/main'):
+            return Response(self.get_status, {'ref': 'refs/heads/main', 'object': {'type': 'commit', 'sha': 'b' * 40}})
         raw = json.dumps(self.state).encode()
         data = {"type": "file", "encoding": "base64", "path": PATH, "size": len(raw),
                 "content": base64.b64encode(raw).decode(), "sha": "a" * 40}
@@ -48,7 +50,7 @@ class Session:
             self.state = json.loads(base64.b64decode(kwargs["json"]["content"]))
         if self.ambiguous:
             raise TimeoutError("simulated timeout after remote commit")
-        return Response(self.put_status)
+        return Response(self.put_status, {'commit': {'sha': 'c' * 40}, 'content': {'sha': 'a' * 40}})
 
 
 class LedgerStoreTests(unittest.TestCase):
@@ -64,8 +66,8 @@ class LedgerStoreTests(unittest.TestCase):
         ledger = BudgetLedger(initial, self.store.persist)
         ledger.reserve("run-123", "daily", envelope(MINI, 6000), {})
         self.assertEqual(self.session.state, ledger.state)
-        self.assertEqual([x[0] for x in self.session.calls], ["GET", "GET", "PUT", "GET"])
-        payload = self.session.calls[2][2]["json"]
+        self.assertEqual([x[0] for x in self.session.calls], ["GET", "GET", "GET", "GET", "PUT", "GET"])
+        payload = self.session.calls[4][2]["json"]
         self.assertEqual(payload["sha"], sha)
         self.assertEqual(payload["branch"], "main")
         self.assertNotIn(ENV["GH_TOKEN"], payload["content"])
@@ -73,6 +75,19 @@ class LedgerStoreTests(unittest.TestCase):
             self.assertTrue(url.startswith("https://api.github.com/repos/" + OWNER))
             self.assertIs(kwargs["allow_redirects"], False)
         self.assertFalse(self.session.trust_env)
+        self.assertEqual(self.session.calls[-1][2]['params']['ref'], 'c' * 40)
+        self.assertFalse(any(kwargs.get('params', {}).get('ref') == 'main' for _, _, kwargs in self.session.calls))
+
+    def test_verification_reads_exact_commit_not_stale_mutable_branch(self):
+        real_get = self.session.get
+        def get(url, **kwargs):
+            if kwargs.get('params', {}).get('ref') == 'main':
+                raise AssertionError('Mutable branch contents may be stale')
+            return real_get(url, **kwargs)
+        self.session.get = get
+        ledger = BudgetLedger(self.store.read()[0], self.store.persist)
+        ledger.reserve('fresh', 'daily', envelope(MINI, 6000), {})
+        self.assertEqual(ledger.state['revision'], 1)
 
     def test_stale_revision_never_puts(self):
         ledger = BudgetLedger(self.store.read()[0], self.store.persist)

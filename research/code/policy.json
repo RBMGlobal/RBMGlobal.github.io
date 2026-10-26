@@ -25,7 +25,9 @@
     "amnesty.org": "Amnesty International",
     "hrw.org": "Human Rights Watch",
     "reuters.com": "Reuters",
-    "apnews.com": "Associated Press"
+    "apnews.com": "Associated Press",
+    "premiumtimesng.com": "Premium Times",
+    "channelstv.com": "Channels Television"
   },
   "primary_hosts": [
     "afrobarometer.org",
@@ -49,7 +51,9 @@
     "amnesty.org",
     "hrw.org",
     "reuters.com",
-    "apnews.com"
+    "apnews.com",
+    "premiumtimesng.com",
+    "channelstv.com"
   ],
   "state_rating_rules": [],
   "polling_hosts": [

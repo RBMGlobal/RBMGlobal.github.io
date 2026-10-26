@@ -23,11 +23,26 @@ class GitHubLedgerStore:
         self.session.trust_env = False
         self.session.headers.update(Authorization='Bearer ' + token,
                                     Accept='application/vnd.github+json',
+                                    **{'Cache-Control': 'no-cache'},
                                     **{'X-GitHub-Api-Version': '2022-11-28'})
         self.url = 'https://api.github.com/repos/' + OWNER + '/contents/' + PATH
+        self.ref_url = 'https://api.github.com/repos/' + OWNER + '/git/ref/heads/main'
 
-    def read(self):
-        response = self.session.get(self.url, params={'ref': 'main'}, timeout=30, allow_redirects=False)
+    def read(self, commit=None):
+        # Bind the contents request to an immutable commit. A cached ref=main
+        # contents response can otherwise lag behind a successful ledger write.
+        if commit is None:
+            head = self.session.get(self.ref_url, timeout=30, allow_redirects=False)
+            try:
+                obj = head.json()
+                if head.status_code != 200 or obj['ref'] != 'refs/heads/main' or obj['object']['type'] != 'commit':
+                    raise ValueError()
+                commit = obj['object']['sha']
+            except (ValueError, KeyError, TypeError):
+                raise RuntimeError('Cannot resolve the committed budget ledger head') from None
+        if not isinstance(commit, str) or not re.fullmatch(r'[0-9a-f]{40}', commit):
+            raise RuntimeError('Invalid budget ledger commit')
+        response = self.session.get(self.url, params={'ref': commit}, timeout=30, allow_redirects=False)
         if response.status_code != 200:
             raise RuntimeError('Cannot read the committed budget ledger; no paid call permitted')
         try:
@@ -58,5 +73,13 @@ class GitHubLedgerStore:
         # Never retry an ambiguous mutation, and never proceed on an unconfirmed reserve.
         if response.status_code not in (200, 201):
             raise RuntimeError('Budget ledger commit was not confirmed')
-        confirmed, _ = self.read()
-        return confirmed == state
+        try:
+            result = response.json()
+            committed = result['commit']['sha']
+            blob = result['content']['sha']
+            if not isinstance(blob, str) or not re.fullmatch(r'[0-9a-f]{40}', blob):
+                raise ValueError()
+        except (ValueError, KeyError, TypeError):
+            raise RuntimeError('Budget commit receipt is malformed') from None
+        confirmed, confirmed_blob = self.read(commit=committed)
+        return confirmed == state and confirmed_blob == blob

@@ -220,6 +220,15 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.assertIn('67890.1:weekly:source-recovery', self.calls[1]['request_id'])
         self.assertTrue((self.output / 'plan.json').exists())
 
+    def test_recovery_excludes_blocked_publisher_not_unrelated_domains(self):
+        policy = {'publishers': dict.fromkeys(['apnews.com', 'other.example', 'another.example'])}
+        collection = {'rejected': [
+            {'url': 'https://www.apnews.com/article/example', 'reason': '403 Client Error: Forbidden'},
+            {'url': 'https://another.example/story', 'reason': '429 Client Error: Too Many Requests'},
+            {'url': 'https://other.example/story', 'reason': 'Source publication date is ambiguous'}]}
+        self.assertEqual(runner.recovery_domains(policy, collection), ['other.example'])
+        self.assertEqual(runner.recovery_domains(policy, {}), list(policy['publishers']))
+
     def test_zero_sources_can_recover_but_cannot_be_published_as_evidence(self):
         self.initial_source_count = 0
         self.run_weekly()
