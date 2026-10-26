@@ -146,6 +146,20 @@ class ClientTests(unittest.TestCase):
         self.sdk = FakeSDK(self.store)
         self.client = OpenAIEditorialClient(self.store.ledger(), self.sdk)
 
+    def test_weekly_draft_uses_stronger_source_only_model_with_its_full_reservation(self):
+        result = self.client.generate(request_id='weekly-draft', kind='weekly',
+                                      prompt='Draft from supplied evidence', schema=SCHEMA, search=False)
+        self.assertEqual(result.model, SOL)
+        self.assertEqual(self.sdk.calls[0]['reasoning'], {'effort': 'medium'})
+        self.assertEqual(self.sdk.calls[0]['tools'], [])
+        self.assertEqual(self.store.calls[0]['entries'][0]['envelope'], envelope(SOL, 6000))
+
+    def test_weekly_discovery_keeps_bounded_mini_search(self):
+        result = self.client.generate(request_id='weekly-discovery', kind='weekly',
+            prompt='Find public sources', schema=SCHEMA, allowed_domains=['afrobarometer.org'])
+        self.assertEqual(result.model, MINI)
+        self.assertEqual(self.sdk.calls[0]['max_tool_calls'], 4)
+
     def test_reservation_precedes_network_and_strict_web_contract(self):
         result = run(self.client)
         self.assertEqual(result.data, {"changed": False})

@@ -233,7 +233,8 @@ class OpenAIEditorialClient:
                  search=True, max_search_calls=None, allow_review_fallback=True):
         """One paid request at most; adapts search cap/model only BEFORE sending.
 
-        daily/weekly: Mini, <=6000 output. review: Sol, no tools, <=4000 output;
+        discovery/daily drafting: Mini, <=6000 output. Weekly drafting: Sol,
+        no tools, <=6000 output. Review: Sol, no tools, <=4000 output;
         Mini fallback only if full-context Sol reservation will not fit. Results
         disclose the actual model and search cap. No implicit no-search fallback.
         """
@@ -251,7 +252,9 @@ class OpenAIEditorialClient:
         if not search:
             cap = 0
         output_cap = 4000 if kind == "review" else 6000
-        models = [SOL, MINI] if kind == "review" and allow_review_fallback else ([SOL] if kind == "review" else [MINI])
+        weekly_draft = kind == "weekly" and not search
+        models = ([SOL] if weekly_draft else [SOL, MINI] if kind == "review" and allow_review_fallback
+                  else [SOL] if kind == "review" else [MINI])
         selected = None
         for model in models:
             for calls in range(cap, 0 if search else -1, -1):
@@ -266,7 +269,7 @@ class OpenAIEditorialClient:
         model, calls, limits = selected
         payload = {
             "model": model, "instructions": INSTRUCTIONS, "input": prompt,
-            "reasoning": {"effort": "low"}, "max_output_tokens": output_cap,
+            "reasoning": {"effort": "medium" if weekly_draft else "low"}, "max_output_tokens": output_cap,
             "store": False, "service_tier": "default", "background": False,
             "text": {"format": {"type": "json_schema", "name": "rbm_editorial_result",
                                  "schema": schema, "strict": True}},
