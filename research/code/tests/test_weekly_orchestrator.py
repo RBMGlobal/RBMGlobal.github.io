@@ -155,17 +155,21 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         baseline = (self.repo / 'sentiment/data.json').read_bytes()
         self.run_weekly()
         self.assertEqual([c['request_id'] for c in self.calls],
-                         ['67890.1:weekly:discovery', '67890.1:weekly:candidate', '67890.1:weekly:review'])
+                         ['67890.1:weekly:discovery', '67890.1:weekly:source-recovery',
+                          '67890.1:weekly:candidate', '67890.1:weekly:review'])
         self.assertTrue(self.calls[0]['search'])
-        self.assertFalse(self.calls[1]['search'])
         self.assertFalse(self.calls[2]['search'])
-        self.assertEqual(self.calls[2]['kind'], 'review')
+        self.assertFalse(self.calls[3]['search'])
+        self.assertTrue(self.calls[1]['search'])
+        self.assertEqual(self.calls[3]['kind'], 'review')
+        self.assertIn('FIRST RESEARCH PASS: conflict', self.calls[0]['prompt'])
+        self.assertIn('SECOND AND FINAL RESEARCH PASS', self.calls[1]['prompt'])
         folder = self.output / 'files/research/public/weekly/2026-10-19'
         names = {'candidate.json', 'sources.json', 'attestation.json', 'events-release.json', 'lastweek.png'}
         self.assertEqual({p.name for p in folder.iterdir()}, names)
         manifest = json.loads((folder / 'sources.json').read_text())
         self.assertEqual([s['id'] for s in manifest['sources']], ['source-1', 'source-2'])
-        self.assertNotIn('source-3', self.calls[2]['prompt'])
+        self.assertNotIn('source-3', self.calls[3]['prompt'])
         attestation = json.loads((folder / 'attestation.json').read_text())
         self.assertEqual(attestation['candidate_sha256'], runner.sha(folder / 'candidate.json'))
         self.assertEqual(attestation['evidence_manifest_sha256'], runner.sha(folder / 'sources.json'))
@@ -191,21 +195,21 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.bad_binding = 'issue_date'
         with self.assertRaisesRegex(ValueError, 'trusted binding: issue_date'):
             self.run_weekly()
-        self.assertEqual(len(self.calls), 2)
+        self.assertEqual(len(self.calls), 3)
         self.assertFalse((self.output / 'files').exists())
 
     def test_reporting_week_binding_cannot_be_changed(self):
         self.bad_binding = 'reporting_window'
         with self.assertRaisesRegex(ValueError, 'trusted binding: reporting_window'):
             self.run_weekly()
-        self.assertEqual(len(self.calls), 2)
+        self.assertEqual(len(self.calls), 3)
         self.assertFalse((self.output / 'files').exists())
 
     def test_one_source_stops_before_review(self):
         self.source_mode = 'single'
         with self.assertRaisesRegex(ValueError, 'at least two retrieved sources'):
             self.run_weekly()
-        self.assertEqual(len(self.calls), 2)
+        self.assertEqual(len(self.calls), 3)
         self.assertFalse((self.output / 'files').exists())
         summary = json.loads((self.output / 'run-summary.json').read_text())
         self.assertEqual(summary['status'], 'candidate_sources_withheld')
@@ -283,7 +287,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.source_mode = 'unknown'
         with self.assertRaisesRegex(ValueError, 'no unknown references'):
             self.run_weekly()
-        self.assertEqual(len(self.calls), 2)
+        self.assertEqual(len(self.calls), 3)
         self.assertFalse((self.output / 'files').exists())
 
     def test_review_rejection_preserves_current_issue(self):
@@ -291,7 +295,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         previous = (self.input / 'accepted/index.html').read_bytes()
         with self.assertRaisesRegex(ValueError, 'withheld'):
             self.run_weekly()
-        self.assertEqual(len(self.calls), 3)
+        self.assertEqual(len(self.calls), 4)
         self.assertEqual(self.fetch_count, 0)
         self.assertFalse((self.output / 'files').exists())
         self.assertEqual(previous, (self.input / 'accepted/index.html').read_bytes())
@@ -301,7 +305,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.incomplete_checklist = True
         with self.assertRaisesRegex(ValueError, 'withheld'):
             self.run_weekly()
-        self.assertEqual(len(self.calls), 3)
+        self.assertEqual(len(self.calls), 4)
         self.assertEqual(self.fetch_count, 0)
         self.assertFalse((self.output / 'files').exists())
 
