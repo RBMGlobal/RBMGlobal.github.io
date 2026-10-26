@@ -1,8 +1,9 @@
 # Hosted AI research
 
-Prepared for OpenAI API use, with a shared US$10 monthly ceiling. Paid execution is
-disabled until API project access and a dedicated provider hard limit are configured.
-Installing this code or passing fixture tests does not establish successful AI research.
+Hosted OpenAI API research uses a shared US$10 monthly ceiling. The deployed workflow
+is enabled with restricted workload identity and durable budget reservations. During
+restoration, keep paid execution disabled until access, billing controls and live
+publication are verified; passing fixture tests alone is not evidence of activation.
 
 ## What runs where
 
@@ -49,10 +50,13 @@ commits a conservative worst-case reservation BEFORE each API request and stops 
 the remaining central ledger cannot cover it. Unknown request outcomes remain reserved;
 there is no automatic paid retry. Never reset the ledger to get around a stop.
 
-Research uses the pinned `gpt-5.4-mini-2026-03-17` model. Independent review uses
-`gpt-6.1-sol`; when its full-context reservation does not fit, a separate Mini review
-can run within the remaining budget. Receipts record the actual model. Search calls
-are bounded (up to2daily,4weekly); output tokens and request sizes are bounded. A
+Discovery and daily drafting use the pinned `gpt-5.4-mini-2026-03-17` model. Weekly
+drafting uses `gpt-6.1-sol` without tools. Independent review uses a separate Sol
+call; daily review may fall back to Mini if the full Sol reservation does not fit.
+Weekly review requires Sol or stops. Receipts record the actual model. Each search
+pass is bounded (up to 2 daily or 4 weekly calls). Weekly discovery uses one security
+pass and one humanitarian/completion pass, each separately reserved and charged.
+Output tokens and request sizes are bounded. A
 month may stop early if evidence work is large or a request outcome is uncertain.
 Prices were checked on25October2026; update reviewed tariffs when changing models/prices.
 
@@ -77,7 +81,8 @@ Prices were checked on25October2026; update reviewed tariffs when changing model
 5. Run **weekly** only when a reporting week is complete. Verify the approved public
    packet. Set `AI_BRIEF_ENABLED=true` in the weekly repository and run **publish**.
    Its Pages source must be GitHub Actions. Verify live HTML/PDF/archive hashes.
-6. Keep the three desktop jobs paused. Failures appear in GitHub Actions; GitHub's
+6. Keep retired desktop publishers paused; remove temporary verification follow-ups
+   after their recorded acceptance checks are complete. Failures appear in GitHub Actions; GitHub's
    account notification preferences control whether GitHub itself sends notifications.
 
 Creating the API service-account access or credential can require the owner's
@@ -91,6 +96,11 @@ from source backups and must be reconfigured after restoring repositories.
 - Weekly **redeploy** restores the accepted report without further AI cost.
 - An uncertain ledger entry requires checking the provider's usage before a reviewed
   reconciliation commit. A new workflow run is not a safe automatic retry.
+- For an operator-reviewed repair of the same issue, an exact-week
+  `research/state/weekly-source-recovery.json` can preserve an earlier source list
+  and its run/status hash. This skips paid discovery only: fresh retrieval, drafting,
+  independent Sol review and every publication check are still required. Other weeks
+  ignore the recovery record. It is not publication approval.
 - If a report fails, inspect the safe run summary and source receipts; fix the cause,
   not the dates or validation rules. No fabricated filler is permitted.
 

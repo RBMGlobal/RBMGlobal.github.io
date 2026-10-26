@@ -37,7 +37,8 @@ must be a strict object schema with all properties required, no unknown fields,
 and no external schema references. The result fields are `data`, `sources`,
 `model`, `response_id`, `usage`, `max_search_calls`, `charged_microusd`.
 
-Research uses the documented dated snapshot `gpt-5.4-mini-2026-03-17`. Daily search
+Discovery and daily drafting use the dated snapshot `gpt-5.4-mini-2026-03-17`.
+Weekly source-only drafting uses Sol with medium reasoning and no tools. Daily search
 has a ceiling of 2 calls, weekly 4. Before sending, the client can reduce the ceiling
 to fit remaining funds; it never silently replaces required search with no search.
 For collector-supplied evidence set `search=False`. Search returns a domain-checked
@@ -47,7 +48,8 @@ the separate source fetcher/validator must verify the actual documents.
 Review uses `gpt-6.1-sol`, no tools and at most 4000 output tokens. Its official
 model page currently lists no dated snapshot. If its reservation will not fit,
 the default fallback is Mini; this is explicit in `result.model`. Set
-`allow_review_fallback=False` to require Sol or stop. Research output is capped
+`allow_review_fallback=False` to require Sol or stop; weekly orchestration does so.
+Research output is capped
 at 6000 tokens; these caps include reasoning. Only web search is offered as a tool.
 
 ## Accounting and failure behavior
