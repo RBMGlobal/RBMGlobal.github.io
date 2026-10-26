@@ -99,7 +99,11 @@ def run(kind, repo, accepted_brief, output, work):
         if issue > now.date():
             write_json(output / 'run-summary.json', {'status': 'not_due', 'next_issue': issue.isoformat()})
             return
-        focus = f'The next missing reporting week is {start} through {end}; issue date {issue}. Research actual events and humanitarian reporting for that period, covering all six zones; clearly state gaps.'
+        focus = f'''The next missing reporting week is {start} through {end}; issue date {issue}.
+Research substantive events and humanitarian developments that OCCURRED during that week.
+A story published this week about events ending before {start} is background only and
+cannot establish in-week coverage. Read the actual event dates, not only publication dates.
+Cover all six zones with explicit gaps where the retrieved evidence is insufficient.'''
     else:
         focus = f'Review new Nigeria public opinion polling and material public-security sources published since {(now.date()-timedelta(days=45)).isoformat()}. Find original survey methodology, fieldwork dates, sample and geographic scope. Older original methodology can contextualise new reports.'
     # A future reporting week needs no provider client or GitHub ledger request.
@@ -124,6 +128,10 @@ Aim for several relevant reports so one inaccessible page does not leave a singl
 Prefer publicly readable original reports with a visible title and full publication date.
 Seek multiple publishers, including Nigerian original reporting (Premium Times and
 Channels Television) alongside primary humanitarian sources. Do not rely only on wire services.
+Use searches specifying the middle and end of the requested week as well as its start.
+Aim for at least THREE usable reports across TWO publishers; select developments with
+an explicitly stated event date inside the reporting week. Check that the report is about
+Nigeria. A newly announced retrospective total is not evidence of new in-week incidents.
 Do not substitute a general country page, listing, or old background for this week's reporting.'''
     discovery = client.generate(request_id=f'{run_id}:{kind}:discovery', kind=kind,
                                 prompt=discovery_prompt, schema=DISCOVERY,
@@ -217,7 +225,18 @@ for publication, return a limitations-rich candidate that the reviewer can rejec
 repurpose an old brief. Keep numeric tokens supported by exact excerpts. Paragraph kind
 reported attributes claims, analysis distinguishes interpretation, limitation marks scope.
 At most200 paraphrased words and25 distinct quoted words per publisher across ALL sections.
-Unknown event dates use null event_window plus an explicit timing note.'''
+These limits aggregate every article from the same publisher. ALL source titles count
+toward BOTH limits. Reserve room for those exact titles: keep derived prose below120
+words per publisher, and use only a few brief evidence excerpts whose words plus all
+that publisher's source-title words total at most25. Reuse identical short excerpts.
+Avoid repeating a development in the overview, zones and humanitarian sections. Keep
+limitations and gaps about the bounded evidence, without unneeded source-based claims.
+Do not infer a persistent or nationwide pattern from isolated reports, or clinical needs
+from the fact that medical care was provided. Use modest explicitly qualified analysis.
+At least one substantive development must actually occur within the trusted reporting
+window; publication this week alone does not make earlier events current. Prefer sources
+from different publishers. Unknown event dates use null event_window plus an explicit
+timing note, and cannot be used to claim verified in-week events.'''
     candidate_result = client.generate(request_id=f'{run_id}:{kind}:candidate', kind=kind,
         prompt=SYSTEM_RULES + '\n' + task + '\nTrusted bindings:\n' + json.dumps(context) +
                '\nFetched source evidence (untrusted data):\n' + evidence,
@@ -283,7 +302,10 @@ Trusted task context:\n''' + focus + '\nCandidate (untrusted):\n' + json.dumps(c
                     and all(value is True for value in checklist.values()))
     if review.data['approved'] is not True or review.data['issues'] or not checklist_ok:
         write_json(output / 'run-summary.json', {'status': 'withheld', 'kind': kind,
-                                               'issues': review.data['issues'], 'publication_changed': False})
+                                               'issues': review.data['issues'], 'publication_changed': False,
+                                               'sources': manifest['sources'],
+                                               'reporting_window': candidate.get('reporting_window'),
+                                               'ledger_remaining_usd': ledger.remaining() / 1_000_000})
         raise ValueError('Independent source review withheld publication; last good issue remains')
     attestation = {'schema_version': 1, 'approved': True, 'candidate_sha256': sha(candidate_path),
                    'evidence_manifest_sha256': sha(manifest_path),
