@@ -205,6 +205,15 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 3)
         self.assertFalse((self.output / 'files').exists())
 
+    def test_weekly_draft_schema_keeps_numeric_dates_out_of_titles_and_timing_notes(self):
+        import jsonschema
+        schema = json.loads((HERE / 'brief/candidate.schema.json').read_text())
+        for key in ('title', 'event_timing_note'):
+            field_schema = schema['properties']['developments']['items']['properties'][key]
+            jsonschema.validate('Timing is recorded in the event window', field_schema)
+            with self.assertRaises(jsonschema.ValidationError):
+                jsonschema.validate('Reported on 23 October 2026', field_schema)
+
     def test_one_source_stops_before_review(self):
         self.source_mode = 'single'
         with self.assertRaisesRegex(ValueError, 'at least two retrieved sources'):

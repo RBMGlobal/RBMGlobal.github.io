@@ -93,7 +93,8 @@
         "type": "object",
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^0-9]*$"
           },
           "event_window": {
             "anyOf": [
@@ -119,7 +120,8 @@
             ]
           },
           "event_timing_note": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^0-9]*$"
           },
           "paragraphs": {
             "type": "array",

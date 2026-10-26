@@ -289,6 +289,10 @@ of totals. Include at least one relevant supported development; if evidence is i
 for publication, return a limitations-rich candidate that the reviewer can reject. Do not
 repurpose an old brief. Keep numeric tokens supported by exact excerpts. Paragraph kind
 reported attributes claims, analysis distinguishes interpretation, limitation marks scope.
+Development titles and event_timing_note must contain NO DIGITS. Exact dates belong in
+the structured event_window fields, which the renderer displays. Explain timing in words
+without repeating dates in that note. Put any necessary sourced counts in the paragraphs
+with matching exact excerpts, not in development titles.
 At most200 paraphrased words and25 distinct quoted words per publisher across ALL sections.
 These limits aggregate every article from the same publisher. ALL source titles count
 toward BOTH limits. Reserve room for those exact titles: keep derived prose below120
@@ -395,8 +399,16 @@ Trusted task context:\n''' + focus + '\nCandidate (untrusted):\n' + json.dumps(c
     else:
         from publication import fetch_events
         release, image = fetch_events(work / 'events')
-        build_brief(candidate_path, attestation_path, manifest_path, sources_dir, accepted_brief,
-                    release, image, work / 'validated-brief', as_of=now.date())
+        try:
+            build_brief(candidate_path, attestation_path, manifest_path, sources_dir, accepted_brief,
+                        release, image, work / 'validated-brief', as_of=now.date())
+        except ValueError as exc:
+            write_json(output / 'run-summary.json', {
+                'status': 'validation_withheld', 'kind': kind, 'publication_changed': False,
+                'independent_review_approved': True, 'issue_date': issue.isoformat(),
+                'error': str(exc)[:500], 'sources': manifest['sources'],
+                'ledger_remaining_usd': ledger.remaining() / 1_000_000})
+            raise
         folder = output / 'files/research/public/weekly' / issue.isoformat()
         folder.mkdir(parents=True)
         for source, name in ((candidate_path, 'candidate.json'), (manifest_path, 'sources.json'),
