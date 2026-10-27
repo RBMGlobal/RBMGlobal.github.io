@@ -106,6 +106,43 @@ class DailyOrchestrationTests(unittest.TestCase):
         self.assertIn("Only supplied fixture evidence", review["scope"])
         self.assertIn("DAILY SENTIMENT EVIDENCE CHECK", self.calls[2]["prompt"])
 
+    def test_drafting_receives_same_publication_window_as_reviewer(self):
+        self.run_daily()
+        for call in self.calls:
+            self.assertIn("2026-09-10", call["prompt"])
+        self.assertIn('eligible as NEW evidence', self.calls[1]['prompt'])
+
+    def test_old_new_evidence_is_blocked_before_paid_review(self):
+        self.packet['manifest']['sources'][0]['published_at'] = '2026-08-31'
+        with self.assertRaisesRegex(ValueError, 'outside the trusted publication window'):
+            self.run_daily()
+        self.assertEqual(len(self.calls), 2)
+        self.assertEqual(self.calls[1]['schema']['properties']['polls']['maxItems'], 0)
+        self.assertFalse((self.output / 'files').exists())
+
+    def test_older_background_can_only_support_reviewed_no_change(self):
+        self.packet['manifest']['sources'][0]['published_at'] = '2026-08-31'
+        self.packet['candidate']['polls'] = []
+        self.packet['candidate']['security_context'] = []
+        self.packet['candidate']['state_rating_proposals'] = []
+        self.packet['candidate']['evidence_manifest_sha256'] = fixtures.sha(json.dumps(self.packet['manifest'], indent=2).encode())
+        # The collector receipt is the authoritative bytes used in both bindings.
+        (self.root / 'fixture/manifest.json').write_text(json.dumps(self.packet['manifest'], indent=2))
+        before = (self.repo / 'sentiment/data.json').read_bytes()
+        self.run_daily()
+        self.assertEqual(len(self.calls), 3)
+        self.assertEqual((self.output / 'files/sentiment/data.json').read_bytes(), before)
+
+    def test_publication_window_includes_cutoff_and_excludes_future(self):
+        manifest = {'sources': [{'id': 'cutoff', 'published_at': '2026-09-10'},
+                                {'id': 'old', 'published_at': '2026-09-09'},
+                                {'id': 'future', 'published_at': '2026-10-26'}]}
+        cutoff, ids = runner.daily_source_eligibility(manifest, fixtures.NOW.date())
+        self.assertEqual(cutoff, '2026-09-10')
+        self.assertEqual(ids, {'cutoff'})
+        with self.assertRaisesRegex(ValueError, 'outside the trusted publication window'):
+            runner.validate_daily_source_eligibility({'security_context': [{'source_id': 'old'}]}, ids)
+
     def test_explicit_retry_has_distinct_request_ids(self):
         self.run_daily(attempt="2")
         self.assertTrue(all(x["request_id"].startswith("12345.2:") for x in self.calls))

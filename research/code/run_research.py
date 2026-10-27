@@ -71,6 +71,22 @@ def evidence_prompt(manifest, root, limit):
     return json.dumps(parts, ensure_ascii=False)
 
 
+
+def daily_source_eligibility(manifest, review_day):
+    """Recent first publication permits new evidence; older methodology is background."""
+    cutoff = (review_day - timedelta(days=45)).isoformat()
+    eligible = {source['id'] for source in manifest['sources']
+                if cutoff <= source['published_at'] <= review_day.isoformat()}
+    return cutoff, eligible
+
+
+def validate_daily_source_eligibility(candidate, eligible):
+    for field in ('polls', 'security_context'):
+        for item in candidate.get(field, []):
+            if item.get('source_id') not in eligible:
+                raise ValueError('Daily accepted evidence is outside the trusted publication window')
+
+
 def recovery_domains(policy, collection):
     """Do not spend the one recovery search retrying access-blocked publishers."""
     blocked = set()
@@ -288,6 +304,13 @@ Return only reports with substantive accessible text and supported in-week event
     evidence = evidence_prompt(manifest, sources_dir, policy['max_model_evidence_chars'])
     if kind == 'daily':
         schema = json.loads((HERE / 'sentiment/candidate.schema.json').read_text())
+        publication_cutoff, eligible_source_ids = daily_source_eligibility(manifest, now.date())
+        if not eligible_source_ids:
+            # No older source can be promoted to accepted new evidence. The
+            # separate reviewer still decides whether the bounded no-change
+            # explanation is supported and its source metadata are accurate.
+            for field in ('polls', 'security_context'):
+                schema['properties'][field]['maxItems'] = 0
         baseline_obj = json.loads(baseline.read_text())
         context = {'schema_version': 1, 'baseline_sha256': baseline_sha,
                    'evidence_manifest_sha256': sha(manifest_path), 'review_date': now.date().isoformat(),
@@ -306,6 +329,18 @@ When no eligible new polling is supported, polls must be empty; a well-explained
 review is valid. A listing page alone does not establish methodology. Unknown
 exact fieldwork days remain null with explicit source caveat. No fabricated X update.'''
         examples = {p.stem: json.loads(p.read_text()) for p in (HERE / 'sentiment/examples').glob('*.json')}
+        task += '\nTrusted research scope: ' + focus
+        task += '\nSource IDs eligible as NEW evidence by first-publication date: ' + json.dumps(sorted(eligible_source_ids))
+        task += '''\nOnly these eligible IDs may be the source_id of a new poll or security_context item.
+Older sources may supply methodology/background for a genuinely new eligible report,
+but must not themselves become accepted NEW evidence. If no eligible new item is supported,
+return empty polls, security_context and state_rating_proposals, with a bounded review_scope.
+A source date that refers to data integration, event completion or a later update is not
+first publication. Never present an older report as a new development. Do not claim absence
+of new evidence beyond the small supplied source set. Each exact quote must be at least
+12 characters and at most 1600 characters. Keep all distinct quoted words across ALL
+fields and reports below 20 per publisher (hard ceiling 25), reusing brief exact excerpts.
+Avoid accepting an item when its required metadata cannot be supported within that budget.'''
         task += '\nIllustrative shape only, never use placeholder values: ' + json.dumps(examples)
     else:
         schema = json.loads((HERE / 'brief/candidate.schema.json').read_text())
@@ -356,6 +391,16 @@ timing note, and cannot be used to claim verified in-week events.'''
             continue
         if candidate.get(key) != value:
             raise ValueError('Candidate changed a trusted binding: ' + key)
+    if kind == 'daily':
+        try:
+            validate_daily_source_eligibility(candidate, eligible_source_ids)
+        except ValueError as exc:
+            write_json(output / 'run-summary.json', {
+                'status': 'candidate_sources_withheld', 'kind': kind, 'publication_changed': False,
+                'error': str(exc), 'publication_cutoff': publication_cutoff,
+                'eligible_source_ids': sorted(eligible_source_ids),
+                'ledger_remaining_usd': ledger.remaining() / 1_000_000})
+            raise
     candidate_path = work / 'candidate.json'
     write_json(candidate_path, candidate)
     if kind == 'weekly':

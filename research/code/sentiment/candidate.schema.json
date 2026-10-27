@@ -58,7 +58,9 @@
           "type": "string"
         },
         "quote": {
-          "type": "string"
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 1600
         },
         "locator": {
           "type": "string"
