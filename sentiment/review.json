@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-10-26T15:34:07.499496+00:00",
-  "review_date": "2026-10-26",
+  "reviewed_at": "2026-10-27T13:38:29.968314+00:00",
+  "review_date": "2026-10-27",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. The supplied evidence is limited to a Nigeria-focused Afrobarometer working paper and a UNHCR displacement dashboard. The Afrobarometer item describes survey-based analysis, but the available text does not provide the exact fieldwork dates, full methods metadata, or reportable national or zonal topline percentages needed for a new poll record. The UNHCR material is a displacement dashboard rather than survey evidence for public sentiment. No state classification is supported, and no existing verified evidence is duplicated here.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This bounded review examined the supplied eligible source set for Nigeria public-opinion or public-security items first published since 2026-09-12. The supplied materials are two secondary news reports about the same Yiaga Africa national survey release. They support only already-verified national survey context and do not provide a distinct new eligible polling item beyond the existing national evidence record. The evidence set does not support any new zonal or state classification, and it does not support adding security-context entries under the allowed new-evidence rule. Exact fieldwork days remain undisclosed in the supplied material; publication timing is clear, but the review cannot infer more granular dates or any additional methodology beyond what is explicitly quoted in the news-",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,35 +14,35 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "703b326ea9df50c0845a3ae491cd6f43bc58f295faa36485dd2f70acc0de24ef",
-  "evidence_manifest_sha256": "20a53d8bc812d0d91405d363838a5f9d6e0886f2b432e4523f721e2c09cf2952",
+  "candidate_sha256": "1e842b95ce140123b1b4fe8ad3d1c30c668124382769b534abbb0997e12e3686",
+  "evidence_manifest_sha256": "f13f6d869ffaa92543d4a41272adb43b501231ee90d448e31f25df82e2b6afbc",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-10-26T15:34:07.499496+00:00",
-    "model": "gpt-6.1-sol"
+    "reviewed_at": "2026-10-27T13:38:29.968314+00:00",
+    "model": "gpt-5.4-mini-2026-03-17"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
-      "final_url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
-      "title": "WP229: Trading privacy for peace? Violent conflict and support for government surveillance in Nigeria and the broader African context – Afrobarometer",
-      "publisher": "Afrobarometer",
-      "published_at": "2026-08-04",
-      "fetched_at": "2026-10-26T15:33:47.390297+00:00",
-      "body_sha256": "357d67f03a2319a11c8f7efc45a9042886b38582c15b47ca0b421730a905a136",
-      "text_sha256": "5e05e497ad4795beb69769f177b7daab488443ff8176a6f0078d35015b4aff2b"
+      "url": "https://www.channelstv.com/2026/10/07/2027-84-of-nigerians-willing-to-vote-61-fear-violence-yiaga-africa/",
+      "final_url": "https://www.channelstv.com/2026/10/07/2027-84-of-nigerians-willing-to-vote-61-fear-violence-yiaga-africa/",
+      "title": "2027: 84% Of Nigerians Willing To Vote, 61% Fear Violence — Yiaga Africa • Channels Television",
+      "publisher": "Channels Television",
+      "published_at": "2026-10-07",
+      "fetched_at": "2026-10-27T13:38:10.967582+00:00",
+      "body_sha256": "ed093219ff3765976949171f9634a2c9cd4beff1c420a38aeda02f2be9d35086",
+      "text_sha256": "b6c99630db5a8099494a508f742ad8d39c8219883d7c26b9d85d0371b8f398ad"
     },
     {
       "id": "s2",
-      "url": "https://data.unhcr.org/en/documents/details/124425",
-      "final_url": "https://data.unhcr.org/en/documents/details/124425",
-      "title": "Document - UNHCR Nigeria Forcibly Displaced Populations Dashboard - 1 October 2026",
-      "publisher": "UNHCR",
-      "published_at": "2026-10-01",
-      "fetched_at": "2026-10-26T15:33:52.555880+00:00",
-      "body_sha256": "6caffda7771740d88e28c08e1ba824d771ef9e5b93cec210f2f558173c0f4469",
-      "text_sha256": "c8964de9f466247ee052f0edafca508be0a252b01d393de35e446470d1d86d4b"
+      "url": "https://www.premiumtimesng.com/news/top-news/915335-2027-polls-84-intend-to-vote-but-only-41-committed-yiaga-survey.html",
+      "final_url": "https://www.premiumtimesng.com/news/top-news/915335-2027-polls-84-intend-to-vote-but-only-41-committed-yiaga-survey.html",
+      "title": "2027 Polls: ‘84% intend to vote, but only 41% committed' - Yiaga survey",
+      "publisher": "Premium Times",
+      "published_at": "2026-10-07",
+      "fetched_at": "2026-10-27T13:38:12.482356+00:00",
+      "body_sha256": "bc6f8563e85df3860a4348f4a670fbe87083efbc0eda071247cc4bc18a6225bf",
+      "text_sha256": "ec55b9b5b995ad9da138693460b524ad4a648d8a3823693d288a2ea4fbef443f"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
