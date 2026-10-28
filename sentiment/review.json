@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-10-27T13:38:29.968314+00:00",
-  "review_date": "2026-10-27",
+  "reviewed_at": "2026-10-28T15:03:40.441416+00:00",
+  "review_date": "2026-10-28",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This bounded review examined the supplied eligible source set for Nigeria public-opinion or public-security items first published since 2026-09-12. The supplied materials are two secondary news reports about the same Yiaga Africa national survey release. They support only already-verified national survey context and do not provide a distinct new eligible polling item beyond the existing national evidence record. The evidence set does not support any new zonal or state classification, and it does not support adding security-context entries under the allowed new-evidence rule. Exact fieldwork days remain undisclosed in the supplied material; publication timing is clear, but the review cannot infer more granular dates or any additional methodology beyond what is explicitly quoted in the news-",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. Bounded review of the supplied evidence set for Nigeria since 2026-09-13. The provided materials include one news report describing a new voter-preference survey and one country page summarizing Afrobarometer background, but the trusted bindings mark no source IDs as eligible for new evidence in this review. As a result, no new poll record or security-context item can be accepted here. The available evidence also does not supply a qualifying original methodology record with independently supportable publication-date, fieldwork-date, sample, and geography metadata that can be entered under the current rules. Existing national survey context in the bindings may help interpret background, but it is not treated as new evidence in this update.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,35 +14,35 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "1e842b95ce140123b1b4fe8ad3d1c30c668124382769b534abbb0997e12e3686",
-  "evidence_manifest_sha256": "f13f6d869ffaa92543d4a41272adb43b501231ee90d448e31f25df82e2b6afbc",
+  "candidate_sha256": "cf02648fb8fa8ff84383584c61a48507648b61ef9527d9f8c204b31739a02e0f",
+  "evidence_manifest_sha256": "b97de56e8c009c9c65b628f112704000be188408babe9c7c0f2f1efb288b73ca",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-10-27T13:38:29.968314+00:00",
+    "reviewed_at": "2026-10-28T15:03:40.441416+00:00",
     "model": "gpt-5.4-mini-2026-03-17"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.channelstv.com/2026/10/07/2027-84-of-nigerians-willing-to-vote-61-fear-violence-yiaga-africa/",
-      "final_url": "https://www.channelstv.com/2026/10/07/2027-84-of-nigerians-willing-to-vote-61-fear-violence-yiaga-africa/",
-      "title": "2027: 84% Of Nigerians Willing To Vote, 61% Fear Violence — Yiaga Africa • Channels Television",
-      "publisher": "Channels Television",
-      "published_at": "2026-10-07",
-      "fetched_at": "2026-10-27T13:38:10.967582+00:00",
-      "body_sha256": "ed093219ff3765976949171f9634a2c9cd4beff1c420a38aeda02f2be9d35086",
-      "text_sha256": "b6c99630db5a8099494a508f742ad8d39c8219883d7c26b9d85d0371b8f398ad"
+      "url": "https://www.premiumtimesng.com/news/more-news/900718-survey-challenges-voter-rejection-narrative-on-women-youth-pwds-in-politics.html",
+      "final_url": "https://www.premiumtimesng.com/news/more-news/900718-survey-challenges-voter-rejection-narrative-on-women-youth-pwds-in-politics.html",
+      "title": "Survey challenges voter rejection narrative on women, youth, PWDs in politics",
+      "publisher": "Premium Times",
+      "published_at": "2026-08-04",
+      "fetched_at": "2026-10-28T15:03:23.369515+00:00",
+      "body_sha256": "5cf4fbca753f8dc9b88ed6db6acc115dd01dbeed63200ef481aef814346a152d",
+      "text_sha256": "9d37a93ecdbe47382bdc0076c8545a6fbc45c5722c0384b07f3c21c1ae84fb08"
     },
     {
       "id": "s2",
-      "url": "https://www.premiumtimesng.com/news/top-news/915335-2027-polls-84-intend-to-vote-but-only-41-committed-yiaga-survey.html",
-      "final_url": "https://www.premiumtimesng.com/news/top-news/915335-2027-polls-84-intend-to-vote-but-only-41-committed-yiaga-survey.html",
-      "title": "2027 Polls: ‘84% intend to vote, but only 41% committed' - Yiaga survey",
-      "publisher": "Premium Times",
-      "published_at": "2026-10-07",
-      "fetched_at": "2026-10-27T13:38:12.482356+00:00",
-      "body_sha256": "bc6f8563e85df3860a4348f4a670fbe87083efbc0eda071247cc4bc18a6225bf",
-      "text_sha256": "ec55b9b5b995ad9da138693460b524ad4a648d8a3823693d288a2ea4fbef443f"
+      "url": "https://www.afrobarometer.org/countries/nigeria/",
+      "final_url": "https://www.afrobarometer.org/countries/nigeria/",
+      "title": "Nigeria – Afrobarometer",
+      "publisher": "Afrobarometer",
+      "published_at": "2026-09-04",
+      "fetched_at": "2026-10-28T15:03:25.449583+00:00",
+      "body_sha256": "42c204c27954f8a18a61860a70e32a1a24584d26176fe8a75837b9a4268d00f4",
+      "text_sha256": "3b50416d195dd1444c7e462919a2f1c02cc917e114a94a002779e2fbabc6bb3e"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
