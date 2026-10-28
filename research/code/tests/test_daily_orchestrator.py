@@ -52,9 +52,14 @@ class DailyOrchestrationTests(unittest.TestCase):
         self.work, self.output = self.root / "work", self.root / "output"
         self.work.mkdir(); self.output.mkdir()
         self.calls, self.bad_candidate, self.disagree, self.collect_failure = [], False, False, False
+        self.initial_collect_failure = False
+        self.blocked_domain = 'blocked.example.test'
+        self.recovery_budget_failure = False
 
     def fake_collect(self, proposals, policy, output, urls):
-        if self.collect_failure:
+        if self.collect_failure or (self.initial_collect_failure and output.name == 'sources'):
+            runner.write_json(output / 'collection.json', {'accepted': 0, 'rejected': [
+                {'url': 'https://' + self.blocked_domain + '/report', 'reason': '403 Client Error'}]})
             raise ValueError("No source passed collection and publication-date checks")
         shutil.copytree(self.root / "fixture", output)
         return copy.deepcopy(self.packet["manifest"])
@@ -62,7 +67,9 @@ class DailyOrchestrationTests(unittest.TestCase):
     def generate(self, **kwargs):
         self.calls.append(kwargs)
         role = kwargs["request_id"].split(":")[-1]
-        if role == "discovery":
+        if role == 'source-recovery' and self.recovery_budget_failure:
+            raise RuntimeError('Synthetic budget reservation refused')
+        if role in ("discovery", "source-recovery"):
             data = {"sources": [{"url": "https://primary.example.test/survey.pdf"}], "limitations": "Synthetic bounded discovery"}
         elif role == "candidate":
             data = copy.deepcopy(self.packet["candidate"])
@@ -157,8 +164,43 @@ class DailyOrchestrationTests(unittest.TestCase):
         self.collect_failure = True
         with self.assertRaisesRegex(ValueError, "No source"):
             self.run_daily()
-        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(len(self.calls), 2)
         self.assertFalse((self.output / "files").exists())
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertTrue(summary['bounded_recovery_attempted'])
+        self.assertEqual(summary['status'], 'source_collection_withheld')
+
+    def test_collection_gap_recovers_once_and_still_requires_review(self):
+        policy_path = self.config / 'policy.json'
+        policy = json.loads(policy_path.read_text())
+        policy['publishers'][self.blocked_domain] = 'Blocked Publisher'
+        policy_path.write_text(json.dumps(policy))
+        self.initial_collect_failure = True
+        self.run_daily()
+        self.assertEqual([c['request_id'].split(':')[-1] for c in self.calls],
+                         ['discovery', 'source-recovery', 'candidate', 'review'])
+        recovery = self.calls[1]
+        self.assertTrue(recovery['search'])
+        self.assertEqual(recovery['kind'], 'daily')
+        self.assertNotIn(self.blocked_domain, recovery['allowed_domains'])
+        self.assertIn('2026-09-10', recovery['prompt'])
+        self.assertTrue((self.output / 'plan.json').is_file())
+
+    def test_recovery_budget_refusal_preserves_publication(self):
+        self.initial_collect_failure = self.recovery_budget_failure = True
+        before = (self.repo / 'sentiment/data.json').read_bytes()
+        with self.assertRaisesRegex(RuntimeError, 'budget reservation refused'):
+            self.run_daily()
+        self.assertFalse((self.output / 'plan.json').exists())
+        self.assertEqual(before, (self.repo / 'sentiment/data.json').read_bytes())
+
+    def test_all_publishers_blocked_makes_no_recovery_call(self):
+        self.initial_collect_failure = True
+        self.blocked_domain = 'primary.example.test'
+        with self.assertRaisesRegex(ValueError, 'No accessible approved publisher'):
+            self.run_daily()
+        self.assertEqual(len(self.calls), 1)
+        self.assertFalse((self.output / 'files').exists())
 
     def test_changed_binding_is_not_silently_repaired(self):
         self.bad_candidate = True
