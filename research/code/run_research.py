@@ -18,7 +18,7 @@ from collector import collect, digest, write_json, fetch
 from github_ledger import GitHubLedgerStore
 from common.budget import BudgetLedger
 from common.openai_client import OpenAIEditorialClient
-from sentiment.apply_review import apply_review
+from sentiment.apply_review import apply_review, contains_date, citations, validate_sources
 from brief.build_brief import build as build_brief, previous_issue
 
 HERE = Path(__file__).resolve().parent
@@ -85,6 +85,30 @@ def validate_daily_source_eligibility(candidate, eligible):
         for item in candidate.get(field, []):
             if item.get('source_id') not in eligible:
                 raise ValueError('Daily accepted evidence is outside the trusted publication window')
+
+
+def prepare_daily_event_windows(candidate, manifest, sources_dir, policy, now):
+    """Downgrade unsupported date precision BEFORE independent review and hashing.
+
+    Exact source citations still must validate. The reviewer sees the conservative
+    window and must reject any unsupported timing left in the title or summary.
+    The final deterministic validator remains unchanged.
+    """
+    if not candidate.get('security_context'):
+        return
+    sources = validate_sources(manifest, sources_dir, policy, now)
+    for item in candidate['security_context']:
+        passage = citations(item['citations'], sources, item['source_id'])
+        window = item['event_window']
+        start, end = window['from'], window['to']
+        if start is None and end is None:
+            continue
+        if start is None or end is None or not (
+                contains_date(passage, start) and contains_date(passage, end)):
+            item['event_window'] = {
+                'from': None, 'to': None,
+                'note': 'Exact event dates are not established by the cited passages; '
+                        'the source publication date is not an event date.'}
 
 
 def recovery_domains(policy, collection):
@@ -369,7 +393,11 @@ first publication. Never present an older report as a new development. Do not cl
 of new evidence beyond the small supplied source set. Each exact quote must be at least
 12 characters and at most 1600 characters. Keep all distinct quoted words across ALL
 fields and reports below 20 per publisher (hard ceiling 25), reusing brief exact excerpts.
-Avoid accepting an item when its required metadata cannot be supported within that budget.'''
+Avoid accepting an item when its required metadata cannot be supported within that budget.
+Security event_window dates must BOTH appear explicitly, including the year, in the
+item's exact citations, not merely elsewhere in the article. Otherwise use null for
+both endpoints and explain the unknown timing. Never substitute publication dates or
+infer exact days from relative wording. Do not assert unsupported timing in prose.'''
         task += '\nIllustrative shape only, never use placeholder values: ' + json.dumps(examples)
     else:
         schema = json.loads((HERE / 'brief/candidate.schema.json').read_text())
@@ -430,6 +458,8 @@ timing note, and cannot be used to claim verified in-week events.'''
                 'eligible_source_ids': sorted(eligible_source_ids),
                 'ledger_remaining_usd': ledger.remaining() / 1_000_000})
             raise
+    if kind == 'daily':
+        prepare_daily_event_windows(candidate, manifest, sources_dir, policy, now)
     candidate_path = work / 'candidate.json'
     write_json(candidate_path, candidate)
     if kind == 'weekly':
@@ -498,8 +528,15 @@ Trusted task context:\n''' + focus + '\nCandidate (untrusted):\n' + json.dumps(c
     write_json(attestation_path, attestation)
     if kind == 'daily':
         target = work / 'validated-sentiment'
-        apply_review(baseline, candidate_path, manifest_path, sources_dir, attestation_path,
-                     HERE / 'policy.json', target)
+        try:
+            apply_review(baseline, candidate_path, manifest_path, sources_dir, attestation_path,
+                         HERE / 'policy.json', target)
+        except ValueError as exc:
+            write_json(output / 'run-summary.json', {
+                'status': 'validation_withheld', 'kind': kind, 'publication_changed': False,
+                'independent_review_approved': True, 'error': str(exc)[:500],
+                'ledger_remaining_usd': ledger.remaining() / 1_000_000})
+            raise
         for name in ('data.json', 'review.json'):
             dest = output / 'files/sentiment' / name
             dest.parent.mkdir(parents=True, exist_ok=True)

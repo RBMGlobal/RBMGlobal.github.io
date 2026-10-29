@@ -113,6 +113,59 @@ class DailyOrchestrationTests(unittest.TestCase):
         self.assertIn("Only supplied fixture evidence", review["scope"])
         self.assertIn("DAILY SENTIMENT EVIDENCE CHECK", self.calls[2]["prompt"])
 
+    def security_candidate(self, quote='The report recorded displacement in Nigeria'):
+        self.packet['candidate']['polls'] = []
+        self.packet['candidate']['security_context'] = [{
+            'id': 'synthetic-context', 'source_id': 'survey',
+            'title': 'Reported displacement', 'summary': 'The report describes displacement in Nigeria.',
+            'geography': 'Nigeria',
+            'event_window': {'from': '2026-10-01', 'to': '2026-10-19', 'note': 'Reported period.'},
+            'citations': [{'source_id': 'survey', 'quote': quote, 'locator': 'Synthetic paragraph'}]}]
+
+    def test_uncited_event_dates_become_unknown_before_review_and_hashing(self):
+        self.security_candidate()
+        self.run_daily()
+        candidate = json.loads((self.work / 'candidate.json').read_text())
+        window = candidate['security_context'][0]['event_window']
+        self.assertIsNone(window['from'])
+        self.assertIsNone(window['to'])
+        self.assertIn('not established', window['note'])
+        self.assertIn(json.dumps(candidate), self.calls[-1]['prompt'])
+        attestation = json.loads((self.work / 'attestation.json').read_text())
+        self.assertEqual(attestation['candidate_sha256'], runner.sha(self.work / 'candidate.json'))
+        self.assertTrue((self.output / 'plan.json').exists())
+
+    def test_explicit_event_dates_are_preserved(self):
+        self.security_candidate('The report recorded displacement in Nigeria during 2026-10-01 to 2026-10-19.')
+        self.run_daily()
+        candidate = json.loads((self.work / 'candidate.json').read_text())
+        self.assertEqual(candidate['security_context'][0]['event_window']['from'], '2026-10-01')
+        self.assertEqual(candidate['security_context'][0]['event_window']['to'], '2026-10-19')
+
+    def test_fabricated_date_quote_cannot_be_normalized_into_acceptance(self):
+        self.security_candidate('Fabricated event on 2026-10-01 to 2026-10-19.')
+        with self.assertRaisesRegex(InvalidReview, 'Exact citation passage missing'):
+            self.run_daily()
+        self.assertEqual(len(self.calls), 2)
+        self.assertFalse((self.output / 'plan.json').exists())
+
+    def test_normalized_candidate_still_requires_reviewer_approval(self):
+        self.security_candidate()
+        self.disagree = True
+        with self.assertRaisesRegex(ValueError, 'withheld'):
+            self.run_daily()
+        self.assertFalse((self.output / 'plan.json').exists())
+
+    def test_remaining_validation_failure_writes_safe_status(self):
+        self.security_candidate()
+        self.packet['candidate']['security_context'][0]['summary'] = 'There were 999 displacements.'
+        with self.assertRaisesRegex(InvalidReview, 'number absent'):
+            self.run_daily()
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['status'], 'validation_withheld')
+        self.assertFalse(summary['publication_changed'])
+        self.assertFalse((self.output / 'plan.json').exists())
+
     def test_drafting_receives_same_publication_window_as_reviewer(self):
         self.run_daily()
         for call in self.calls:
