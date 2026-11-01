@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-10-28T15:03:40.441416+00:00",
-  "review_date": "2026-10-28",
+  "reviewed_at": "2026-11-01T14:26:10.961719+00:00",
+  "review_date": "2026-11-01",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. Bounded review of the supplied evidence set for Nigeria since 2026-09-13. The provided materials include one news report describing a new voter-preference survey and one country page summarizing Afrobarometer background, but the trusted bindings mark no source IDs as eligible for new evidence in this review. As a result, no new poll record or security-context item can be accepted here. The available evidence also does not supply a qualifying original methodology record with independently supportable publication-date, fieldwork-date, sample, and geography metadata that can be entered under the current rules. Existing national survey context in the bindings may help interpret background, but it is not treated as new evidence in this update.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. The supplied evidence supports only a single newspaper feature on election-result tracking technology and cited claims about prior state-election monitoring. It does not provide an eligible new national or zonal public-opinion survey with original methodology, fieldwork dates, sample design, or result tables that can be safely added as polling evidence. It also does not provide a separately supportable public-security incident source meeting the allowed-new-evidence constraint. The review therefore makes no new additions and leaves state ratings unchanged.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,35 +14,24 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "cf02648fb8fa8ff84383584c61a48507648b61ef9527d9f8c204b31739a02e0f",
-  "evidence_manifest_sha256": "b97de56e8c009c9c65b628f112704000be188408babe9c7c0f2f1efb288b73ca",
+  "candidate_sha256": "f0554a7c948f15ddc43aa306e9f6ece8529e7293ac348355ee1f3779b6399576",
+  "evidence_manifest_sha256": "0b57893c344c341a858c214a21f1e6fd267af4551cd88cb7599d0cee5b5cd28c",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-10-28T15:03:40.441416+00:00",
-    "model": "gpt-5.4-mini-2026-03-17"
+    "reviewed_at": "2026-11-01T14:26:10.961719+00:00",
+    "model": "gpt-6.1-sol"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.premiumtimesng.com/news/more-news/900718-survey-challenges-voter-rejection-narrative-on-women-youth-pwds-in-politics.html",
-      "final_url": "https://www.premiumtimesng.com/news/more-news/900718-survey-challenges-voter-rejection-narrative-on-women-youth-pwds-in-politics.html",
-      "title": "Survey challenges voter rejection narrative on women, youth, PWDs in politics",
+      "url": "https://www.premiumtimesng.com/features-and-interviews/913030-ai-civic-tech-are-changing-nigerias-election-result-tracking-landscape.html",
+      "final_url": "https://www.premiumtimesng.com/features-and-interviews/913030-ai-civic-tech-are-changing-nigerias-election-result-tracking-landscape.html",
+      "title": "AI, civic tech are changing Nigeria’s election result tracking landscape",
       "publisher": "Premium Times",
-      "published_at": "2026-08-04",
-      "fetched_at": "2026-10-28T15:03:23.369515+00:00",
-      "body_sha256": "5cf4fbca753f8dc9b88ed6db6acc115dd01dbeed63200ef481aef814346a152d",
-      "text_sha256": "9d37a93ecdbe47382bdc0076c8545a6fbc45c5722c0384b07f3c21c1ae84fb08"
-    },
-    {
-      "id": "s2",
-      "url": "https://www.afrobarometer.org/countries/nigeria/",
-      "final_url": "https://www.afrobarometer.org/countries/nigeria/",
-      "title": "Nigeria – Afrobarometer",
-      "publisher": "Afrobarometer",
-      "published_at": "2026-09-04",
-      "fetched_at": "2026-10-28T15:03:25.449583+00:00",
-      "body_sha256": "42c204c27954f8a18a61860a70e32a1a24584d26176fe8a75837b9a4268d00f4",
-      "text_sha256": "3b50416d195dd1444c7e462919a2f1c02cc917e114a94a002779e2fbabc6bb3e"
+      "published_at": "2026-09-30",
+      "fetched_at": "2026-11-01T14:26:00.441509+00:00",
+      "body_sha256": "49c6471bdd865111a57e048dc192a13b30a0b488db56acc2e33ef65f30997723",
+      "text_sha256": "72435a528a1c221ce96aca0324249a34e53fe704d81433ec2b9b82cd9d71589b"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
