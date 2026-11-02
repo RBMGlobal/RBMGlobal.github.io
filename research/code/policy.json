@@ -25,9 +25,19 @@
     "amnesty.org": "Amnesty International",
     "hrw.org": "Human Rights Watch",
     "reuters.com": "Reuters",
-    "apnews.com": "Associated Press",
     "premiumtimesng.com": "Premium Times",
-    "channelstv.com": "Channels Television"
+    "channelstv.com": "Channels Television",
+    "punchng.com": "The Punch",
+    "vanguardngr.com": "Vanguard",
+    "guardian.ng": "The Guardian Nigeria",
+    "dailytrust.com": "Daily Trust",
+    "thecable.ng": "The Cable",
+    "businessday.ng": "BusinessDay",
+    "icirnigeria.org": "ICIR",
+    "saharareporters.com": "Sahara Reporters",
+    "dailypost.ng": "Daily Post",
+    "crisisgroup.org": "International Crisis Group",
+    "acaps.org": "ACAPS"
   },
   "primary_hosts": [
     "afrobarometer.org",
@@ -51,9 +61,19 @@
     "amnesty.org",
     "hrw.org",
     "reuters.com",
-    "apnews.com",
     "premiumtimesng.com",
-    "channelstv.com"
+    "channelstv.com",
+    "punchng.com",
+    "vanguardngr.com",
+    "guardian.ng",
+    "dailytrust.com",
+    "thecable.ng",
+    "businessday.ng",
+    "icirnigeria.org",
+    "saharareporters.com",
+    "dailypost.ng",
+    "crisisgroup.org",
+    "acaps.org"
   ],
   "state_rating_rules": [],
   "polling_hosts": [
