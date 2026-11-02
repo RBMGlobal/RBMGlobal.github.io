@@ -212,11 +212,12 @@ class DailyOrchestrationTests(unittest.TestCase):
 
     def test_reviewer_disagreement_does_not_emit_public_files(self):
         self.disagree = True
-        with self.assertRaisesRegex(ValueError, "withheld"):
-            self.run_daily()
+        self.run_daily()
         self.assertEqual(len(self.calls), 3)
         self.assertFalse((self.output / "files").exists())
-        self.assertFalse(json.loads((self.output / "run-summary.json").read_text())["publication_changed"])
+        summary = json.loads((self.output / "run-summary.json").read_text())
+        self.assertFalse(summary["publication_changed"])
+        self.assertEqual(summary["status"], "withheld")
 
 
 if __name__ == "__main__":
