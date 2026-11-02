@@ -162,8 +162,7 @@ class DailyOrchestrationTests(unittest.TestCase):
 
     def test_failed_collection_stops_before_candidate_and_reviewer(self):
         self.collect_failure = True
-        with self.assertRaisesRegex(ValueError, "No source"):
-            self.run_daily()
+        self.run_daily()
         self.assertEqual(len(self.calls), 2)
         self.assertFalse((self.output / "files").exists())
         summary = json.loads((self.output / 'run-summary.json').read_text())
@@ -189,10 +188,12 @@ class DailyOrchestrationTests(unittest.TestCase):
     def test_recovery_budget_refusal_preserves_publication(self):
         self.initial_collect_failure = self.recovery_budget_failure = True
         before = (self.repo / 'sentiment/data.json').read_bytes()
-        with self.assertRaisesRegex(RuntimeError, 'budget reservation refused'):
-            self.run_daily()
+        self.run_daily()
         self.assertFalse((self.output / 'plan.json').exists())
         self.assertEqual(before, (self.repo / 'sentiment/data.json').read_bytes())
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['status'], 'source_collection_withheld')
+        self.assertTrue(summary.get('bounded_recovery_attempted'))
 
     def test_all_publishers_blocked_makes_no_recovery_call(self):
         self.initial_collect_failure = True
