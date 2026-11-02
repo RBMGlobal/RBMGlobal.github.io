@@ -330,21 +330,23 @@ class WeeklyOrchestrationTests(unittest.TestCase):
     def test_review_rejection_preserves_current_issue(self):
         self.reject_review = True
         previous = (self.input / 'accepted/index.html').read_bytes()
-        with self.assertRaisesRegex(ValueError, 'withheld'):
-            self.run_weekly()
+        self.run_weekly()
         self.assertEqual(len(self.calls), 4)
         self.assertEqual(self.fetch_count, 0)
         self.assertFalse((self.output / 'files').exists())
         self.assertEqual(previous, (self.input / 'accepted/index.html').read_bytes())
-        self.assertFalse(json.loads((self.output / 'run-summary.json').read_text())['publication_changed'])
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertFalse(summary['publication_changed'])
+        self.assertEqual(summary['status'], 'withheld')
 
     def test_empty_checklist_is_not_approval(self):
         self.incomplete_checklist = True
-        with self.assertRaisesRegex(ValueError, 'withheld'):
-            self.run_weekly()
+        self.run_weekly()
         self.assertEqual(len(self.calls), 4)
         self.assertEqual(self.fetch_count, 0)
         self.assertFalse((self.output / 'files').exists())
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['status'], 'withheld')
 
 
 if __name__ == '__main__':
