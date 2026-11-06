@@ -26,7 +26,7 @@ ROUTES = {
  'company':'/', 'privacy':'/privacy.html', 'ped':'/ped-tool/beta/',
  'ped-manual':'/ped-tool/beta/manual.html', 'lz':'/lz-tool/beta/',
  'sentiment':'/sentiment/', 'sentiment-data':'/sentiment/data.json',
- 'sentiment-heat':'/sentiment/gdelt.json', 'sentiment-x':'/sentiment/x_sample.json',
+ 'sentiment-heat':'/nigeria-activity-map/sentiment-gdelt.json', 'sentiment-x':'/sentiment/x_sample.json',
  'events':'/nigeria-activity-map/', 'events-png':'/nigeria-activity-map/lastweek.png',
  'events-release':'/nigeria-activity-map/release.json',
  'weekly-brief':'/weekly-threat-brief/', 'weekly-pdf':'/weekly-threat-brief/latest.pdf',
@@ -269,6 +269,8 @@ def run(base=BASE,today=None):
             report.check(key,lambda r=response,k=key:check_manual(r) if k=='ped-manual' else check_html(r) and 'HTTP 200; complete HTML structure')
             expected={'ped':{'map','addCoord','saveProjBtn'},'lz':{'inp','fixcard','build'},'sentiment':{'state-jump','panel','chk-gdelt'},'events':{'kw','fState','nEvents','rwToggle'}}.get(key)
             if expected:report.check(key+' controls',lambda r=response,e=expected:require(e<=HTML(r.body.decode()).ids,'Required application controls missing'))
+            if key=='sentiment':
+                report.check('dashboard heat source',lambda r=response:require('/nigeria-activity-map/sentiment-gdelt.json' in r.body.decode(),'Dashboard is not loading the verified events heat'))
             if key in {'company','privacy'}:
                 report.check(key+' identity',lambda r=response,k=key:require(('privacy' if k=='privacy' else 'rbm') in r.body.decode().lower(),'Wrong page identity'))
     data=report.check('sentiment structure',lambda:validate_sentiment(json_body(responses['sentiment-data'])))
@@ -305,6 +307,15 @@ def run(base=BASE,today=None):
         for key,name in [('events','index.html'),('events-png','lastweek.png')]:
             report.check('release hash '+name,lambda k=key,n=name:verify_file(release,n,responses[k].body))
         report.check('sentiment heat matches events release',lambda:verify_file(release,'sentiment-gdelt.json',responses['sentiment-heat'].body))
+        try:
+            vendored=fetch(base+'/sentiment/gdelt.json')
+            vendored_info=release['files']['sentiment-gdelt.json']
+            if vendored.status==200 and len(vendored.body)==vendored_info['bytes'] and sha(vendored.body)==vendored_info['sha256']:
+                report.add('vendored heat copy','PASS','/sentiment/gdelt.json matches the events release')
+            else:
+                report.add('vendored heat copy','WARN','/sentiment/gdelt.json differs from the verified events heat. The dashboard loads the activity-map file checked above; maintenance refreshes this copy.')
+        except Exception as error:
+            report.add('vendored heat copy','WARN',error)
         if events:
             report.check('UCDP date agrees with metadata',lambda:require(max(iso(e['d']) for e in events['EVENTS'])==curated,'UCDP maximum date differs from release metadata'))
             report.check('event dates within input coverage',lambda:require(max(iso(e['d']) for e in events['GDELT_EVENTS'])<=through,'GDELT event dates exceed input coverage'))

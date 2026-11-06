@@ -97,6 +97,7 @@ if(rich){
   const a=start();await flush();assert.equal(a.layers.length,37);assert.equal((a.node('state-jump').innerHTML.match(/<option/g)||[]).length,38);
   assert.equal(a.requests.some(r=>r.url.includes('ped-tool')),false);
   assert.match(a.node('gdelt-meta').textContent,/unavailable/);
+  assert.ok(a.requests.some(r=>r.url==='/nigeria-activity-map/sentiment-gdelt.json'));
   assert.equal(a.requests.filter(r=>r.url.includes('Date.now')||r.url.includes('?ts=')).length,0);
  });
  test('boundary failure leaves all state details usable through the selector',async()=>{

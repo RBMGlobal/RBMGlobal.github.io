@@ -148,7 +148,7 @@ function applyHeatOpacity(){if(!heatLayer)return;if(heatLayer._canvas){heatLayer
 function setHeat(points,meta){if(heatLayer)map.removeLayer(heatLayer);if(typeof L.heatLayer!=="function"){document.getElementById("gdelt-meta").textContent="leaflet.heat failed to load.";return}heatLayer=L.heatLayer(points,{pane:"heat",radius:28,blur:22,maxZoom:10,minOpacity:.28,gradient:{.15:"#4a90d9",.4:"#f0c14b",.65:"#d35400",1:"#8b1e3f"}});if(vis.gdelt)heatLayer.addTo(map);applyHeatOpacity();document.getElementById("gdelt-meta").textContent=meta}
 async function loadGdelt(){
   try {
-    const d=await fetchJson("gdelt.json");
+    const d=await fetchJson("/nigeria-activity-map/sentiment-gdelt.json");
     const pts=heatPoints(d);
     setHeat(pts,"GDELT "+pts.length+" points · "+d.from+" to "+d.to+" · CAMEO 18–20");
   } catch(err) {
