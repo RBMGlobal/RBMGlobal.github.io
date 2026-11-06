@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-11-04T15:40:40.282249+00:00",
-  "review_date": "2026-11-04",
+  "reviewed_at": "2026-11-06T15:17:49.036064+00:00",
+  "review_date": "2026-11-06",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This review is bounded to the supplied evidence set and the stated post-2026-09-20 window. The only retrieved item is an older Afrobarometer Nigeria Round 10 summary published in 2025, which can provide background on survey design and prior results but is not eligible as new evidence for this review period. No new, fully supported national or zonal polling record is established from the supplied materials, and no public-security source meeting the new-evidence rule is provided.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. The supplied evidence set permits only a narrow review of late-2026 Nigeria-related public-opinion and security reporting, but none of the retrieved items are eligible as new evidence under the provided publication-date rule. The Afrobarometer items supplied here are older than the cutoff for new additions, so they can inform background only and do not justify a new poll or security-context record in this update. The evidence available to this review does not support adding fresh methodology, fieldwork timing, sample, geography, or state-level sentiment estimates from any post-cutoff source. This review therefore makes no change to the structured record.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,24 +14,35 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "74eac9dcb65f9d06465e5e791c8b261ee92dcc4e0bf2cae9e46f00d8c3dcfc78",
-  "evidence_manifest_sha256": "ecb1bf40698dcc0f898281a1ec08a50303aed520238760d08f834d92cf8c0de0",
+  "candidate_sha256": "66c9509a095371bbdacd9e39b43f456a8a024ce55d3b210c8a8d926160d42189",
+  "evidence_manifest_sha256": "24761a065021707b7551c6263d8ad5fac297d2cadf325e846ad2c51206a5f08f",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-11-04T15:40:40.282249+00:00",
+    "reviewed_at": "2026-11-06T15:17:49.036064+00:00",
     "model": "gpt-6.1-sol"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.afrobarometer.org/publication/nigeria-round-10-summary-of-results/",
-      "final_url": "https://www.afrobarometer.org/publication/nigeria-round-10-summary-of-results/",
-      "title": "Nigeria Round 10 summary of results – Afrobarometer",
+      "url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
+      "final_url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
+      "title": "WP229: Trading privacy for peace? Violent conflict and support for government surveillance in Nigeria and the broader African context",
       "publisher": "Afrobarometer",
-      "published_at": "2025-08-07",
-      "fetched_at": "2026-11-04T15:40:26.937861+00:00",
-      "body_sha256": "91ca80380de9a9804f5e5f86cd9c966004302a15a2d3b833f7ac06855c56718c",
-      "text_sha256": "4856da55f6024acd069c25ec0cf126e2d22140a5dc9338c9783c4247fb5803fd"
+      "published_at": "2026-08-04",
+      "fetched_at": "2026-11-06T15:17:31.884980+00:00",
+      "body_sha256": "1ca6edb2caa56db8803bcf50983cb9c94dddb96aefef04ab1e013b3659adc839",
+      "text_sha256": "5b4ea64d99eefe1c379b3fdae634ea599a5f1e96ca66ab888e17ac18dc1c78e5"
+    },
+    {
+      "id": "s2",
+      "url": "https://www.afrobarometer.org/articles/kidnapping-and-insecurity-weigh-heavily-on-nigerians-afrobarometer-survey-finds/",
+      "final_url": "https://www.afrobarometer.org/articles/kidnapping-and-insecurity-weigh-heavily-on-nigerians-afrobarometer-survey-finds/",
+      "title": "Kidnapping and insecurity weigh heavily on Nigerians, Afrobarometer survey finds",
+      "publisher": "Afrobarometer",
+      "published_at": "2025-05-29",
+      "fetched_at": "2026-11-06T15:17:35.058137+00:00",
+      "body_sha256": "626a4a15845f96a965055f71bb41166b2e3fde601e6b2dc97a28bb52064517e3",
+      "text_sha256": "cf2a039660991cb482daf265663fb22c1dfb2eb845e2070fb4b9fede173a0416"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
