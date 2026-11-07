@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-11-02",
+  "reporting_window": {
+    "from": "2026-10-26",
+    "to": "2026-11-01"
+  },
+  "status": "discovery_leads_only",
+  "note": "Public pages retrieved on 6 November. These are not approved evidence: search, retrieve, validate publication and event dates, and independently review again. Later reporting must retain its actual publication date.",
+  "urls": [
+    "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
+    "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
+    "https://www.premiumtimesng.com/news/top-news/920660-army-recover-two-ak-47-rifles-after-gunfight-in-benue.html"
+  ]
+}
