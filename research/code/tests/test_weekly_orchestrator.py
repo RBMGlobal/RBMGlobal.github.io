@@ -70,6 +70,7 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.fetch_count = 0
         self.initial_source_count = 3
         self.recovery_source_count = 3
+        self.recovery_invalid = False
 
     def fake_collect(self, proposals, policy, output, urls):
         shutil.copytree(self.input / 'sources', output)
@@ -92,6 +93,8 @@ class WeeklyOrchestrationTests(unittest.TestCase):
     def generate(self, **kwargs):
         self.calls.append(kwargs)
         role = kwargs['request_id'].split(':')[-1]
+        if role == 'source-recovery' and self.recovery_invalid:
+            raise runner.InvalidResponse('Required live search or retrieved sources are missing')
         if role in ('discovery', 'source-recovery'):
             data = {'sources': [{'url': source['url']} for source in self.manifest['sources']],
                     'limitations': 'Synthetic bounded discovery'}
@@ -138,6 +141,31 @@ class WeeklyOrchestrationTests(unittest.TestCase):
             finally:
                 self.store_created = store_factory.call_count
                 self.client_created = client_factory.call_count
+
+    def test_failed_supplement_keeps_valid_initial_sources_and_requires_review(self):
+        self.recovery_invalid = True
+        self.run_weekly()
+        self.assertTrue((self.output / 'plan.json').exists())
+        self.assertEqual([x['request_id'].split(':')[-1] for x in self.calls],
+                         ['discovery', 'source-recovery', 'candidate', 'review'])
+
+    def test_failed_supplement_cannot_bypass_missing_publisher(self):
+        self.recovery_invalid = True
+        self.initial_source_count = 1
+        with self.assertRaises(runner.InvalidResponse):
+            self.run_weekly()
+        self.assertFalse((self.output / 'plan.json').exists())
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['status'], 'supplemental_search_withheld')
+        self.assertFalse(summary['publication_changed'])
+        self.assertEqual(len(self.calls), 2)
+
+    def test_failed_supplement_still_withholds_rejected_weekly_review(self):
+        self.recovery_invalid = True
+        self.reject_review = True
+        self.run_weekly()
+        self.assertFalse((self.output / 'plan.json').exists())
+        self.assertEqual(json.loads((self.output / 'run-summary.json').read_text())['status'], 'withheld')
 
     def test_future_week_not_due_makes_no_api_or_ledger_calls(self):
         self.now = dt.datetime(2026, 10, 18, 10, 0, tzinfo=dt.timezone.utc)
