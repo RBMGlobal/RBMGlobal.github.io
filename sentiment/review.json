@@ -1,48 +1,75 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-11-06T15:17:49.036064+00:00",
-  "review_date": "2026-11-06",
+  "reviewed_at": "2026-11-13T15:36:12.655111+00:00",
+  "review_date": "2026-11-13",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. The supplied evidence set permits only a narrow review of late-2026 Nigeria-related public-opinion and security reporting, but none of the retrieved items are eligible as new evidence under the provided publication-date rule. The Afrobarometer items supplied here are older than the cutoff for new additions, so they can inform background only and do not justify a new poll or security-context record in this update. The evidence available to this review does not support adding fresh methodology, fieldwork timing, sample, geography, or state-level sentiment estimates from any post-cutoff source. This review therefore makes no change to the structured record.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This bounded review permits only article-level security context from the supplied eligible post-2026-09-29 sources. The security item added here is limited to the published October 2026 assessment described in s2, with exact field dates unavailable. The supplied evidence does not support a new national or zonal poll record with the required methodology, sample, fieldwork dates, and comparable results, so polls remain empty. The review does not infer state classifications, does not treat repeated reporting as corroboration, and does not claim that no additional evidence exists beyond the small supplied source set.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
   "duplicate_evidence": [],
   "state_changes": [],
   "withheld_state_changes": [],
-  "security_context": [],
+  "security_context": [
+    {
+      "id": "s2-security-october-2026-assessment",
+      "source_id": "s2",
+      "title": "October 2026 security assessment and election-period threat reporting",
+      "summary": "An attributed security assessment reported 519 nationwide incidents in October 2026 and warned that election-period risks included attacks on opposition supporters, campaign-material destruction and other political violence. The article also reported agency-level operational tallies and official statements, but those figures are treated as attributed claims from the published report rather than independently verified counts.",
+      "geography": "Nigeria",
+      "event_window": {
+        "from": null,
+        "to": null,
+        "note": "The report covers October 2026 and refers to Weeks 39 to 43; exact incident dates are not provided in the supplied text."
+      },
+      "citations": [
+        {
+          "source_id": "s2",
+          "url": "https://guardian.ng/politics/security-threats-mount-ahead-2027-poll-as-nigeria-records-519-incidents-in-october/",
+          "locator": "article body"
+        },
+        {
+          "source_id": "s2",
+          "url": "https://guardian.ng/politics/security-threats-mount-ahead-2027-poll-as-nigeria-records-519-incidents-in-october/",
+          "locator": "article body"
+        }
+      ],
+      "publication_date": "2026-11-05",
+      "publisher": "The Guardian Nigeria"
+    }
+  ],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "66c9509a095371bbdacd9e39b43f456a8a024ce55d3b210c8a8d926160d42189",
-  "evidence_manifest_sha256": "24761a065021707b7551c6263d8ad5fac297d2cadf325e846ad2c51206a5f08f",
+  "candidate_sha256": "fe51d45c30c44bab6aa5a93483e2815e93fbf8bd9a642e4d92b758ea673331d7",
+  "evidence_manifest_sha256": "6b1c1f333d25691d2d6ac4bae96faf81ab5d324d1398bf88aeb4c14119d667a7",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-11-06T15:17:49.036064+00:00",
+    "reviewed_at": "2026-11-13T15:36:12.655111+00:00",
     "model": "gpt-6.1-sol"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
-      "final_url": "https://www.afrobarometer.org/publication/wp229-trading-privacy-for-peace-violent-conflict-and-support-for-government-surveillance-in-nigeria-and-the-broader-african-context/",
-      "title": "WP229: Trading privacy for peace? Violent conflict and support for government surveillance in Nigeria and the broader African context",
+      "url": "https://www.afrobarometer.org/articles/nigerians-doubt-electoral-fairness-ahead-of-2027-polls-expect-widespread-abuses-latest-afrobarometer-survey-shows/",
+      "final_url": "https://www.afrobarometer.org/articles/nigerians-doubt-electoral-fairness-ahead-of-2027-polls-expect-widespread-abuses-latest-afrobarometer-survey-shows/",
+      "title": "Nigerians doubt electoral fairness ahead of 2027 polls, expect widespread abuses, latest Afrobarometer survey shows – Afrobarometer",
       "publisher": "Afrobarometer",
-      "published_at": "2026-08-04",
-      "fetched_at": "2026-11-06T15:17:31.884980+00:00",
-      "body_sha256": "1ca6edb2caa56db8803bcf50983cb9c94dddb96aefef04ab1e013b3659adc839",
-      "text_sha256": "5b4ea64d99eefe1c379b3fdae634ea599a5f1e96ca66ab888e17ac18dc1c78e5"
+      "published_at": "2026-11-11",
+      "fetched_at": "2026-11-13T15:35:51.211605+00:00",
+      "body_sha256": "20f3e4aab2729f0efec2fe2af27afac7999a2e78f001f6ab5efd2b9ae39eff7a",
+      "text_sha256": "38719f5651676fcb86d3589ffa454666391180a152402c57c0817b8029e96cf5"
     },
     {
       "id": "s2",
-      "url": "https://www.afrobarometer.org/articles/kidnapping-and-insecurity-weigh-heavily-on-nigerians-afrobarometer-survey-finds/",
-      "final_url": "https://www.afrobarometer.org/articles/kidnapping-and-insecurity-weigh-heavily-on-nigerians-afrobarometer-survey-finds/",
-      "title": "Kidnapping and insecurity weigh heavily on Nigerians, Afrobarometer survey finds",
-      "publisher": "Afrobarometer",
-      "published_at": "2025-05-29",
-      "fetched_at": "2026-11-06T15:17:35.058137+00:00",
-      "body_sha256": "626a4a15845f96a965055f71bb41166b2e3fde601e6b2dc97a28bb52064517e3",
-      "text_sha256": "cf2a039660991cb482daf265663fb22c1dfb2eb845e2070fb4b9fede173a0416"
+      "url": "https://guardian.ng/politics/security-threats-mount-ahead-2027-poll-as-nigeria-records-519-incidents-in-october/",
+      "final_url": "https://guardian.ng/politics/security-threats-mount-ahead-2027-poll-as-nigeria-records-519-incidents-in-october/",
+      "title": "Security threats mount ahead 2027 poll as Nigeria records 519 incidents in October",
+      "publisher": "The Guardian Nigeria",
+      "published_at": "2026-11-05",
+      "fetched_at": "2026-11-13T15:35:52.312210+00:00",
+      "body_sha256": "803f13de0c55ad606470a038ab174d01e66b3ecb58f0323ea809980f16acebf4",
+      "text_sha256": "4025e7b200031d2d45ad5f33f5257b031cf2bdb8804ce9339e3afcb7feb40497"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
