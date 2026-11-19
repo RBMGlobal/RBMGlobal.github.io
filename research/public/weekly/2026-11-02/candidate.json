@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-11-02",
+  "previous_issue_date": "2026-10-26",
+  "publication_date": "2026-11-19",
+  "reviewed_at": "2026-11-19T09:47:00.768834+00:00",
+  "reporting_window": {
+    "from": "2026-10-26",
+    "to": "2026-11-01"
+  },
+  "overview": [
+    {
+      "kind": "limitation",
+      "text": "This brief presents selected incident reporting, not a national incident inventory. Uneven evidence prevents comparisons of security conditions across zones or conclusions about changes since the previous issue.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "developments": [
+    {
+      "title": "Students and teacher reportedly abducted in Niger",
+      "event_window": {
+        "from": "2026-10-31",
+        "to": "2026-10-31"
+      },
+      "event_timing_note": "The reported abduction occurred within the window; the article appeared the following Tuesday.",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Channels Television reported that suspected attackers abducted 14 Islamiyya students and their teacher while they harvested maize in Tungan-Bako, Niger State. Police confirmed the incident and student count. The supplied account does not establish their subsequent release.",
+          "source_ids": [
+            "s1"
+          ],
+          "evidence": [
+            {
+              "source_id": "s1",
+              "quote": "abducted 14 students of an Islamiyya school and their teacher"
+            },
+            {
+              "source_id": "s1",
+              "quote": "Saturday, October 31, 2026"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "North East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient assessed evidence for a substantive regional update.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North Central",
+      "paragraphs": [
+        {
+          "kind": "limitation",
+          "text": "The development above does not establish conditions across the wider zone.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North West",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Regional coverage remains incomplete; no comprehensive assessment is offered.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient assessed evidence for a substantive regional update.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South West",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Premium Times reported an in-window Friday confrontation in Ado-Ekiti. Omoyele Sowore alleged an armed attack; police described an altercation and denied kidnapping. The competing accounts remain unresolved in the supplied report.",
+          "source_ids": [
+            "s2"
+          ],
+          "evidence": [
+            {
+              "source_id": "s2",
+              "quote": "conflicting accounts of an incident in Ado-Ekiti"
+            },
+            {
+              "source_id": "s2",
+              "quote": "incident on Friday"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "zone": "South South",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient assessed evidence for a substantive regional update.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "humanitarian_context": [
+    {
+      "kind": "limitation",
+      "text": "This review cannot quantify displacement, assistance access or unmet needs. Incident accounts alone are insufficient for a humanitarian needs assessment.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "limitations": [
+    {
+      "kind": "limitation",
+      "text": "Reported claims are not independently verified here. Coverage gaps do not imply an absence of incidents. Publication timing is distinguished from event timing.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ]
+}

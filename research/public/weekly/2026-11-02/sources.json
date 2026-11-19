@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "s1",
+      "url": "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
+      "final_url": "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
+      "title": "Terrorists Abduct 14 Students, Teacher In Niger Community",
+      "publisher": "Channels Television",
+      "published_at": "2026-11-03",
+      "fetched_at": "2026-11-19T09:47:00.246532+00:00",
+      "http_status": 200,
+      "body_sha256": "dcad50dc3075191c8c8fc7bb3071ba68882a7ce9852101efbeff088aad417b10",
+      "text_sha256": "ad781ec79581f56cb183ec600db6f1304de167c7745b5f9d27647e8556ebf110",
+      "extract_path": "s1.txt"
+    },
+    {
+      "id": "s2",
+      "url": "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
+      "final_url": "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
+      "title": "Sowore, Ekiti police give conflicting accounts of alleged attack on AAC presidential candidate",
+      "publisher": "Premium Times",
+      "published_at": "2026-10-30",
+      "fetched_at": "2026-11-19T09:47:00.349617+00:00",
+      "http_status": 200,
+      "body_sha256": "bd95c5c4dcf51f6f9d376fcf7890464e5759c30fbd44a41fde2627e5919a912d",
+      "text_sha256": "5fe185711d2d25badcac79e685963c9bef8c3d1dd7359df56d2f0a84bedaa7ff",
+      "extract_path": "s2.txt"
+    }
+  ]
+}

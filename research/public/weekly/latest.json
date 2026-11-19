@@ -1,26 +1,26 @@
 {
   "schema_version": 1,
-  "issue_date": "2026-10-26",
+  "issue_date": "2026-11-02",
   "files": {
-    "candidate.json": {
-      "bytes": 4949,
-      "sha256": "0c3f7a16647c09efa63ba0574edfa99df1c3192cf321f9acdb9054c1d86cdbf6"
+    "attestation.json": {
+      "bytes": 405,
+      "sha256": "f9743545efe4130251625e61c81ceb51d11fa8d935dd088effdea105aa2a5a83"
     },
-    "lastweek.png": {
-      "bytes": 4092960,
-      "sha256": "429565fd28161f2213792d87ae7354c3a9b5868dad25b56df5ff34f1b221d82a"
+    "sources.json": {
+      "bytes": 1598,
+      "sha256": "5860a7c8618159a0c7f9f0a4635a07fd90c2f18fdbbab9b18fe4405055e8cd9b"
     },
     "events-release.json": {
       "bytes": 1324,
-      "sha256": "86f8b43a8bd56fe6bb6ecdd32900f393e02b7c22033502a66dd9e80b48ce17c9"
+      "sha256": "d1b09f3a543079e63ee3e295a2fee2f60fbed49417cb27e7ba6b97845e0f1711"
     },
-    "attestation.json": {
-      "bytes": 405,
-      "sha256": "c055f4397a43439b2adc46ed85972e679b1705da71e78aafb51d44b747d08330"
+    "lastweek.png": {
+      "bytes": 4061868,
+      "sha256": "068393fb5ce0d610d7c220b52d1ac6dd1408c2cf4504ccd4ddeca85767027111"
     },
-    "sources.json": {
-      "bytes": 1543,
-      "sha256": "728925614bc0b9bf69fd966aba1c46a4523136085dca6cb714f3b7bdd5fe2993"
+    "candidate.json": {
+      "bytes": 4292,
+      "sha256": "af9475eeb2d36473f4dae390eda5cd856b37b05c78df53faef63efe1f83a015c"
     }
   }
 }
