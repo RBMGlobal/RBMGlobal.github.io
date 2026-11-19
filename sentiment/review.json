@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-11-15T14:56:11.827787+00:00",
-  "review_date": "2026-11-15",
+  "reviewed_at": "2026-11-19T16:43:09.867517+00:00",
+  "review_date": "2026-11-19",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. Supplied evidence review is limited to the provided source set and the post-2026-10-01 new-evidence rule. The only retrieved item is an older Afrobarometer Nigeria Round 10 summary that may provide background methodology context, but it is not eligible as new evidence for this review. No new national or zonal polling item and no eligible public-security item can be added from the supplied bindings, so the record remains unchanged.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This review is limited to the supplied eligible source set and the provided excerpt from the 2026-11-11 Afrobarometer news release on Nigeria. The excerpt supports only headline findings and publication timing. It does not expose the original survey methodology, sample size, fieldwork dates, weighting, or a sufficiently specified geographic scope for acceptance as new poll evidence in this output. The excerpt also does not provide a standalone, newly attributable public-security event record that meets the required metadata standard. Existing verified evidence is not re-added, and no state classifications are proposed.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,24 +14,24 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "526b7ffaa8181d202ddff685ade1e76cbb2875868e44a425a289a0fd5a8f1dd8",
-  "evidence_manifest_sha256": "c8f14ed9866c72bad3ab702735108d5ad7ab637dca76698c8083096df63d361c",
+  "candidate_sha256": "3996e4b09fd108ee10c4ded24f48f702f64f6fec8ac7a16050191a57a7af5bfe",
+  "evidence_manifest_sha256": "69766c522146ac0b2cda7e8fc377f185eb420b249fe03aff04a1ea08a68a3c6c",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-11-15T14:56:11.827787+00:00",
-    "model": "gpt-5.4-mini-2026-03-17"
+    "reviewed_at": "2026-11-19T16:43:09.867517+00:00",
+    "model": "gpt-6.1-sol"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.afrobarometer.org/publication/nigeria-round-10-summary-of-results/",
-      "final_url": "https://www.afrobarometer.org/publication/nigeria-round-10-summary-of-results/",
-      "title": "Nigeria Round 10 summary of results – Afrobarometer",
+      "url": "https://www.afrobarometer.org/articles/nigerians-doubt-electoral-fairness-ahead-of-2027-polls-expect-widespread-abuses-latest-afrobarometer-survey-shows/",
+      "final_url": "https://www.afrobarometer.org/articles/nigerians-doubt-electoral-fairness-ahead-of-2027-polls-expect-widespread-abuses-latest-afrobarometer-survey-shows/",
+      "title": "Nigerians doubt electoral fairness ahead of 2027 polls, expect widespread abuses, latest Afrobarometer survey shows – Afrobarometer",
       "publisher": "Afrobarometer",
-      "published_at": "2025-08-07",
-      "fetched_at": "2026-11-15T14:55:58.345524+00:00",
-      "body_sha256": "bfc0e4ac9d5d35fa9e506e8c3e8e59b7e2630c026899afb28525da08a7b630e5",
-      "text_sha256": "70acec9c628830a90ed486c6fc867b38e8cc4a6d28a2ace966a603bfd46853cd"
+      "published_at": "2026-11-11",
+      "fetched_at": "2026-11-19T16:42:56.619132+00:00",
+      "body_sha256": "baa8226465bace6a3ff4fa7a193cbae01270d4a4838c381ac4610896d57ff981",
+      "text_sha256": "38719f5651676fcb86d3589ffa454666391180a152402c57c0817b8029e96cf5"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
