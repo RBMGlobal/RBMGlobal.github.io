@@ -1,41 +1,50 @@
 {
   "schema_version": 1,
-  "issue_date": "2026-11-02",
+  "issue_date": "2026-11-16",
   "reporting_window": {
-    "from": "2026-10-26",
-    "to": "2026-11-01"
+    "from": "2026-11-09",
+    "to": "2026-11-15"
   },
   "status": "discovery_leads_only",
   "note": "Operator-retrieved discovery leads, not approved evidence. Always retrieve again, verify publication metadata, independently review actual event dates and preserve source/reporting windows. Later publication dates stay unchanged.",
   "urls": [
-    "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
-    "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
-    "https://www.premiumtimesng.com/news/top-news/920660-army-recover-two-ak-47-rifles-after-gunfight-in-benue.html"
+    "https://www.premiumtimesng.com/health/health-news/925124-diphtheria-msf-warns-of-treatment-shortages-as-nigeria-records-over-1100-deaths.html",
+    "https://www.premiumtimesng.com/news/top-news/924520-igp-orders-additional-deployment-to-communities-affected-by-terror-attacks.html",
+    "https://www.channelstv.com/2026/11/12/lagos-town-hall-meeting-for-ndc-presidential-candidate-peter-obi-disrupted-by-suspected-thugs/",
+    "https://www.thecable.ng/unhcr-nearly-64000-nigerians-have-fled-to-niger-republic-over-insecurity-in-2026/"
   ],
   "source_proposals": [
     {
-      "url": "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
-      "title": "Terrorists Abduct 14 Students, Teacher In Niger Community",
-      "published_at": "2026-11-03",
-      "publication_date_quote": "November 3, 2026",
-      "retrieved_at": "2026-11-19T09:43:18.138947+00:00",
-      "text_sha256": "ad781ec79581f56cb183ec600db6f1304de167c7745b5f9d27647e8556ebf110"
+      "url": "https://www.premiumtimesng.com/health/health-news/925124-diphtheria-msf-warns-of-treatment-shortages-as-nigeria-records-over-1100-deaths.html",
+      "title": "Diphtheria: MSF warns of treatment shortages as Nigeria records over 1,100 deaths",
+      "published_at": "2026-11-14",
+      "publication_date_quote": "November 14, 2026",
+      "retrieved_at": "2026-11-19T10:16:45.115096+00:00",
+      "text_sha256": "d19f524ef4b6015b5ad8e77555d375beb275121945b571ab609d2b8a3c91cb94"
     },
     {
-      "url": "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
-      "title": "Sowore, Ekiti police give conflicting accounts of alleged attack on AAC presidential candidate",
-      "published_at": "2026-10-30",
-      "publication_date_quote": "October 30, 2026",
-      "retrieved_at": "2026-11-19T09:43:20.489870+00:00",
-      "text_sha256": "5fe185711d2d25badcac79e685963c9bef8c3d1dd7359df56d2f0a84bedaa7ff"
+      "url": "https://www.premiumtimesng.com/news/top-news/924520-igp-orders-additional-deployment-to-communities-affected-by-terror-attacks.html",
+      "title": "IGP orders additional deployment to communities affected by terror attacks",
+      "published_at": "2026-11-11",
+      "publication_date_quote": "November 11, 2026",
+      "retrieved_at": "2026-11-19T10:16:48.646820+00:00",
+      "text_sha256": "0f50e11d56e35b368f5177b92c539cc3f06531139212fc92b620e608fed808b1"
     },
     {
-      "url": "https://www.premiumtimesng.com/news/top-news/920660-army-recover-two-ak-47-rifles-after-gunfight-in-benue.html",
-      "title": "Army recover two AK-47 rifles after gunfight in Benue",
-      "published_at": "2026-10-27",
-      "publication_date_quote": "October 27, 2026",
-      "retrieved_at": "2026-11-19T09:43:22.703024+00:00",
-      "text_sha256": "9107a6a274c8816774e4d10c8e5d633d48defce20bd0bd1859bc14c8ee3f56e4"
+      "url": "https://www.channelstv.com/2026/11/12/lagos-town-hall-meeting-for-ndc-presidential-candidate-peter-obi-disrupted-by-suspected-thugs/",
+      "title": "Suspected Thugs Attack NDC Supporters In Lagos Ahead Of Peter Obi\u2019s Town Hall",
+      "published_at": "2026-11-12",
+      "publication_date_quote": "November 12, 2026",
+      "retrieved_at": "2026-11-19T10:16:50.322300+00:00",
+      "text_sha256": "bcb9c32d3f2b5d3a28c9b50183997480235b6b5456bd8c17f0e109c15603df82"
+    },
+    {
+      "url": "https://www.thecable.ng/unhcr-nearly-64000-nigerians-have-fled-to-niger-republic-over-insecurity-in-2026/",
+      "title": "Nearly 64,000 Nigerians have fled to Niger Republic over insecurity in 2026",
+      "published_at": "2026-11-10",
+      "publication_date_quote": "November 10, 2026",
+      "retrieved_at": "2026-11-19T10:19:12.360725+00:00",
+      "text_sha256": "d7b8b4867b8fb0e0673812f39e1138e85d77cb0ce21e9b4cda112c28b1fd458d"
     }
   ]
 }
