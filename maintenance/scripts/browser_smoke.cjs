@@ -44,7 +44,7 @@ const annotation = text => text.replace(/%/g,'%25').replace(/\r/g,'%0D').replace
       await page.uncheck('#chk-gdelt');assert.equal(await page.isChecked('#chk-gdelt'),false);
       await page.check('#chk-gdelt');assert.equal(await page.isChecked('#chk-gdelt'),true);
       // A functioning selector is a fallback; also verify the map's state geometry loaded.
-      await page.waitForFunction(()=>document.querySelectorAll('#map .leaflet-states-pane path').length===37);
+      await page.waitForFunction(()=>document.querySelectorAll('#map .leaflet-states-pane path').length===37,null,{timeout:100000});
     });
     await check('events','/nigeria-activity-map/',async page=>{
       await page.waitForFunction(()=>Number(document.querySelector('#nEvents')?.textContent.replaceAll(',',''))>0 && Number(document.querySelector('#nGdelt')?.textContent.replaceAll(',',''))>0);

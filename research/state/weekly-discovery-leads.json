@@ -6,10 +6,36 @@
     "to": "2026-11-01"
   },
   "status": "discovery_leads_only",
-  "note": "Public pages retrieved on 6 November. These are not approved evidence: search, retrieve, validate publication and event dates, and independently review again. Later reporting must retain its actual publication date.",
+  "note": "Operator-retrieved discovery leads, not approved evidence. Always retrieve again, verify publication metadata, independently review actual event dates and preserve source/reporting windows. Later publication dates stay unchanged.",
   "urls": [
     "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
     "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
     "https://www.premiumtimesng.com/news/top-news/920660-army-recover-two-ak-47-rifles-after-gunfight-in-benue.html"
+  ],
+  "source_proposals": [
+    {
+      "url": "https://www.channelstv.com/2026/11/03/terrorists-abduct-14-students-teacher-in-niger-community/",
+      "title": "Terrorists Abduct 14 Students, Teacher In Niger Community",
+      "published_at": "2026-11-03",
+      "publication_date_quote": "November 3, 2026",
+      "retrieved_at": "2026-11-19T09:43:18.138947+00:00",
+      "text_sha256": "ad781ec79581f56cb183ec600db6f1304de167c7745b5f9d27647e8556ebf110"
+    },
+    {
+      "url": "https://www.premiumtimesng.com/news/top-news/921609-sowore-ekiti-police-give-conflicting-accounts-of-alleged-attack-on-aac-presidential-candidate.html",
+      "title": "Sowore, Ekiti police give conflicting accounts of alleged attack on AAC presidential candidate",
+      "published_at": "2026-10-30",
+      "publication_date_quote": "October 30, 2026",
+      "retrieved_at": "2026-11-19T09:43:20.489870+00:00",
+      "text_sha256": "5fe185711d2d25badcac79e685963c9bef8c3d1dd7359df56d2f0a84bedaa7ff"
+    },
+    {
+      "url": "https://www.premiumtimesng.com/news/top-news/920660-army-recover-two-ak-47-rifles-after-gunfight-in-benue.html",
+      "title": "Army recover two AK-47 rifles after gunfight in Benue",
+      "published_at": "2026-10-27",
+      "publication_date_quote": "October 27, 2026",
+      "retrieved_at": "2026-11-19T09:43:22.703024+00:00",
+      "text_sha256": "9107a6a274c8816774e4d10c8e5d633d48defce20bd0bd1859bc14c8ee3f56e4"
+    }
   ]
 }

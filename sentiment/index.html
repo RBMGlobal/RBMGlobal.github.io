@@ -111,6 +111,7 @@ const stateIndex = new Map(), zoneIndex = new Map();
 const COLORS={cold:"#8b1e3f",cool:"#c46b4a",mixed:"#c4b48a",warm:"#2f6f4e"};
 const LABEL={cold:"Cold",cool:"Cool",mixed:"Mixed",warm:"Warm"};
 const GEO="https://cdn.jsdelivr.net/gh/iamspruce/intro-d3@main/data/nigeria_state_boundaries.geojson";
+const GEO_FALLBACK="https://raw.githubusercontent.com/iamspruce/intro-d3/main/data/nigeria_state_boundaries.geojson";
 let DATA=null,LAYER="president",layerGroup=null,selected=null,heatLayer=null,baseLayer=null,stateRenderer=null;
 let xStatus="Loading historical X themes…";
 const vis={base:true,states:true,gdelt:true,x:true};
@@ -177,7 +178,9 @@ document.getElementById("state-jump").onchange=e=>{const s=rec(e.target.value);i
 document.querySelectorAll("button.layer[data-layer]").forEach(b=>{b.onclick=()=>{LAYER=b.dataset.layer;document.querySelectorAll("button.layer[data-layer]").forEach(x=>{x.classList.remove("on");x.setAttribute("aria-pressed","false")});b.classList.add("on");b.setAttribute("aria-pressed","true");paint();if(selected){const s=rec(selected);if(s)openPanel(s)}}});
 map.on("click",e=>{const s=stateAt(e.latlng);if(s)openPanel(s)});
 async function loadDashboard(){
-  const boundaries=fetchJson(GEO,{cache:"default"}).then(geo=>({geo}),error=>({error}));
+  const boundaries=fetchJson(GEO,{cache:"default",timeoutMs:45000})
+    .catch(()=>fetchJson(GEO_FALLBACK,{cache:"default",timeoutMs:45000}))
+    .then(geo=>({geo}),error=>({error}));
   try {
     const data=await fetchJson("data.json");
     const indexes=validateData(data);

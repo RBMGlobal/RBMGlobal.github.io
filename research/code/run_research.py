@@ -149,6 +149,31 @@ def weekly_operator_hints(repo, issue, start, end, policy):
     return list(dict.fromkeys(urls))
 
 
+def weekly_operator_proposals(repo, issue, start, end, policy):
+    """Freshly collect previously retrieved operator leads; never assume approval.
+
+    These are explicit repository-reviewed bibliographic inputs, not model URLs
+    falsely described as consulted web results. Every body/date/title is fetched
+    and checked again by collect(), then normal drafting and independent review.
+    """
+    urls = weekly_operator_hints(repo, issue, start, end, policy)
+    if not urls:
+        return []
+    record = json.loads((repo / 'research/state/weekly-discovery-leads.json').read_text())
+    proposals = record.get('source_proposals', [])
+    if not isinstance(proposals, list) or len(proposals) > len(urls):
+        raise ValueError('Invalid operator source proposals')
+    result = []
+    for item in proposals:
+        if (not isinstance(item, dict) or item.get('url') not in urls
+                or not re.fullmatch(r'[0-9a-f]{64}', item.get('text_sha256', ''))
+                or not isinstance(item.get('retrieved_at'), str)):
+            raise ValueError('Operator lead lacks recorded retrieval provenance')
+        datetime.fromisoformat(item['retrieved_at'].replace('Z', '+00:00'))
+        result.append({k: item[k] for k in ('url', 'title', 'published_at', 'publication_date_quote')})
+    return result
+
+
 def recovered_source_proposals(repo, issue, start, end):
     """Operator-recorded, previously reviewed sources; always fetch and review again.
 
@@ -258,8 +283,17 @@ Return only reports with substantive accessible text and supported in-week event
                                     allowed_domains=list(policy['publishers']), search=True)
     else:
         discovery = SimpleNamespace(data={'sources': recovered}, sources=[p['url'] for p in recovered])
+    operator_proposals = (weekly_operator_proposals(repo, issue, start, end, policy)
+                          if kind == 'weekly' and recovered is None else [])
+    if operator_proposals:
+        # Operator leads have a recorded real retrieval, but remain unreviewed.
+        # Prioritize them within the unchanged maximum source count.
+        operator_urls = {p['url'] for p in operator_proposals}
+        discovery.data['sources'] = (operator_proposals + [p for p in discovery.data['sources']
+                                    if p['url'] not in operator_urls])[:policy['max_sources']]
     sources_dir = work / 'sources'
     urls = [x['url'] if isinstance(x, dict) else x for x in discovery.sources]
+    urls += [p['url'] for p in operator_proposals]
     try:
         manifest = collect(discovery.data['sources'], policy, sources_dir, urls)
     except ValueError:
