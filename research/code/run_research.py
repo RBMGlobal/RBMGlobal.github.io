@@ -16,7 +16,7 @@ from types import SimpleNamespace
 
 from collector import collect, digest, write_json, fetch
 from github_ledger import GitHubLedgerStore
-from common.budget import BudgetLedger
+from common.budget import BudgetLedger, BudgetExceeded
 from common.openai_client import OpenAIEditorialClient, InvalidResponse
 from sentiment.apply_review import apply_review
 from brief.build_brief import build as build_brief, previous_issue
@@ -201,6 +201,18 @@ def recovered_source_proposals(repo, issue, start, end):
 
 
 def run(kind, repo, accepted_brief, output, work):
+    try:
+        return run_research(kind, repo, accepted_brief, output, work)
+    except BudgetExceeded as exc:
+        # A refused reservation never permits a paid generation or a publish plan.
+        # Unknown provider outcomes and failed ledger writes must still fail loudly.
+        if (output / 'plan.json').exists():
+            raise
+        write_json(output / 'run-summary.json', {'status': 'budget_withheld', 'kind': kind,
+                   'publication_changed': False, 'reason': str(exc)[:200]})
+
+
+def run_research(kind, repo, accepted_brief, output, work):
     if os.environ.get('AI_RESEARCH_ENABLED') != 'true':
         raise RuntimeError('Paid execution is disabled until API access and provider hard limit are configured')
     if os.environ.get('OPENAI_HARD_LIMIT_CONFIRMED') != '10':
@@ -224,6 +236,19 @@ def run(kind, repo, accepted_brief, output, work):
         if issue > now.date():
             write_json(output / 'run-summary.json', {'status': 'not_due', 'next_issue': issue.isoformat()})
             return
+        # A delayed publisher must consume the existing approved packet first.
+        pointer = repo / 'research/public/weekly/latest.json'
+        if pointer.is_file():
+            packet = json.loads(pointer.read_text())
+            if packet['issue_date'] == issue.isoformat():
+                for name in ('candidate.json', 'sources.json', 'attestation.json', 'events-release.json', 'lastweek.png'):
+                    file = pointer.parent / issue.isoformat() / name
+                    meta = packet['files'][name]
+                    if file.stat().st_size != meta['bytes'] or sha(file) != meta['sha256']:
+                        raise ValueError('Pending weekly packet file differs from its accepted manifest')
+                write_json(output / 'run-summary.json', {'status': 'awaiting_publication', 'kind': kind,
+                           'issue_date': issue.isoformat(), 'publication_changed': False})
+                return
         focus = f'''The next missing reporting week is {start} through {end}; issue date {issue}.
 Research substantive events and humanitarian developments that OCCURRED during that week.
 A story published this week about events ending before {start} is background only and
@@ -328,7 +353,7 @@ Return only reports with substantive accessible text and supported in-week event
             urls = [x['url'] if isinstance(x, dict) else x for x in followup.sources]
             sources_dir = work / 'recovered-sources'
             manifest = collect(followup.data['sources'], policy, sources_dir, urls)
-        except (ValueError, Exception) as exc:
+        except (ValueError, InvalidResponse) as exc:
             collection_path = sources_dir / 'collection.json' if 'sources_dir' in locals() else None
             write_json(output / 'run-summary.json', {
                 'status': 'source_collection_withheld', 'kind': kind,

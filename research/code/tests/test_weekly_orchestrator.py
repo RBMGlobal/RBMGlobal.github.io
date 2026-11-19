@@ -167,6 +167,24 @@ class WeeklyOrchestrationTests(unittest.TestCase):
         self.assertFalse((self.output / 'plan.json').exists())
         self.assertEqual(json.loads((self.output / 'run-summary.json').read_text())['status'], 'withheld')
 
+    def test_approved_packet_awaiting_publisher_consumes_no_research_budget(self):
+        folder = self.repo / 'research/public/weekly/2026-10-19'
+        folder.mkdir(parents=True)
+        files = {}
+        for name in ('candidate.json', 'sources.json', 'attestation.json', 'events-release.json', 'lastweek.png'):
+            target = folder / name
+            target.write_bytes(name.encode())
+            files[name] = {'bytes': target.stat().st_size, 'sha256': runner.sha(target)}
+        (folder.parent / 'latest.json').write_text(json.dumps({'issue_date': folder.name, 'files': files}))
+        self.run_weekly()
+        self.assertEqual(self.store_created, 0)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(json.loads((self.output / 'run-summary.json').read_text())['status'], 'awaiting_publication')
+        (folder / 'sources.json').write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'differs'):
+            self.run_weekly()
+        self.assertFalse((self.output / 'plan.json').exists())
+
     def test_future_week_not_due_makes_no_api_or_ledger_calls(self):
         self.now = dt.datetime(2026, 10, 18, 10, 0, tzinfo=dt.timezone.utc)
         self.run_weekly()

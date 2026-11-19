@@ -68,7 +68,7 @@ class DailyOrchestrationTests(unittest.TestCase):
         self.calls.append(kwargs)
         role = kwargs["request_id"].split(":")[-1]
         if role == 'source-recovery' and self.recovery_budget_failure:
-            raise RuntimeError('Synthetic budget reservation refused')
+            raise runner.BudgetExceeded('Synthetic budget reservation refused')
         if role in ("discovery", "source-recovery"):
             data = {"sources": [{"url": "https://primary.example.test/survey.pdf"}], "limitations": "Synthetic bounded discovery"}
         elif role == "candidate":
@@ -192,8 +192,7 @@ class DailyOrchestrationTests(unittest.TestCase):
         self.assertFalse((self.output / 'plan.json').exists())
         self.assertEqual(before, (self.repo / 'sentiment/data.json').read_bytes())
         summary = json.loads((self.output / 'run-summary.json').read_text())
-        self.assertEqual(summary['status'], 'source_collection_withheld')
-        self.assertTrue(summary.get('bounded_recovery_attempted'))
+        self.assertEqual(summary['status'], 'budget_withheld')
 
     def test_all_publishers_blocked_makes_no_recovery_call(self):
         self.initial_collect_failure = True

@@ -89,11 +89,14 @@ jobs:
         if: success()
         uses: actions/upload-pages-artifact@v4
         with:
+          name: company-pages-${{ github.run_attempt }}
           path: _site
       - name: Deploy complete site (also retries an unchanged earlier publication)
         id: deployment
         if: success()
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: company-pages-${{ github.run_attempt }}
       - name: Verify every deployed public file against the artifact
         if: success()
         run: python maintenance/scripts/verify_company_live.py --manifest company-artifact-manifest.json --timeout 420
@@ -144,7 +147,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: public-site-health-${{ github.run_id }}
+          name: public-site-health-${{ github.run_id }}-${{ github.run_attempt }}
           path: health-output
           retention-days: 30
           if-no-files-found: warn

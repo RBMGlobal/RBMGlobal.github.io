@@ -123,8 +123,11 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         if: steps.research.outputs.has_plan == 'true'
         with:
+          name: research-pages-${{ github.run_attempt }}
           path: _site
       - uses: actions/deploy-pages@v4
+        with:
+          artifact_name: research-pages-${{ github.run_attempt }}
         id: deployment
         if: steps.research.outputs.has_plan == 'true'
       - name: Verify every deployed byte against the complete artifact
