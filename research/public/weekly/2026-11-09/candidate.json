@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-11-09",
+  "previous_issue_date": "2026-11-02",
+  "publication_date": "2026-11-19",
+  "reviewed_at": "2026-11-19T10:07:42.639580+00:00",
+  "reporting_window": {
+    "from": "2026-11-02",
+    "to": "2026-11-08"
+  },
+  "overview": [
+    {
+      "kind": "limitation",
+      "text": "This issue provides a narrow incident and public-health review, not a comprehensive national assessment. The supplied evidence cannot support a weekly incident total or comparison with the previous issue.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "developments": [
+    {
+      "title": "Police ambushed in Zamfara",
+      "event_window": {
+        "from": "2026-11-02",
+        "to": "2026-11-02"
+      },
+      "event_timing_note": "The report places the attack on its publication Monday, within the reporting window.",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Channels Television reported an ambush on police travelling along the Sokoto–Gusau road. Sources alleged deaths and abductions, but casualty numbers remained unverified. A zonal police spokesperson confirmed the incident without providing further details.",
+          "source_ids": [
+            "s1"
+          ],
+          "evidence": [
+            {
+              "source_id": "s1",
+              "quote": "The attack occurred on Monday"
+            },
+            {
+              "source_id": "s1",
+              "quote": "the exact number of casualties could not be ascertained"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "North East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "The supplied evidence is insufficient to assess security or humanitarian developments here.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North Central",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "WHO’s bulletin, published during the reporting week, described completed follow-up for some Nigerian contacts of the earlier imported Bundibugyo virus case in Abuja. Its Nigerian contact-monitoring snapshot was from early in the week; investigation and contact tracing continued.",
+          "source_ids": [
+            "s4"
+          ],
+          "evidence": [
+            {
+              "source_id": "s4",
+              "quote": "Six contacts have successfully completed the 21-day follow-up period."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "zone": "North West",
+      "paragraphs": [
+        {
+          "kind": "limitation",
+          "text": "The development above cannot establish conditions across the zone or indicate a regional trend.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "No adequate in-window assessment is possible from the supplied evidence.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South West",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "The supplied material does not adequately document in-window developments here.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South South",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Evidence is insufficient for a substantive account of this zone.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "humanitarian_context": [
+    {
+      "kind": "limitation",
+      "text": "This review cannot quantify displacement, food insecurity, service disruption or unmet assistance needs. Medical care alone would not establish wider clinical needs.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "limitations": [
+    {
+      "kind": "limitation",
+      "text": "Missing coverage is not evidence of calm. No independent corroboration or nationwide trend is established by this bounded source set.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ]
+}

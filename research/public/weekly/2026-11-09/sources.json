@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "s1",
+      "url": "https://www.channelstv.com/2026/11/02/bandits-ambush-kill-policemen-in-zamfara/",
+      "final_url": "https://www.channelstv.com/2026/11/02/bandits-ambush-kill-policemen-in-zamfara/",
+      "title": "Bandits Ambush, Kill Policemen In Zamfara • Channels Television",
+      "publisher": "Channels Television",
+      "published_at": "2026-11-02",
+      "fetched_at": "2026-11-19T10:07:41.090152+00:00",
+      "http_status": 200,
+      "body_sha256": "e3629213ce7f16f37aa25a0fd98c559c5457d4960b7ea4dacdcdb12566ac0afb",
+      "text_sha256": "e0f9ab8500da761fd424b19c87daf364b76ccbd61a15367f92f56fa7f3dedaa6",
+      "extract_path": "s1.txt"
+    },
+    {
+      "id": "s4",
+      "url": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON625?trk=article-ssr-frontend-pulse_little-text-block",
+      "final_url": "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON625?trk=article-ssr-frontend-pulse_little-text-block",
+      "title": "Ebola disease caused by Bundibugyo virus, Democratic Republic of the Congo, Kenya and Nigeria",
+      "publisher": "World Health Organization",
+      "published_at": "2026-11-06",
+      "fetched_at": "2026-11-19T10:07:42.638839+00:00",
+      "http_status": 200,
+      "body_sha256": "48ae9f705eaa3e2ba48091729a51a89df98d252bafa3f6ca4a717e3285e9e4e8",
+      "text_sha256": "a7a13757a48f28cb5d80044df246be94ee0fe7aecd69e7617194c865f753b3ff",
+      "extract_path": "s4.txt"
+    }
+  ]
+}
