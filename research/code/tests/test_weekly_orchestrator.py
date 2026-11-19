@@ -283,10 +283,30 @@ class WeeklyOrchestrationTests(unittest.TestCase):
     def test_quote_minimum_matches_renderer_requirement(self):
         import jsonschema
         schema = json.loads((HERE / 'brief/candidate.schema.json').read_text())
-        quote = schema['properties']['overview']['items']['properties']['evidence']['items']['properties']['quote']
+        quote = schema['$defs']['citedParagraph']['properties']['evidence']['items']['properties']['quote']
         with self.assertRaises(jsonschema.ValidationError):
             jsonschema.validate('40 people', quote)
         jsonschema.validate('Exact source excerpt', quote)
+
+    def test_uncited_development_stops_before_paid_review(self):
+        item = self.candidate['developments'][0]['paragraphs'][0]
+        item.update(kind='reported', source_ids=[], evidence=[])
+        self.run_weekly()
+        self.assertTrue(all(call['kind'] != 'review' for call in self.calls))
+        summary = json.loads((self.output / 'run-summary.json').read_text())
+        self.assertEqual(summary['status'], 'candidate_evidence_withheld')
+        self.assertFalse((self.output / 'plan.json').exists())
+
+    def test_weekly_schema_requires_evidence_on_each_reported_paragraph(self):
+        import jsonschema
+        schema = json.loads((HERE / 'brief/candidate.schema.json').read_text())
+        candidate = copy.deepcopy(self.candidate)
+        paragraph = candidate['developments'][0]['paragraphs'][0]
+        paragraph.update(kind='reported', source_ids=[], evidence=[])
+        with self.assertRaises(jsonschema.ValidationError):
+            jsonschema.validate(candidate, schema)
+        paragraph['kind'] = 'limitation'
+        jsonschema.validate(candidate, schema)
 
     def test_one_source_stops_before_review(self):
         self.source_mode = 'single'

@@ -19,7 +19,7 @@ from github_ledger import GitHubLedgerStore
 from common.budget import BudgetLedger, BudgetExceeded
 from common.openai_client import OpenAIEditorialClient, InvalidResponse
 from sentiment.apply_review import apply_review
-from brief.build_brief import build as build_brief, previous_issue
+from brief.build_brief import InvalidBrief, build as build_brief, previous_issue, validate_paragraph
 
 HERE = Path(__file__).resolve().parent
 LONDON = ZoneInfo('Europe/London')
@@ -495,6 +495,8 @@ limitations and gaps about the bounded evidence, without unneeded source-based c
 Keep the whole brief concise: aim for 200-250 prose words TOTAL, including all six zone
 paragraphs. Do not cite source IDs on generic limitations about the scope of this review;
 use kind limitation with empty source_ids/evidence when making no external factual claim.
+Every reported or analytical paragraph needs its own nonempty source_ids and evidence, including
+each development and each zone. Use the exact quote for every cited ID in that same paragraph.
 Each paragraph attributed to multiple publishers counts IN FULL toward EACH publisher's
 budget. Avoid citing both sources repeatedly for the same retrospective official account.
 Do not infer a persistent or nationwide pattern from isolated reports, or clinical needs
@@ -546,6 +548,22 @@ timing note, and cannot be used to claim verified in-week events.'''
                 'collection': json.loads(collection_path.read_text()) if collection_path.exists() else {},
                 'ledger_remaining_usd': ledger.remaining() / 1_000_000})
             raise ValueError('Weekly publication requires at least two retrieved sources from two publishers and no unknown references')
+        sources = {row['id']: dict(row, _content=(sources_dir / row['extract_path']).read_text(encoding='utf-8'))
+                   for row in manifest['sources']}
+        try:
+            for section in ('overview', 'humanitarian_context', 'limitations'):
+                for paragraph in candidate[section]:
+                    validate_paragraph(paragraph, sources, section)
+            for section, label in [('developments', 'title'), ('zones', 'zone')]:
+                for item in candidate[section]:
+                    for paragraph in item['paragraphs']:
+                        validate_paragraph(paragraph, sources, item[label], allow_gap=section == 'zones')
+        except InvalidBrief as exc:
+            write_json(output / 'run-summary.json', {
+                'status': 'candidate_evidence_withheld', 'kind': kind, 'publication_changed': False,
+                'issue_date': issue.isoformat(), 'error': str(exc), 'independent_review_run': False,
+                'ledger_remaining_usd': ledger.remaining() / 1_000_000})
+            return
         write_json(manifest_path, manifest)
         evidence = evidence_prompt(manifest, sources_dir, policy['max_model_evidence_chars'])
     review_task = (

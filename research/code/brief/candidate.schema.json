@@ -38,55 +38,14 @@
     "overview": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "reported",
-              "analysis",
-              "limitation",
-              "coverage_gap"
-            ]
+        "anyOf": [
+          {
+            "$ref": "#/$defs/citedParagraph"
           },
-          "text": {
-            "type": "string"
-          },
-          "source_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "evidence": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "source_id": {
-                  "type": "string"
-                },
-                "quote": {
-                  "type": "string",
-                  "minLength": 12,
-                  "maxLength": 2000
-                }
-              },
-              "required": [
-                "source_id",
-                "quote"
-              ],
-              "additionalProperties": false
-            }
+          {
+            "$ref": "#/$defs/limitation"
           }
-        },
-        "required": [
-          "kind",
-          "text",
-          "source_ids",
-          "evidence"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     "developments": {
@@ -128,55 +87,14 @@
           "paragraphs": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "kind": {
-                  "type": "string",
-                  "enum": [
-                    "reported",
-                    "analysis",
-                    "limitation",
-                    "coverage_gap"
-                  ]
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/citedParagraph"
                 },
-                "text": {
-                  "type": "string"
-                },
-                "source_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "evidence": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "source_id": {
-                        "type": "string"
-                      },
-                      "quote": {
-                        "type": "string",
-                        "minLength": 12,
-                        "maxLength": 2000
-                      }
-                    },
-                    "required": [
-                      "source_id",
-                      "quote"
-                    ],
-                    "additionalProperties": false
-                  }
+                {
+                  "$ref": "#/$defs/limitation"
                 }
-              },
-              "required": [
-                "kind",
-                "text",
-                "source_ids",
-                "evidence"
-              ],
-              "additionalProperties": false
+              ]
             }
           }
         },
@@ -208,55 +126,17 @@
           "paragraphs": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "kind": {
-                  "type": "string",
-                  "enum": [
-                    "reported",
-                    "analysis",
-                    "limitation",
-                    "coverage_gap"
-                  ]
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/citedParagraph"
                 },
-                "text": {
-                  "type": "string"
+                {
+                  "$ref": "#/$defs/limitation"
                 },
-                "source_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "evidence": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "source_id": {
-                        "type": "string"
-                      },
-                      "quote": {
-                        "type": "string",
-                        "minLength": 12,
-                        "maxLength": 2000
-                      }
-                    },
-                    "required": [
-                      "source_id",
-                      "quote"
-                    ],
-                    "additionalProperties": false
-                  }
+                {
+                  "$ref": "#/$defs/coverageGap"
                 }
-              },
-              "required": [
-                "kind",
-                "text",
-                "source_ids",
-                "evidence"
-              ],
-              "additionalProperties": false
+              ]
             }
           }
         },
@@ -270,109 +150,27 @@
     "humanitarian_context": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "reported",
-              "analysis",
-              "limitation",
-              "coverage_gap"
-            ]
+        "anyOf": [
+          {
+            "$ref": "#/$defs/citedParagraph"
           },
-          "text": {
-            "type": "string"
-          },
-          "source_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "evidence": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "source_id": {
-                  "type": "string"
-                },
-                "quote": {
-                  "type": "string",
-                  "minLength": 12,
-                  "maxLength": 2000
-                }
-              },
-              "required": [
-                "source_id",
-                "quote"
-              ],
-              "additionalProperties": false
-            }
+          {
+            "$ref": "#/$defs/limitation"
           }
-        },
-        "required": [
-          "kind",
-          "text",
-          "source_ids",
-          "evidence"
-        ],
-        "additionalProperties": false
+        ]
       }
     },
     "limitations": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "reported",
-              "analysis",
-              "limitation",
-              "coverage_gap"
-            ]
+        "anyOf": [
+          {
+            "$ref": "#/$defs/citedParagraph"
           },
-          "text": {
-            "type": "string"
-          },
-          "source_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "evidence": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "source_id": {
-                  "type": "string"
-                },
-                "quote": {
-                  "type": "string",
-                  "minLength": 12,
-                  "maxLength": 2000
-                }
-              },
-              "required": [
-                "source_id",
-                "quote"
-              ],
-              "additionalProperties": false
-            }
+          {
+            "$ref": "#/$defs/limitation"
           }
-        },
-        "required": [
-          "kind",
-          "text",
-          "source_ids",
-          "evidence"
-        ],
-        "additionalProperties": false
+        ]
       }
     }
   },
@@ -389,5 +187,156 @@
     "humanitarian_context",
     "limitations"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "citedParagraph": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "reported",
+            "analysis"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_id": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 12,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "source_id",
+              "quote"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "source_ids",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "limitation": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "limitation"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_id": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 12,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "source_id",
+              "quote"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "source_ids",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "coverageGap": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "coverage_gap"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 0
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_id": {
+                "type": "string"
+              },
+              "quote": {
+                "type": "string",
+                "minLength": 12,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "source_id",
+              "quote"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 0
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "source_ids",
+        "evidence"
+      ],
+      "additionalProperties": false
+    }
+  }
 }
