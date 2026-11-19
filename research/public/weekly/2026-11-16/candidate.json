@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "issue_date": "2026-11-16",
+  "previous_issue_date": "2026-11-09",
+  "publication_date": "2026-11-19",
+  "reviewed_at": "2026-11-19T10:26:59.233428+00:00",
+  "reporting_window": {
+    "from": "2026-11-09",
+    "to": "2026-11-15"
+  },
+  "overview": [
+    {
+      "kind": "limitation",
+      "text": "This brief covers selected security developments and humanitarian reporting, not a comprehensive incident inventory. The supplied evidence does not support comparable assessments across zones.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ],
+  "developments": [
+    {
+      "title": "Police chief announces additional deployment",
+      "event_window": {
+        "from": "2026-11-11",
+        "to": "2026-11-11"
+      },
+      "event_timing_note": "The directive was issued during the reporting window and reported that day.",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Premium Times reported that the police chief ordered additional personnel for communities affected by terrorist attacks. The directive does not establish that deployments reached those communities.",
+          "source_ids": [
+            "s2"
+          ],
+          "evidence": [
+            {
+              "source_id": "s2",
+              "quote": "additional police personnel"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Lagos political gathering disrupted",
+      "event_window": {
+        "from": "2026-11-12",
+        "to": "2026-11-12"
+      },
+      "event_timing_note": "The reported attack occurred within the reporting window; publication followed the same day.",
+      "paragraphs": [
+        {
+          "kind": "reported",
+          "text": "Channels Television reported that suspected thugs attacked NDC supporters preparing for a Lagos town hall. It described injuries and damaged vehicles; perpetrators’ identities remained unclear at filing.",
+          "source_ids": [
+            "s3"
+          ],
+          "evidence": [
+            {
+              "source_id": "s3",
+              "quote": "disrupting preparations for a town hall meeting"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "North East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Insufficient localized evidence for an in-window security assessment.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North Central",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "No sufficiently documented local incident assessed; the national directive is not a regional outcome.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "North West",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Security incident coverage is insufficient for a zone-wide assessment.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South East",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "No adequate in-window incident evidence supplied.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South West",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Coverage beyond the Lagos development is insufficient.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "zone": "South South",
+      "paragraphs": [
+        {
+          "kind": "coverage_gap",
+          "text": "Retrospective mentions do not establish verified in-window incidents.",
+          "source_ids": [],
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "humanitarian_context": [
+    {
+      "kind": "reported",
+      "text": "The Cable relayed UNHCR’s warning that Nigerian refugees in Niger faced limited food, water and shelter access. This describes broader displacement conditions, not verified departures during this reporting window.",
+      "source_ids": [
+        "s4"
+      ],
+      "evidence": [
+        {
+          "source_id": "s4",
+          "quote": "limited access to food, clean water"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    {
+      "kind": "limitation",
+      "text": "Source claims were not independently verified. Coverage gaps do not demonstrate an absence of incidents.",
+      "source_ids": [],
+      "evidence": []
+    }
+  ]
+}

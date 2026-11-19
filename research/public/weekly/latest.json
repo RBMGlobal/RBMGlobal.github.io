@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "issue_date": "2026-11-09",
+  "issue_date": "2026-11-16",
   "files": {
     "attestation.json": {
       "bytes": 405,
-      "sha256": "def7ee8be138beb06d3e69677b74946d30faed3f2bf5e22b2f0e4e9ddd45368f"
+      "sha256": "dd31b91a7dc85a8e21bdd4f8effeacc71b7ab3f8ad9ab757cf400a46348217a0"
     },
     "sources.json": {
-      "bytes": 1523,
-      "sha256": "dab3cfd83bc1b61b960fc3005870e94141b2cb652c1280494545720ba64e1144"
+      "bytes": 2370,
+      "sha256": "bfca4b78403bcccaa5be3ddcf7bc546b008a84200481efab8983f03fd5eab69e"
     },
     "events-release.json": {
       "bytes": 1324,
@@ -19,8 +19,8 @@
       "sha256": "068393fb5ce0d610d7c220b52d1ac6dd1408c2cf4504ccd4ddeca85767027111"
     },
     "candidate.json": {
-      "bytes": 4240,
-      "sha256": "a732a3f9bff90f0d14a74d13a97659bb21b194c99e3ca034b07200b6927189ba"
+      "bytes": 4538,
+      "sha256": "48c9c792a0209e3c263c269f523e25cf943db700586c90b0741bed4dc3e5d1cb"
     }
   }
 }

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "s2",
+      "url": "https://www.premiumtimesng.com/news/top-news/924520-igp-orders-additional-deployment-to-communities-affected-by-terror-attacks.html",
+      "final_url": "https://www.premiumtimesng.com/news/top-news/924520-igp-orders-additional-deployment-to-communities-affected-by-terror-attacks.html",
+      "title": "IGP orders additional deployment to communities affected by terror attacks",
+      "publisher": "Premium Times",
+      "published_at": "2026-11-11",
+      "fetched_at": "2026-11-19T10:26:59.028228+00:00",
+      "http_status": 200,
+      "body_sha256": "2a63c3cc7979a3891d0853b6ae3f5b4201ee72af494f5895028edb8bc36d3f17",
+      "text_sha256": "0f50e11d56e35b368f5177b92c539cc3f06531139212fc92b620e608fed808b1",
+      "extract_path": "s2.txt"
+    },
+    {
+      "id": "s3",
+      "url": "https://www.channelstv.com/2026/11/12/lagos-town-hall-meeting-for-ndc-presidential-candidate-peter-obi-disrupted-by-suspected-thugs/",
+      "final_url": "https://www.channelstv.com/2026/11/12/lagos-town-hall-meeting-for-ndc-presidential-candidate-peter-obi-disrupted-by-suspected-thugs/",
+      "title": "Suspected Thugs Attack NDC Supporters In Lagos Ahead Of Peter Obi’s Town Hall",
+      "publisher": "Channels Television",
+      "published_at": "2026-11-12",
+      "fetched_at": "2026-11-19T10:26:59.126710+00:00",
+      "http_status": 200,
+      "body_sha256": "ef1a63c749c2a9d4f73db48b8a204b1117f0c7ca1993bbfa7a97aa93745ed7e1",
+      "text_sha256": "bcb9c32d3f2b5d3a28c9b50183997480235b6b5456bd8c17f0e109c15603df82",
+      "extract_path": "s3.txt"
+    },
+    {
+      "id": "s4",
+      "url": "https://www.thecable.ng/unhcr-nearly-64000-nigerians-have-fled-to-niger-republic-over-insecurity-in-2026/",
+      "final_url": "https://www.thecable.ng/unhcr-nearly-64000-nigerians-have-fled-to-niger-republic-over-insecurity-in-2026/",
+      "title": "Nearly 64,000 Nigerians have fled to Niger Republic over insecurity in 2026",
+      "publisher": "The Cable",
+      "published_at": "2026-11-10",
+      "fetched_at": "2026-11-19T10:26:59.232806+00:00",
+      "http_status": 200,
+      "body_sha256": "1d86985603f23cec4edf17b99ff752bc1ed586cf3dd1947fd4bd353d928d7a3e",
+      "text_sha256": "d7b8b4867b8fb0e0673812f39e1138e85d77cb0ce21e9b4cda112c28b1fd458d",
+      "extract_path": "s4.txt"
+    }
+  ]
+}

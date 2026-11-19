@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "approved": true,
+  "candidate_sha256": "48c9c792a0209e3c263c269f523e25cf943db700586c90b0741bed4dc3e5d1cb",
+  "evidence_manifest_sha256": "bfca4b78403bcccaa5be3ddcf7bc546b008a84200481efab8983f03fd5eab69e",
+  "reviewed_at": "2026-11-19T10:27:36.131527+00:00",
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_0422ef6432258b4b016afecf120b9487d0998c6580131c1c02",
+  "issues": []
+}
