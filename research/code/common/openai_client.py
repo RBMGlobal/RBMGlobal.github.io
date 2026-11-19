@@ -13,7 +13,7 @@ import re
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 
-from .budget import BudgetError, BudgetExceeded, BudgetLedger, PersistenceError, MINI, SOL, envelope
+from .budget import BudgetError, BudgetExceeded, BudgetLedger, PersistenceError, MINI, SOL, envelope, counted_envelope
 
 MAX_PROMPT_BYTES = 150 * 1024
 MAX_SCHEMA_BYTES = 24 * 1024
@@ -235,7 +235,9 @@ class OpenAIEditorialClient:
 
         discovery/daily drafting: Mini, <=6000 output. Weekly drafting: Sol,
         no tools, <=6000 output. Review: Sol, no tools, <=4000 output;
-        Mini fallback only if full-context Sol reservation will not fit. Results
+        Mini fallback only if the verified Sol reservation will not fit. Tool-free
+        requests use the provider input count plus margin; unavailable counts
+        retain the full-context bound. Results
         disclose the actual model and search cap. No implicit no-search fallback.
         """
         if kind not in MAX_SEARCH:
@@ -259,31 +261,45 @@ class OpenAIEditorialClient:
         for model in models:
             for calls in range(cap, 0 if search else -1, -1):
                 limits = envelope(model, output_cap, calls)
+                payload = {
+                    "model": model, "instructions": INSTRUCTIONS, "input": prompt,
+                    "reasoning": {"effort": "medium" if weekly_draft else "low"}, "max_output_tokens": output_cap,
+                    "store": False, "service_tier": "default", "background": False,
+                    "text": {"format": {"type": "json_schema", "name": "rbm_editorial_result",
+                                         "schema": schema, "strict": True}},
+                }
+                if search:
+                    payload.update(
+                        tools=[{"type": "web_search", "external_web_access": True,
+                                "search_context_size": "low", "return_token_budget": "default",
+                                "filters": {"allowed_domains": domains}}],
+                        tool_choice="required", max_tool_calls=calls,
+                        include=["web_search_call.action.sources"],
+                    )
+                else:
+                    payload.update(tools=[], tool_choice="none")
+                    # Count the same immutable input/instructions/schema/reasoning.
+                    # This endpoint performs no generation. No conversations,
+                    # previous responses, files, or dynamic tools are permitted.
+                    # Missing access/SDK/count -> original full-context bound.
+                    try:
+                        count_payload = {k: payload[k] for k in
+                                         ("model", "input", "instructions", "reasoning", "text", "tools", "tool_choice")}
+                        counted = self.sdk.responses.input_tokens.count(**count_payload)
+                        counted = counted.model_dump(mode="json") if hasattr(counted, "model_dump") else counted
+                        if not isinstance(counted, dict) or counted.get("object") != "response.input_tokens":
+                            raise ValueError("Malformed count")
+                        limits = counted_envelope(model, output_cap, counted.get("input_tokens"))
+                    except Exception:
+                        limits = envelope(model, output_cap, 0)
                 if limits["reserved_microusd"] <= self.ledger.remaining():
-                    selected = (model, calls, limits)
+                    selected = (model, calls, limits, payload)
                     break
             if selected:
                 break
         if not selected:
             raise BudgetExceeded("No permitted request fits the remaining shared monthly budget")
-        model, calls, limits = selected
-        payload = {
-            "model": model, "instructions": INSTRUCTIONS, "input": prompt,
-            "reasoning": {"effort": "medium" if weekly_draft else "low"}, "max_output_tokens": output_cap,
-            "store": False, "service_tier": "default", "background": False,
-            "text": {"format": {"type": "json_schema", "name": "rbm_editorial_result",
-                                 "schema": schema, "strict": True}},
-        }
-        if search:
-            payload.update(
-                tools=[{"type": "web_search", "external_web_access": True,
-                        "search_context_size": "low", "return_token_budget": "default",
-                        "filters": {"allowed_domains": domains}}],
-                tool_choice="required", max_tool_calls=calls,
-                include=["web_search_call.action.sources"],
-            )
-        else:
-            payload.update(tools=[], tool_choice="none")
+        model, calls, limits, payload = selected
         self.ledger.reserve(request_id, kind, limits, payload)
         try:
             raw = self.sdk.responses.create(**payload)

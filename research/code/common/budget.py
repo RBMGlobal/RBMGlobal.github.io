@@ -98,6 +98,23 @@ def envelope(model, max_output_tokens, max_search_calls=0):
     }
 
 
+def counted_envelope(model, max_output_tokens, input_tokens):
+    """Provider-counted, tool-free input plus 1024 tokens of safety margin.
+
+    Only the complete immutable text request (including strict output schema)
+    may use this bound. Searches retain the full-context multi-round envelope.
+    Legacy envelopes and unresolved reservations remain unchanged.
+    """
+    result = envelope(model, max_output_tokens, 0)
+    _integer(input_tokens, "provider input count", 1)
+    if input_tokens > TARIFFS[model]["max_input"]:
+        raise BudgetError("Count exceeds model context")
+    result["max_input_tokens"] = min(input_tokens + 1024, TARIFFS[model]["max_input"])
+    result["reserved_microusd"] = token_cost(model, result["max_input_tokens"], max_output_tokens, 0)
+    result.update(input_basis="responses.input_tokens/v1", counted_input_tokens=input_tokens)
+    return result
+
+
 def new_ledger():
     return {"schema_version": 1, "owner": OWNER, "currency": "USD",
             "monthly_limit_microusd": MONTHLY_LIMIT_MICROUSD,
@@ -139,7 +156,10 @@ def validate_ledger(state):
             raise BudgetError("Invalid request digest")
         env = entry["envelope"]
         try:
-            if env != envelope(env["model"], env["max_output_tokens"], env["max_search_calls"]):
+            expected = (counted_envelope(env["model"], env["max_output_tokens"], env["counted_input_tokens"])
+                        if env.get("input_basis") == "responses.input_tokens/v1"
+                        else envelope(env["model"], env["max_output_tokens"], env["max_search_calls"]))
+            if env != expected:
                 raise BudgetError("Unreviewed reservation envelope")
         except (KeyError, TypeError):
             raise BudgetError("Invalid reservation envelope") from None

@@ -427,3 +427,70 @@ class ClientTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class CountedInputTests(unittest.TestCase):
+    def setup_client(self, count=1000, modify=None):
+        from types import SimpleNamespace
+        store = Store()
+        sdk = FakeSDK(store, modify)
+        sdk.count_calls = []
+        def counter(**payload):
+            sdk.count_calls.append(deepcopy(payload))
+            if isinstance(count, Exception):
+                raise count
+            return {'object': 'response.input_tokens', 'input_tokens': count}
+        sdk.input_tokens = SimpleNamespace(count=counter)
+        return store, sdk, OpenAIEditorialClient(store.ledger(), sdk)
+
+    def test_counted_sol_fits_while_old_unknown_charges_remain(self):
+        store, sdk, client = self.setup_client()
+        client.ledger.reserve('old', 'review', envelope(SOL, 4000), {})
+        before = deepcopy(client.ledger.state['entries'][0])
+        result = client.generate(request_id='draft', kind='weekly', prompt='Evidence', schema=SCHEMA, search=False)
+        self.assertEqual(result.model, SOL)
+        self.assertEqual(store.state['entries'][0], before)
+        paid = sdk.calls[0]
+        self.assertEqual(sdk.count_calls[0], {k: paid[k] for k in sdk.count_calls[0]})
+        env = store.state['entries'][-1]['envelope']
+        self.assertEqual(env['max_input_tokens'], 2024)
+        self.assertEqual(env['reserved_microusd'], 100120)
+        validate_ledger(store.state)
+
+    def test_search_never_uses_static_input_count(self):
+        store, sdk, client = self.setup_client()
+        run(client)
+        self.assertFalse(sdk.count_calls)
+        self.assertEqual(store.state['entries'][0]['envelope'], envelope(MINI, 6000, 2))
+
+    def test_invalid_or_unavailable_count_falls_back_without_lower_reserve(self):
+        for count in (0, -1, True, 1.5, 1050001, RuntimeError('denied')):
+            with self.subTest(count=count):
+                store, sdk, client = self.setup_client(count)
+                client.ledger.reserve('old', 'review', envelope(SOL, 4000), {})
+                with self.assertRaises(BudgetExceeded):
+                    client.generate(request_id='draft', kind='weekly', prompt='Evidence', schema=SCHEMA, search=False)
+                self.assertFalse(sdk.calls)
+                self.assertEqual(len(store.state['entries']), 1)
+
+    def test_count_does_not_bypass_durable_reservation(self):
+        store, sdk, client = self.setup_client()
+        store.fail = True
+        with self.assertRaises(PersistenceError):
+            client.generate(request_id='draft', kind='weekly', prompt='Evidence', schema=SCHEMA, search=False)
+        self.assertFalse(sdk.calls)
+
+    def test_usage_above_counted_bound_retains_reservation(self):
+        def modify(response):
+            response['usage']['input_tokens'] = 2025
+            return response
+        store, sdk, client = self.setup_client(modify=modify)
+        with self.assertRaises(ProviderOutcomeUnknown):
+            client.generate(request_id='draft', kind='weekly', prompt='Evidence', schema=SCHEMA, search=False)
+        self.assertEqual(store.state['entries'][0]['status'], 'uncertain')
+
+    def test_tampered_counted_envelope_or_search_is_rejected(self):
+        from common.budget import counted_envelope
+        state = reserve(new_ledger(), 'a', 'review', counted_envelope(SOL, 4000, 1000), 'a'*64, NOW)
+        for key,value in [('max_input_tokens', 100), ('max_search_calls', 1), ('reserved_microusd', 1)]:
+            bad = deepcopy(state); bad['entries'][0]['envelope'][key] = value
+            with self.assertRaises(BudgetError): validate_ledger(bad)
