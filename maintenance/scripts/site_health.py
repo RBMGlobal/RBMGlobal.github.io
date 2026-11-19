@@ -249,6 +249,13 @@ class Report:
         print(json.dumps({'failed':self.failed,'checks':len(self.items)}))
 
 
+def required_input_date(today, hour, minute):
+    # Before the first 11:30 London producer run, yesterday's accepted
+    # release covers the day before yesterday. Producer acceptance itself
+    # always requires all inputs through the previous calendar day.
+    return today - timedelta(days=2 if (hour, minute) < (11, 30) else 1)
+
+
 def run(base=BASE,today=None):
     now=datetime.now(ZoneInfo('Europe/London'));today=today or now.date()
     report=Report();responses={}
@@ -290,7 +297,8 @@ def run(base=BASE,today=None):
     events=report.check('embedded event data',lambda:validate_events(responses['events'].body.decode()))
     if release and coverage:
         through,curated=coverage
-        report.check('GDELT input coverage',lambda:require(through>=today-timedelta(days=1),f'Inputs through {through}; required through {today-timedelta(days=1)}. Retry publisher; do not replace with empty data.') or f"Inputs {release['coverage']['gdelt']['input_from']} through {through}; latest event {release['coverage']['gdelt']['max_event_date']}")
+        due = required_input_date(today, now.hour, now.minute)
+        report.check('GDELT input coverage',lambda:require(through>=due,f'Inputs through {through}; required through {due}. Retry publisher; do not replace with empty data.') or f"Inputs {release['coverage']['gdelt']['input_from']} through {through}; latest event {release['coverage']['gdelt']['max_event_date']}")
         report.add('UCDP source lag','WARN' if (today-curated).days>90 else 'INFO',f'Events through {curated}, {(today-curated).days} days old. Monthly release lag is expected; this is not GDELT ingestion coverage.')
         for warning in release.get('warnings',[]):
             report.add('publisher source warning','WARN',warning)

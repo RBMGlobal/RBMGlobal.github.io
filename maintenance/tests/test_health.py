@@ -27,6 +27,10 @@ def release():
       'heat':{'from':'2026-10-01','to':'2026-10-23'}},'files':files}
 
 class HealthTests(unittest.TestCase):
+    def test_coverage_due_at_first_london_producer_slot(self):
+        self.assertEqual(h.required_input_date(TODAY, 11, 29), TODAY-timedelta(days=2))
+        self.assertEqual(h.required_input_date(TODAY, 11, 30), TODAY-timedelta(days=1))
+
     def test_all_37_states_six_zones_and_no_duplicates(self):
         data={'assessment_updated':'2026-09-27','states':[{'name':s,'zone':'NC','president':'mixed','nsa':'cold'} for s in sorted(h.STATES)],'zones':[{'id':z} for z in sorted(h.ZONES)]}
         self.assertIs(h.validate_sentiment(data),data)
