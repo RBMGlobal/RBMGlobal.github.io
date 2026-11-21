@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-11-19T16:43:09.867517+00:00",
-  "review_date": "2026-11-19",
+  "reviewed_at": "2026-11-21T15:31:41.125054+00:00",
+  "review_date": "2026-11-21",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This review is limited to the supplied eligible source set and the provided excerpt from the 2026-11-11 Afrobarometer news release on Nigeria. The excerpt supports only headline findings and publication timing. It does not expose the original survey methodology, sample size, fieldwork dates, weighting, or a sufficiently specified geographic scope for acceptance as new poll evidence in this output. The excerpt also does not provide a standalone, newly attributable public-security event record that meets the required metadata standard. Existing verified evidence is not re-added, and no state classifications are proposed.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. The supplied eligible evidence is a single Afrobarometer news release dated 2026-11-11 about Nigeria. It provides headline survey findings on electoral perceptions, but the excerpt supplied here does not include enough original methodology detail to support a new poll record with exact sample, fieldwork dates, weighting, or geographic scope in the required form. This review therefore makes no new polling addition and does not infer any state-level sentiment or trend from the article alone. The review is limited to the provided source set and cannot treat the article as a substitute for the underlying survey instrument or methods section.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
@@ -14,11 +14,11 @@
   "security_context": [],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "3996e4b09fd108ee10c4ded24f48f702f64f6fec8ac7a16050191a57a7af5bfe",
-  "evidence_manifest_sha256": "69766c522146ac0b2cda7e8fc377f185eb420b249fe03aff04a1ea08a68a3c6c",
+  "candidate_sha256": "a06a6d914e829393157a1cb7f47f34232c97cff5a0010c3abf06e8d5525fbaba",
+  "evidence_manifest_sha256": "58843540bcc3039f20d91480e7ef74b9b99a708a7f1dcae1681e3dfc789fb518",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-11-19T16:43:09.867517+00:00",
+    "reviewed_at": "2026-11-21T15:31:41.125054+00:00",
     "model": "gpt-6.1-sol"
   },
   "sources": [
@@ -29,8 +29,8 @@
       "title": "Nigerians doubt electoral fairness ahead of 2027 polls, expect widespread abuses, latest Afrobarometer survey shows – Afrobarometer",
       "publisher": "Afrobarometer",
       "published_at": "2026-11-11",
-      "fetched_at": "2026-11-19T16:42:56.619132+00:00",
-      "body_sha256": "baa8226465bace6a3ff4fa7a193cbae01270d4a4838c381ac4610896d57ff981",
+      "fetched_at": "2026-11-21T15:31:22.641956+00:00",
+      "body_sha256": "1cb7e15927c1679981ef71f106b84477148744a660dfa60de4920e94acf45e56",
       "text_sha256": "38719f5651676fcb86d3589ffa454666391180a152402c57c0817b8029e96cf5"
     }
   ],
