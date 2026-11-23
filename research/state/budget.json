@@ -3,7 +3,7 @@
   "owner": "RBMGlobal/RBMGlobal.github.io",
   "currency": "USD",
   "monthly_limit_microusd": 10000000,
-  "revision": 351,
+  "revision": 352,
   "entries": [
     {
       "request_id": "40236408779:daily:discovery",
@@ -4246,6 +4246,24 @@
       },
       "response_id": "resp_0fcd923ee696d4c7016b04931cf2c887d0a20a9fe24c9914e2",
       "settled_at": "2026-11-23T19:25:28Z"
+    },
+    {
+      "request_id": "45248532811.1:daily:candidate",
+      "kind": "daily",
+      "month": "2026-11",
+      "created_at": "2026-11-23T19:25:34Z",
+      "status": "reserved",
+      "envelope": {
+        "model": "gpt-5.4-mini-2026-03-17",
+        "max_output_tokens": 6000,
+        "max_search_calls": 0,
+        "max_input_tokens": 7728,
+        "reserved_microusd": 32796,
+        "pricing_as_of": "2026-10-25",
+        "input_basis": "responses.input_tokens/v1",
+        "counted_input_tokens": 6704
+      },
+      "request_sha256": "da56001bd146dea5eb1ddf7172e10e6c011bb59bfd9ab0bb305f59517526c591"
     }
   ]
 }
