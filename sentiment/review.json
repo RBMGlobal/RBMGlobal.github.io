@@ -1,59 +1,74 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-11-24T19:01:46.199217+00:00",
-  "review_date": "2026-11-24",
+  "reviewed_at": "2026-11-26T17:51:35.148965+00:00",
+  "review_date": "2026-11-26",
   "status": "no_material_change",
   "data_changed": false,
-  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. Bounded review of the supplied post-2026-10-10 Nigeria evidence set. The materials support that Afrobarometer published a Nigeria news release on 2026-11-11 with national public-opinion findings on electoral fairness and expectations for the 2027 vote, but the supplied text does not provide enough original methodology detail in the approved sources to enter a new poll record with verified sample, fieldwork dates, weighting, and comparable measurement metadata. The country page confirms Nigeria is in Afrobarometer’s survey program and names languages and the national partner, but it does not supply the missing survey-method fields needed for a compliant new entry. No eligible public-security source was supplied for a separate security_context record.",
+  "scope": "Review of the supplied, collected primary evidence; not an exhaustive survey of all publications. This review is limited to the supplied eligible source set and permits one new security-context item from the Premium Times report. The excerpt supports a reported ACLED-based trend in Boko Haram/JAS violence and a caution against over-attributing that decline to a reported ceasefire. The material does not support any new national or zonal public-opinion poll, and it does not provide enough methodology detail for a polling record. Exact incident-level dates, full ACLED tables, and broader corroboration are not available in the supplied evidence.",
   "summary": "No material change accepted from the supplied evidence. Published assessments and data dates are unchanged.",
   "assessment_updated": "2026-09-27",
   "evidence_added": [],
   "duplicate_evidence": [],
   "state_changes": [],
   "withheld_state_changes": [],
-  "security_context": [],
+  "security_context": [
+    {
+      "id": "s1-security-boko-haram-decline",
+      "source_id": "s1",
+      "title": "Boko Haram violence declines",
+      "summary": "Premium Times reports an ACLED-based decline in Boko Haram/JAS violence in Nigeria across 2026, with lower recorded events in the second and third quarters than earlier in the year. The report also notes cross-border activity in Cameroon and Chad and cautions that the decline cannot be attributed solely to the reported ceasefire.",
+      "geography": "Nigeria, with regional spillover into Cameroon, Chad and Niger",
+      "event_window": {
+        "from": null,
+        "to": null,
+        "note": "The article describes ACLED data for the first quarter of 2025 through the third quarter of 2026; exact incident dates are not provided in the excerpt."
+      },
+      "citations": [
+        {
+          "source_id": "s1",
+          "url": "https://www.premiumtimesng.com/news/headlines/926541-boko-haram-violence-declines.html?tztc=1",
+          "locator": "Body text"
+        },
+        {
+          "source_id": "s1",
+          "url": "https://www.premiumtimesng.com/news/headlines/926541-boko-haram-violence-declines.html?tztc=1",
+          "locator": "Body text"
+        },
+        {
+          "source_id": "s1",
+          "url": "https://www.premiumtimesng.com/news/headlines/926541-boko-haram-violence-declines.html?tztc=1",
+          "locator": "Body text"
+        },
+        {
+          "source_id": "s1",
+          "url": "https://www.premiumtimesng.com/news/headlines/926541-boko-haram-violence-declines.html?tztc=1",
+          "locator": "Article date"
+        }
+      ],
+      "publication_date": "2026-11-19",
+      "publisher": "Premium Times"
+    }
+  ],
   "baseline_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
   "data_sha256": "b3ae73492f76f8db0b921e880cee10ea6fea567284d09957e11d37211024052d",
-  "candidate_sha256": "9b4def1502bee0b11fe411324d2c6d5489a0783c5a56fd95fe7a825158145742",
-  "evidence_manifest_sha256": "fe1d58a0c7cbc8360e10239c5e94ec6c52913b0621f4570b1856e53172fc6804",
+  "candidate_sha256": "e703e3db7c3da67d336f29161f021c259335f665221e879a86d1570146258410",
+  "evidence_manifest_sha256": "cd69fef37d8759d7786c9e8eafb01565e2b86c8e4a7197b4b5cc7a36ce2f28d8",
   "verification": {
     "method": "Independent AI review plus deterministic provenance and schema checks",
-    "reviewed_at": "2026-11-24T19:01:46.199217+00:00",
+    "reviewed_at": "2026-11-26T17:51:35.148965+00:00",
     "model": "gpt-6.1-sol"
   },
   "sources": [
     {
       "id": "s1",
-      "url": "https://www.afrobarometer.org/articles/nigerians-doubt-electoral-fairness-ahead-of-2027-polls-expect-widespread-abuses-latest-afrobarometer-survey-shows/",
-      "final_url": "https://www.afrobarometer.org/articles/nigerians-doubt-electoral-fairness-ahead-of-2027-polls-expect-widespread-abuses-latest-afrobarometer-survey-shows/",
-      "title": "Nigerians doubt electoral fairness ahead of 2027 polls, expect widespread abuses, latest Afrobarometer survey shows – Afrobarometer",
-      "publisher": "Afrobarometer",
-      "published_at": "2026-11-11",
-      "fetched_at": "2026-11-24T19:01:25.674571+00:00",
-      "body_sha256": "cd26da6e51a03541d0568a8ada670ffee2df5ed0702d271b59029590ef0aa5a8",
-      "text_sha256": "38719f5651676fcb86d3589ffa454666391180a152402c57c0817b8029e96cf5"
-    },
-    {
-      "id": "s2",
-      "url": "https://www.channelstv.com/2026/10/07/2027-84-of-nigerians-willing-to-vote-61-fear-violence-yiaga-africa/",
-      "final_url": "https://www.channelstv.com/2026/10/07/2027-84-of-nigerians-willing-to-vote-61-fear-violence-yiaga-africa/",
-      "title": "2027: 84% Of Nigerians Willing To Vote, 61% Fear Violence — Yiaga Africa • Channels Television",
-      "publisher": "Channels Television",
-      "published_at": "2026-10-07",
-      "fetched_at": "2026-11-24T19:01:26.732549+00:00",
-      "body_sha256": "e14ba36a73cf702ecfa3e67d9a7f450ca7e8e460c9a6168ea10074f2d624a6b1",
-      "text_sha256": "9f43269507a6a28388579f623cdd2165d7a98d6f0cb3c20d1e3a696c84dfd90b"
-    },
-    {
-      "id": "s3",
-      "url": "https://www.afrobarometer.org/countries/nigeria/",
-      "final_url": "https://www.afrobarometer.org/countries/nigeria/",
-      "title": "Nigeria – Afrobarometer",
-      "publisher": "Afrobarometer",
-      "published_at": "2026-11-11",
-      "fetched_at": "2026-11-24T19:01:27.393962+00:00",
-      "body_sha256": "6c8b2c0b3e4eff29410b213dde87e0cf7a046f6becb85f9287bbbd526559ff9d",
-      "text_sha256": "5b9a52702f0c7f9611ed14c381b24d447c87e6856440e8fcaa4a0e29b91cb34d"
+      "url": "https://www.premiumtimesng.com/news/headlines/926541-boko-haram-violence-declines.html?tztc=1",
+      "final_url": "https://www.premiumtimesng.com/news/headlines/926541-boko-haram-violence-declines.html?tztc=1",
+      "title": "Boko Haram violence declines",
+      "publisher": "Premium Times",
+      "published_at": "2026-11-19",
+      "fetched_at": "2026-11-26T17:51:17.729414+00:00",
+      "body_sha256": "420fd2baed9c06793ecb11b054b46c5aeb6fe1079da10a04f4b6faeb258b242d",
+      "text_sha256": "f13fc87e07ecb7f4c3dceb20184ce21cd1664ce51df24c679fae26a2c281a340"
     }
   ],
   "caveat": "Exact citations and hashes establish retrieval and traceability. Independent review assesses interpretation; neither guarantees survey quality. Historical sources and X themes are not revalidated by this check."
